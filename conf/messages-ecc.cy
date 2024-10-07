@@ -187,7 +187,7 @@ cds.feedback.continue=Rhagor am {0}
 cds.subscription.sign-in-with-different-details.para1=Mae {0} eisoes wedi cofrestru ar gyfer {1} gyda Phorth y Llywodraeth gwahanol.
 cds.subscription.sign-in-with-different-details.para1-noname=Rydych eisoes wedi cofrestru ar gyfer {0} gyda Phorth y Llywodraeth gwahanol.
 
-cds.matching.row-organisation.utr.hint=Mae hwn yn cynnwys 10 rhif, er enghraifft 1234567890. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Treth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’.
+cds.matching.row-organisation.utr.hint=Gall eich UTR fod yn 10 neu’n 13 digid o hyd.
 cds.matching.row-sole-trader-individual.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd {0}
 
 cds.matching.row-lost-urt.hint.link=Mae modd dod o hyd i UTR sydd ar goll (yn agor tab newydd)
@@ -278,6 +278,10 @@ yes-no-wrong-address.error=Dewiswch ‘Iawn’ os mai dyma’ch cyfeiriad
 cds.existing.reg.eori-already-exists.title=Mae gennych EORI eisoes
 cds.existing.reg.eori.number=Rhif EORI:
 
+cds.navigation.corporation-utr-message= Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Treth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau '‘cyfeirnod’', '‘UTR’' neu '‘defnydd swyddogol’'.
+cds.matching.row-organisation.utr.subheading=Beth yw eich UTR ar gyfer Treth Gorfforaeth?
+subscription-journey.navigation.self-utr-message = Bydd i’w weld yn eich Cyfrif Treth Personol, yn ap CThEF, neu ar Ffurflenni Treth a dogfennau eraill oddi wrth CThEF. Efallai y cyfeirir ato gan ddefnyddio’r geiriau '‘cyfeirnod’', '‘UTR’' neu '‘defnydd swyddogol’'.
+
 cds.subscription.organisation-disclose-personal-details-consent.heading=A ydych am gynnwys eich enw a chyfeiriad ar y gwiriwr EORI?
 cds.subscription.organisation-disclose-personal-details-consent.declaration=Bydd CThEF yn ychwanegu eich rhif EORI GB at {0}. Gallwch hefyd gynnwys eich enw a’ch cyfeiriad chi, neu’ch sefydliad. Bydd hyn yn helpu asiantau tollau a chludo nwyddau i gadarnhau pwy ydych a phrosesu eich llwythi.
 cds.subscription.organisation-disclose-personal-details-consent.declaration.link=wiriwr cyhoeddus
@@ -286,9 +290,9 @@ cds.subscription.organisation-disclose-personal-details-consent.no=Na - Dangoswc
 
 subscription-journey.how-confirm-identity.nino.heading=Nodwch eich rhif Yswiriant Gwladol
 subscription-journey.how-confirm-identity.nino.hint=Mae’r rhif ar eich cerdyn Yswiriant Gwladol, llythyr budd-daliadau, slip cyflog neu P60. Er enghraifft, ''QQ 12 34 56 C''.
-subscription-journey.how-confirm-identity.utr.heading=Beth yw'''ch Cyfeirnod Unigryw y Trethdalwr ar gyfer Hunanasesiad (UTR)?
+subscription-journey.how-confirm-identity.utr.heading=Eich Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
 subscription-journey.how-confirm-identity.utr.hint=Mae hwn yn cynnwys 10 rhif, er enghraifft 1234567890. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau '‘cyfeirnod’', '‘UTR’' neu '‘defnydd swyddogol’'.
-subscription-journey.how-confirm-identity.utr.third-org.heading=Beth yw’ch Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)?
+subscription-journey.how-confirm-identity.utr.third-org.heading=Eich Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
 
 cds.reg06.outcome.eori-already-linked.info.utr = Nid yw Cyfeirnod Unigryw y Trethdalwr a nodwyd gennych, sef {0}, yn cyd-fynd â’n cofnodion ar gyfer rhif EORI {1}.
 cds.reg06.outcome.eori-already-linked.info.nino = Nid yw’r rhif Yswiriant Gwladol a nodwyd gennych, sef {0}, yn cyd-fynd â’n cofnodion ar gyfer rhif EORI {1}.

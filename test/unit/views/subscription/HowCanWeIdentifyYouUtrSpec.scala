@@ -41,7 +41,7 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
   "Subscription Enter Your Nino Page" should {
 
     "display correct heading" in {
-      doc.body().getElementsByTag("h1").text() mustBe "What is your Self Assessment Unique Taxpayer Reference (UTR)?"
+      doc.body().getElementsByTag("h1").text() mustBe "Your Self Assessment Unique Taxpayer Reference (UTR)"
     }
 
     "include the heading in the title" in {
@@ -74,6 +74,9 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
         form,
         "subscription-journey.how-confirm-identity.utr.heading",
         "subscription-journey.how-confirm-identity.utr.hint",
+        "subscription-journey.how-confirm-identity.utr.subheading",
+        "subscription-journey.navigation.self-utr-message",
+        "subscription.navigation.find-lost-utr",
         isInReviewMode,
         routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService),
         atarService
@@ -88,6 +91,9 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
           formWithNothingEntered,
           "subscription-journey.how-confirm-identity.utr.heading",
           "subscription-journey.how-confirm-identity.utr.hint",
+          "subscription-journey.how-confirm-identity.utr.subheading",
+          "subscription-journey.navigation.self-utr-message",
+          "subscription.navigation.find-lost-utr",
           isInReviewMode,
           routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService),
           atarService

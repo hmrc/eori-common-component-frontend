@@ -22,22 +22,23 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.helper._
 
-@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, appConfig: AppConfig, govukButton: GovukButton, h1: helpers.h1, link: helpers.link)
+@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, appConfig: AppConfig, govukButton: GovukButton, h1: helpers.h1, link: helpers.link,h2: helpers.h2 , p: helpers.paragraph)
 
-@(utrForm: Form[IdMatchModel], headingText: String, hintText: String, isInReviewMode: Boolean, submit: Call, service: Service)(implicit request: Request[_], messages: Messages)
+@(utrForm: Form[IdMatchModel], headingText: String, hintText: String,SubHeading: String,getInfoMessage :String, getFindUtrText: String, isInReviewMode: Boolean, submit: Call, service: Service)(implicit request: Request[_], messages: Messages)
 
 @layout_di(messages(headingText), form = Some(utrForm), service = service) {
 
         @h1(messages(headingText))
         @errorSummary(utrForm.errors)
+        @p(messages(getInfoMessage))
         <div class="govuk-body">
-        @messages("cds.navigation.opens-new-page")
-        @link(text=messages("cds.navigation.find-lost-utr"), href=messages("cds.navigation.find-utr-link"))
+        @link(text=messages(getFindUtrText), href=messages("cds.navigation.find-utr-link"))
         </div>
 
         @helpers.form(submit, "utrForm") {
             @CSRF.formField
 
+            @h2(messages(SubHeading))
 
             @inputText(
                 form = utrForm,
@@ -49,7 +50,6 @@
                 classes = Some("govuk-!-width-one-half"),
                 labelClasses = Some("govuk-visually-hidden")
             )
-
             @govukButton(Button(
                 content = Text(ViewHelper.continueButtonText(isInReviewMode)),
                 id = Some("continue-button")

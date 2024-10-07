@@ -72,6 +72,9 @@ class HowCanWeIdentifyYouUtrController @Inject() (
             subscriptionUtrForm.fill(IdMatchModel(id)),
             getHeadingMessage(),
             getHintMessage(),
+            getSubHeading(),
+            getInfoMessage(),
+            getFindUtrText(),
             isInReviewMode,
             routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service),
             service
@@ -83,6 +86,9 @@ class HowCanWeIdentifyYouUtrController @Inject() (
             subscriptionUtrForm,
             getHeadingMessage(),
             getHintMessage(),
+            getSubHeading(),
+            getInfoMessage(),
+            getFindUtrText(),
             isInReviewMode,
             routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service),
             service
@@ -102,6 +108,9 @@ class HowCanWeIdentifyYouUtrController @Inject() (
                   invalidForm,
                   getHeadingMessage(),
                   getHintMessage(),
+                  getSubHeading(),
+                  getInfoMessage(),
+                  getFindUtrText(),
                   isInReviewMode,
                   routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service),
                   service
@@ -142,5 +151,26 @@ class HowCanWeIdentifyYouUtrController @Inject() (
         if (orgType == CdsOrganisationType.Company) "subscription-journey.how-confirm-identity.utr.third-org.heading"
         else defaultHeadingMessage
     ).getOrElse(defaultHeadingMessage)
+
+  private def getSubHeading()(implicit request: Request[AnyContent]) =
+    requestSessionData.userSelectedOrganisationType.map(
+      orgType =>
+        if (orgType == CdsOrganisationType.Company) "cds.matching.row-organisation.utr.subheading"
+        else "subscription-journey.how-confirm-identity.utr.subheading"
+    ).getOrElse("subscription-journey.how-confirm-identity.utr.subheading")
+
+  private def getInfoMessage()(implicit request: Request[AnyContent]) =
+    requestSessionData.userSelectedOrganisationType.map(
+      orgType =>
+        if (orgType == CdsOrganisationType.Company) "cds.navigation.corporation-utr-message"
+        else "subscription-journey.navigation.self-utr-message"
+    ).getOrElse("subscription-journey.navigation.self-utr-message")
+
+  private def getFindUtrText()(implicit request: Request[AnyContent]) =
+    requestSessionData.userSelectedOrganisationType.map(
+      orgType =>
+        if (orgType == CdsOrganisationType.Company) "cds.navigation.find-lost-utr"
+        else "subscription.navigation.find-lost"
+    ).getOrElse("subscription.navigation.find-lost")
 
 }
