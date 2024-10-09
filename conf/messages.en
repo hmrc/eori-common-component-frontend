@@ -12,7 +12,8 @@ cds.navigation.opens-in-new-tab=(opens in new tab)
 cds.navigation.opens-new-page=You can
 cds.navigation.find-utr-link=https://www.gov.uk/find-utr-number
 
-cds.navigation.find-lost-utr=find a lost UTR (opens in new tab)
+cds.navigation.find-lost-utr=Ask for a copy of your Corporation Tax UTR (opens in new tab)
+subscription.navigation.find-lost-utr = Get more help to find your UTR (opens in new tab)
 cds.navigation.hmrc.online-services =  HMRC online services
 cds.navigation.contact-us= Contact us
 cds.navigation.contact-hmrc = Contact HMRC

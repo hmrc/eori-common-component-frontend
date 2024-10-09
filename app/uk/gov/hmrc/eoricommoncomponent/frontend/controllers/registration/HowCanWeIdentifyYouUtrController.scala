@@ -70,8 +70,7 @@ class HowCanWeIdentifyYouUtrController @Inject() (
         Ok(
           howCanWeIdentifyYouView(
             subscriptionUtrForm.fill(IdMatchModel(id)),
-            getHeadingMessage(),
-            getHintMessage(),
+            getPageContent(),
             isInReviewMode,
             routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service),
             service
@@ -81,8 +80,7 @@ class HowCanWeIdentifyYouUtrController @Inject() (
         Ok(
           howCanWeIdentifyYouView(
             subscriptionUtrForm,
-            getHeadingMessage(),
-            getHintMessage(),
+            getPageContent(),
             isInReviewMode,
             routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service),
             service
@@ -100,8 +98,7 @@ class HowCanWeIdentifyYouUtrController @Inject() (
               BadRequest(
                 howCanWeIdentifyYouView(
                   invalidForm,
-                  getHeadingMessage(),
-                  getHintMessage(),
+                  getPageContent(),
                   isInReviewMode,
                   routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service),
                   service
@@ -129,18 +126,24 @@ class HowCanWeIdentifyYouUtrController @Inject() (
             )
       )
 
-  private def getHintMessage()(implicit request: Request[AnyContent]) =
-    requestSessionData.userSelectedOrganisationType.map(
-      orgType =>
-        if (orgType == CdsOrganisationType.Company) "cds.matching.row-organisation.utr.hint"
-        else defaultHintMessage
-    ).getOrElse(defaultHintMessage)
-
-  private def getHeadingMessage()(implicit request: Request[AnyContent]) =
-    requestSessionData.userSelectedOrganisationType.map(
-      orgType =>
-        if (orgType == CdsOrganisationType.Company) "subscription-journey.how-confirm-identity.utr.third-org.heading"
-        else defaultHeadingMessage
-    ).getOrElse(defaultHeadingMessage)
+  private def getPageContent()(implicit request: Request[AnyContent]): Map[String, String] =
+    requestSessionData.userSelectedOrganisationType match {
+      case Some(CdsOrganisationType.Company) =>
+        Map(
+          "hintMessage"    -> "cds.matching.row-organisation.utr.hint",
+          "headingMessage" -> "subscription-journey.how-confirm-identity.utr.third-org.heading",
+          "subHeading"     -> "cds.matching.row-organisation.utr.subheading",
+          "infoMessage"    -> "cds.navigation.corporation-utr-message",
+          "findUtrText"    -> "cds.navigation.find-lost-utr"
+        )
+      case _ =>
+        Map(
+          "hintMessage"    -> defaultHintMessage,
+          "headingMessage" -> defaultHeadingMessage,
+          "subHeading"     -> "subscription-journey.how-confirm-identity.utr.subheading",
+          "infoMessage"    -> "subscription-journey.navigation.self-utr-message",
+          "findUtrText"    -> "subscription.navigation.find-lost"
+        )
+    }
 
 }

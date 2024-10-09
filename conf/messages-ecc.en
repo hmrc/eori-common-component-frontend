@@ -186,9 +186,11 @@ cds.feedback.continue=More about {0}
 cds.subscription.sign-in-with-different-details.para1={0} has already registered for {1} with a different Government Gateway.
 cds.subscription.sign-in-with-different-details.para1-noname=You have already registered for {0} with a different Government Gateway.
 
-cds.matching.row-organisation.utr.hint=This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax. It may be called '‘reference’', '‘UTR’' or '‘official use’'.
+cds.matching.row-organisation.utr.subheading=What is your Corporation Tax UTR?
+cds.matching.row-organisation.utr.hint=Your UTR can be 10 or 13 digits long.
 cds.matching.row-sole-trader-individual.utr.hint=This is 10 numbers, for example 1234567890, which may be followed by a K. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
 cds.matching.row-lost-urt.hint.link=find a lost UTR (opens in new tab)
+cds.navigation.corporation-utr-message=It will be on tax returns and other letters about Corporation Tax. It might be called ''reference'', ''UTR'' or ''official use''.
 
 cds.subscribe.use-this-eori.heading=Your GB Economic Operator Registration and Identification (EORI) number
 cds.subscribe.use-this-eori.paragraph1=This EORI is linked to the account you are using.
@@ -284,11 +286,11 @@ cds.subscription.organisation-disclose-personal-details-consent.no=No - Just sho
 
 subscription-journey.how-confirm-identity.nino.heading=Enter your National Insurance number
 subscription-journey.how-confirm-identity.nino.hint=It’s on your National Insurance card, benefit letter, payslip or P60. For example, ''QQ 12 34 56 C''.
-subscription-journey.how-confirm-identity.utr.heading=What is your Self Assessment Unique Taxpayer Reference (UTR)?
-subscription-journey.how-confirm-identity.utr.third-org.heading=What is your Corporation Tax Unique Taxpayer Reference (UTR)?
+subscription-journey.how-confirm-identity.utr.heading=Your Self Assessment Unique Taxpayer Reference (UTR)
+subscription-journey.how-confirm-identity.utr.subheading=What is your Self Assessment UTR?
 subscription-journey.how-confirm-identity.utr.hint=This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called '‘reference’', '‘UTR’' or '‘official use’'.
-subscription-journey.how-confirm-identity.utr.third-org.heading=What is your Corporation Tax Unique Taxpayer Reference (UTR)?
-
+subscription-journey.how-confirm-identity.utr.third-org.heading=Your Corporation Tax Unique Taxpayer Reference (UTR)
+subscription-journey.navigation.self-utr-message = You can find it in your Personal Tax Account, the HMRC app or on tax returns and other documents from HMRC. It might be callled ''reference'', ''UTR'' or ''officail use''
 cds.reg06.outcome.eori-already-linked.info.utr = The Unique Taxpayer Reference, {0}, you entered does not match our records for EORI number {1}.
 cds.reg06.outcome.eori-already-linked.info.nino = The National Insurance number, {0}, you entered does not match our records for EORI number {1}.
 ecc.reg06.outcome.why-heading = What you can do now

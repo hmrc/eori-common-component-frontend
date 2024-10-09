@@ -12,8 +12,10 @@ cds.navigation.opens-in-new-tab=(yn agor tab newydd)
 cds.navigation.opens-new-page=Gallwch
 cds.navigation.find-utr-link=https://www.gov.uk/dod-o-hyd-i-utr-sydd-ar-goll
 
-cds.navigation.find-lost-utr=ddod o hyd i UTR coll (yn agor tab newydd).
+cds.navigation.find-lost-utr=Gofynnwch am gopi o’ch UTR ar gyfer Treth Gorfforaeth (yn agor tab newydd).
 cds.navigation.hmrc.online-services = ngwasanaethau ar-lein CThEF
+subscription.navigation.find-lost-utr=Rhagor o help i ddod o hyd i’ch UTR (yn agor tab newydd)
+subscription-journey.how-confirm-identity.utr.subheading =Beth yw eich UTR ar gyfer Hunanasesiad?
 
 cds.navigation.contact-us = Cysylltwch â ni
 cds.navigation.contact-hmrc = Cysylltwch â CThEF
