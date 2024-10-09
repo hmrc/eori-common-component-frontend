@@ -150,42 +150,25 @@ class GetUtrSubscriptionController @Inject() (
   private lazy val noOrgTypeSelected: Nothing = throw DataUnavailableException("No organisation type selected by user")
   private lazy val noBusinessName: Nothing    = throw DataUnavailableException("No business name cached")
 
-  private def getPageContent()(implicit request: Request[AnyContent]): Map[String, String] = {
-    val orgType = requestSessionData.userSelectedOrganisationType
-
-    val hintMessage = orgType.map {
-      case CdsOrganisationType.Company => "cds.matching.row-organisation.utr.hint"
-      case _                           => UtrSubscriptionMessages.defaultHintMessage
-    }.getOrElse(UtrSubscriptionMessages.defaultHintMessage)
-
-    val headingMessage = orgType.map {
-      case CdsOrganisationType.Company => "subscription-journey.how-confirm-identity.utr.third-org.heading"
-      case _                           => UtrSubscriptionMessages.defaultHeadingMessage
-    }.getOrElse(UtrSubscriptionMessages.defaultHeadingMessage)
-
-    val subHeading = orgType.map {
-      case CdsOrganisationType.Company => "cds.matching.row-organisation.utr.subheading"
-      case _                           => "subscription-journey.how-confirm-identity.utr.subheading"
-    }.getOrElse("subscription-journey.how-confirm-identity.utr.subheading")
-
-    val infoMessage = orgType.map {
-      case CdsOrganisationType.Company => "cds.navigation.corporation-utr-message"
-      case _                           => "subscription-journey.navigation.self-utr-message"
-    }.getOrElse("subscription-journey.navigation.self-utr-message")
-
-    val findUtrText = orgType.map {
-      case CdsOrganisationType.Company => "cds.navigation.find-lost-utr"
-      case _                           => "subscription.navigation.find-lost-utr"
-    }.getOrElse("subscription.navigation.find-lost-utr")
-
-    Map(
-      "hintMessage"    -> hintMessage,
-      "headingMessage" -> headingMessage,
-      "subHeading"     -> subHeading,
-      "infoMessage"    -> infoMessage,
-      "findUtrText"    -> findUtrText
-    )
-  }
+  private def getPageContent()(implicit request: Request[AnyContent]): Map[String, String] =
+    requestSessionData.userSelectedOrganisationType match {
+      case Some(CdsOrganisationType.Company) =>
+        Map(
+          "hintMessage"    -> "cds.matching.row-organisation.utr.hint",
+          "headingMessage" -> "subscription-journey.how-confirm-identity.utr.third-org.heading",
+          "subHeading"     -> "cds.matching.row-organisation.utr.subheading",
+          "infoMessage"    -> "cds.navigation.corporation-utr-message",
+          "findUtrText"    -> "cds.navigation.find-lost-utr"
+        )
+      case _ =>
+        Map(
+          "hintMessage"    -> UtrSubscriptionMessages.defaultHintMessage,
+          "headingMessage" -> UtrSubscriptionMessages.defaultHeadingMessage,
+          "subHeading"     -> "subscription-journey.how-confirm-identity.utr.subheading",
+          "infoMessage"    -> "subscription-journey.navigation.self-utr-message",
+          "findUtrText"    -> "subscription.navigation.find-lost-utr"
+        )
+    }
 
 }
 
