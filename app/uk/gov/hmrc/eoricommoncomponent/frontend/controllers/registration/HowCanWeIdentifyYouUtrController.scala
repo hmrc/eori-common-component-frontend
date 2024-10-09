@@ -126,25 +126,24 @@ class HowCanWeIdentifyYouUtrController @Inject() (
             )
       )
 
-private def getPageContent()(implicit request: Request[AnyContent]): Map[String, String] = {
-  requestSessionData.userSelectedOrganisationType match {
-    case Some(CdsOrganisationType.Company) =>
-      Map(
-        "hintMessage"    -> "cds.matching.row-organisation.utr.hint",
-        "headingMessage" -> "subscription-journey.how-confirm-identity.utr.third-org.heading",
-        "subHeading"     -> "cds.matching.row-organisation.utr.subheading",
-        "infoMessage"    -> "cds.navigation.corporation-utr-message",
-        "findUtrText"    -> "cds.navigation.find-lost-utr"
-      )
-    case _ =>
-      Map(
-        "hintMessage"    -> defaultHintMessage,
-        "headingMessage" -> defaultHeadingMessage,
-        "subHeading"     -> "subscription-journey.how-confirm-identity.utr.subheading",
-        "infoMessage"    -> "subscription-journey.navigation.self-utr-message",
-        "findUtrText"    -> "subscription.navigation.find-lost"
-      )
-  }
-}
+  private def getPageContent()(implicit request: Request[AnyContent]): Map[String, String] =
+    requestSessionData.userSelectedOrganisationType match {
+      case Some(CdsOrganisationType.Company) =>
+        Map(
+          "hintMessage"    -> "cds.matching.row-organisation.utr.hint",
+          "headingMessage" -> "subscription-journey.how-confirm-identity.utr.third-org.heading",
+          "subHeading"     -> "cds.matching.row-organisation.utr.subheading",
+          "infoMessage"    -> "cds.navigation.corporation-utr-message",
+          "findUtrText"    -> "cds.navigation.find-lost-utr"
+        )
+      case _ =>
+        Map(
+          "hintMessage"    -> defaultHintMessage,
+          "headingMessage" -> defaultHeadingMessage,
+          "subHeading"     -> "subscription-journey.how-confirm-identity.utr.subheading",
+          "infoMessage"    -> "subscription-journey.navigation.self-utr-message",
+          "findUtrText"    -> "subscription.navigation.find-lost"
+        )
+    }
 
 }
