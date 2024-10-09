@@ -72,13 +72,13 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
     contentAsString(
       view(
         form,
-          Map(
-            "hintMessage"    -> "subscription-journey.how-confirm-identity.utr.hint",
-            "headingMessage" -> "subscription-journey.how-confirm-identity.utr.heading",
-            "subHeading"     -> "subscription-journey.how-confirm-identity.utr.subheading",
-            "infoMessage"    -> "subscription-journey.navigation.self-utr-message",
-            "findUtrText"    -> "subscription.navigation.find-lost-utr"
-          ),
+        Map(
+          "hintMessage"    -> "subscription-journey.how-confirm-identity.utr.hint",
+          "headingMessage" -> "subscription-journey.how-confirm-identity.utr.heading",
+          "subHeading"     -> "subscription-journey.how-confirm-identity.utr.subheading",
+          "infoMessage"    -> "subscription-journey.navigation.self-utr-message",
+          "findUtrText"    -> "subscription.navigation.find-lost-utr"
+        ),
         isInReviewMode,
         routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService),
         atarService
