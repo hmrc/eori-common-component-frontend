@@ -62,11 +62,7 @@ class GetUtrSubscriptionController @Inject() (
             Ok(
               getUtrSubscriptionView(
                 subscriptionUtrForm.fill(IdMatchModel(id)),
-                getHeadingMessage(),
-                getHintMessage(),
-                getSubHeading(),
-                getInfoMessage(),
-                getFindUtrText(),
+                getPageContent(),
                 isInReviewMode,
                 routes.GetUtrSubscriptionController.submit(isInReviewMode, service),
                 service
@@ -77,11 +73,7 @@ class GetUtrSubscriptionController @Inject() (
             Ok(
               getUtrSubscriptionView(
                 subscriptionUtrForm,
-                getHeadingMessage(),
-                getHintMessage(),
-                getSubHeading(),
-                getInfoMessage(),
-                getFindUtrText(),
+                getPageContent(),
                 isInReviewMode,
                 routes.GetUtrSubscriptionController.submit(isInReviewMode, service),
                 service
@@ -106,11 +98,7 @@ class GetUtrSubscriptionController @Inject() (
                   BadRequest(
                     getUtrSubscriptionView(
                       formWithErrors,
-                      getHeadingMessage(),
-                      getHintMessage(),
-                      getSubHeading(),
-                      getInfoMessage(),
-                      getFindUtrText(),
+                      getPageContent(),
                       isInReviewMode,
                       routes.GetUtrSubscriptionController.submit(isInReviewMode, service),
                       service
@@ -162,40 +150,42 @@ class GetUtrSubscriptionController @Inject() (
   private lazy val noOrgTypeSelected: Nothing = throw DataUnavailableException("No organisation type selected by user")
   private lazy val noBusinessName: Nothing    = throw DataUnavailableException("No business name cached")
 
-  private def getHintMessage()(implicit request: Request[AnyContent]) =
-    requestSessionData.userSelectedOrganisationType.map(
-      orgType =>
-        if (orgType == CdsOrganisationType.Company) "cds.matching.row-organisation.utr.hint"
-        else UtrSubscriptionMessages.defaultHintMessage
-    ).getOrElse(UtrSubscriptionMessages.defaultHintMessage)
+  private def getPageContent()(implicit request: Request[AnyContent]): Map[String, String] = {
+    val orgType = requestSessionData.userSelectedOrganisationType
 
-  private def getSubHeading()(implicit request: Request[AnyContent]) =
-    requestSessionData.userSelectedOrganisationType.map(
-      orgType =>
-        if (orgType == CdsOrganisationType.Company) "cds.matching.row-organisation.utr.subheading"
-        else "subscription-journey.how-confirm-identity.utr.subheading"
-    ).getOrElse("subscription-journey.how-confirm-identity.utr.subheading")
+    val hintMessage = orgType.map {
+      case CdsOrganisationType.Company => "cds.matching.row-organisation.utr.hint"
+      case _                           => UtrSubscriptionMessages.defaultHintMessage
+    }.getOrElse(UtrSubscriptionMessages.defaultHintMessage)
 
-  private def getInfoMessage()(implicit request: Request[AnyContent]) =
-    requestSessionData.userSelectedOrganisationType.map(
-      orgType =>
-        if (orgType == CdsOrganisationType.Company) "cds.navigation.corporation-utr-message"
-        else "subscription-journey.navigation.self-utr-message"
-    ).getOrElse("subscription-journey.navigation.self-utr-message")
+    val headingMessage = orgType.map {
+      case CdsOrganisationType.Company => "subscription-journey.how-confirm-identity.utr.third-org.heading"
+      case _                           => UtrSubscriptionMessages.defaultHeadingMessage
+    }.getOrElse(UtrSubscriptionMessages.defaultHeadingMessage)
 
-  private def getHeadingMessage()(implicit request: Request[AnyContent]) =
-    requestSessionData.userSelectedOrganisationType.map(
-      orgType =>
-        if (orgType == CdsOrganisationType.Company) "subscription-journey.how-confirm-identity.utr.third-org.heading"
-        else UtrSubscriptionMessages.defaultHeadingMessage
-    ).getOrElse(UtrSubscriptionMessages.defaultHeadingMessage)
+    val subHeading = orgType.map {
+      case CdsOrganisationType.Company => "cds.matching.row-organisation.utr.subheading"
+      case _                           => "subscription-journey.how-confirm-identity.utr.subheading"
+    }.getOrElse("subscription-journey.how-confirm-identity.utr.subheading")
 
-  private def getFindUtrText()(implicit request: Request[AnyContent]) =
-    requestSessionData.userSelectedOrganisationType.map(
-      orgType =>
-        if (orgType == CdsOrganisationType.Company) "cds.navigation.find-lost-utr"
-        else "subscription.navigation.find-lost-utr"
-    ).getOrElse("subscription.navigation.find-lost-utr")
+    val infoMessage = orgType.map {
+      case CdsOrganisationType.Company => "cds.navigation.corporation-utr-message"
+      case _                           => "subscription-journey.navigation.self-utr-message"
+    }.getOrElse("subscription-journey.navigation.self-utr-message")
+
+    val findUtrText = orgType.map {
+      case CdsOrganisationType.Company => "cds.navigation.find-lost-utr"
+      case _                           => "subscription.navigation.find-lost-utr"
+    }.getOrElse("subscription.navigation.find-lost-utr")
+
+    Map(
+      "hintMessage"    -> hintMessage,
+      "headingMessage" -> headingMessage,
+      "subHeading"     -> subHeading,
+      "infoMessage"    -> infoMessage,
+      "findUtrText"    -> findUtrText
+    )
+  }
 
 }
 

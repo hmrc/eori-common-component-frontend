@@ -24,29 +24,29 @@
 
 @this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, appConfig: AppConfig, govukButton: GovukButton, h1: helpers.h1, link: helpers.link,h2: helpers.h2 , p: helpers.paragraph)
 
-@(utrForm: Form[IdMatchModel], headingText: String, hintText: String,SubHeading: String,getInfoMessage :String, getFindUtrText: String, isInReviewMode: Boolean, submit: Call, service: Service)(implicit request: Request[_], messages: Messages)
+@(utrForm: Form[IdMatchModel], pageContent: Map[String , String], isInReviewMode: Boolean, submit: Call, service: Service)(implicit request: Request[_], messages: Messages)
 
-@layout_di(messages(headingText), form = Some(utrForm), service = service) {
+@layout_di(messages(pageContent("headingMessage")), form = Some(utrForm), service = service) {
 
-        @h1(messages(headingText))
+        @h1(messages(pageContent("headingMessage")))
         @errorSummary(utrForm.errors)
-        @p(messages(getInfoMessage))
+        @p(messages(pageContent("infoMessage")))
         <div class="govuk-body">
-        @link(text=messages(getFindUtrText), href=messages("cds.navigation.find-utr-link"))
+        @link(text=messages(pageContent("findUtrText")), href=messages("cds.navigation.find-utr-link"))
         </div>
 
         @helpers.form(submit, "utrForm") {
             @CSRF.formField
 
-            @h2(messages(SubHeading))
+            @h2(messages(pageContent("subHeading")))
 
             @inputText(
                 form = utrForm,
                 id = "utr",
                 name = "utr",
-                label = messages(headingText),
+                label = messages(pageContent("headingMessage")),
                 isPageHeading = false,
-                hint = Some(Html(messages(hintText))),
+                hint = Some(Html(messages(pageContent("hintMessage")))),
                 classes = Some("govuk-!-width-one-half"),
                 labelClasses = Some("govuk-visually-hidden")
             )
