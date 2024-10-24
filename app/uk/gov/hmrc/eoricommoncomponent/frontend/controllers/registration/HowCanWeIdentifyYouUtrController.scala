@@ -142,7 +142,7 @@ class HowCanWeIdentifyYouUtrController @Inject() (
           "headingMessage" -> defaultHeadingMessage,
           "subHeading"     -> "subscription-journey.how-confirm-identity.utr.subheading",
           "infoMessage"    -> "subscription-journey.navigation.self-utr-message",
-          "findUtrText"    -> "subscription.navigation.find-lost"
+          "findUtrText"    -> "subscription.navigation.find-lost-utr"
         )
     }
 
