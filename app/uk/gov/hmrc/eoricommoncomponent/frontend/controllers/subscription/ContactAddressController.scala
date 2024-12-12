@@ -26,6 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactAddre
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactAddressForm.contactAddressCreateForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -43,6 +44,8 @@ class ContactAddressController @Inject() (
   subscriptionDetailsService: SubscriptionDetailsService,
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionFlowManager: SubscriptionFlowManager,
+  requestSessionData: RequestSessionData,
+  sessionCache: SessionCache,
   contactAddressView: contact_address
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
@@ -73,13 +76,11 @@ class ContactAddressController @Inject() (
     isInReviewMode: Boolean,
     form: Form[ContactAddressModel],
     status: Status
-  )(implicit request: Request[AnyContent]) = {
-    val (countriesToInclude, countriesInCountryPicker) =
-      Countries.getCountryParametersForAllCountries()
-    Future.successful(
+  )(implicit request: Request[AnyContent]): Future[Result] =
+    sessionCache.userLocation.map { userLocation =>
+      val (countriesToInclude, countriesInCountryPicker) = Countries.getCountryParameters(userLocation.location)
       status(contactAddressView(form, countriesToInclude, countriesInCountryPicker, isInReviewMode, service))
-    )
-  }
+    }
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>

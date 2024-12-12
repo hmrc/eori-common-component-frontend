@@ -252,6 +252,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       cache.map(_.data) mustBe Some(expectedJson)
     }
+
     "store and fetch group enrolment correctly" in {
 
       when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))

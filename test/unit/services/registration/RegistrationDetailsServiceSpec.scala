@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{FormData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -117,6 +117,39 @@ class RegistrationDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
         holder shouldBe emptyRegDetailsOrganisation
       }
+    }
+  }
+
+  "initialise" should {
+    "initialise session cache with details containing the user location" in {
+      when(mockSessionCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[Request[AnyContent]])).thenReturn(
+        Future.successful(true)
+      )
+      await(registrationDetailsService.initialise(UserLocationDetails(Some("GB"))))
+      val expectedSubDetailsContainingUserLocation = SubscriptionDetails(
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        FormData(None, None, None, None, Some(UserLocationDetails(Some("GB")))),
+        None,
+        None
+      )
+
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(mockRequest))
+      val holder: SubscriptionDetails = requestCaptor.getValue
+
+      holder shouldBe expectedSubDetailsContainingUserLocation
     }
   }
 }

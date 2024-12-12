@@ -24,7 +24,9 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.UserLocationDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.user_location
 import unit.controllers.CdsPage
@@ -32,6 +34,7 @@ import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
@@ -40,10 +43,19 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
   private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
+  private val mockSessionCache               = mock[SessionCache]
+  private val mockRegistrationDetailsService = mock[RegistrationDetailsService]
 
   private val userLocationView = instanceOf[user_location]
 
-  private val controller = new UserLocationController(mockAuthAction, mockRequestSessionData, mcc, userLocationView)
+  private val controller = new UserLocationController(
+    mockAuthAction,
+    mockRequestSessionData,
+    mockRegistrationDetailsService,
+    mockSessionCache,
+    mcc,
+    userLocationView
+  )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -63,7 +75,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
   "User location page" should {
 
     val expectedTitleOrganisation = "Where is your organisation established?"
-
+    when(mockSessionCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
     s"display title as '$expectedTitleOrganisation for entity with type organisation" in {
       showMigrationForm() { result =>
         val page = CdsPage(contentAsString(result))
@@ -72,7 +84,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
     }
 
     val expectedTitleIndividual = "Where are you based?"
-
+    when(mockSessionCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
     s"display title as '$expectedTitleIndividual for entity with type individual" in {
       showMigrationForm(affinityGroup = AffinityGroup.Individual) { result =>
         val page = CdsPage(contentAsString(result))
@@ -81,6 +93,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
     }
 
     "submit result when user chooses to continue" in {
+      when(mockSessionCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
       showMigrationForm() { result =>
         val page = CdsPage(contentAsString(result))
         page
@@ -93,6 +106,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
     }
 
     "display correct location on migration journey" in {
+      when(mockSessionCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
       showMigrationForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.elementIsPresent(UserLocationPageOrganisation.locationUkField) should be(true)

@@ -17,56 +17,54 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration._
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UserLocationController @Inject() (
   authAction: AuthAction,
   requestSessionData: RequestSessionData,
+  registrationDetailsService: RegistrationDetailsService,
+  sessionCache: SessionCache,
   mcc: MessagesControllerComponents,
   userLocationView: user_location
-) extends CdsController(mcc) {
-
-  private def isAffinityOrganisation(affinityGroup: Option[AffinityGroup]): Boolean =
-    affinityGroup.contains(AffinityGroup.Organisation)
-
-  private def continue(
-    service: Service
-  )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
-    Future.successful(Ok(userLocationView(userLocationForm, service, isAffinityOrganisation(user.affinityGroup))))
+)(implicit executionContext: ExecutionContext)
+    extends CdsController(mcc) {
 
   def form(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => implicit user: LoggedInUserWithEnrolments =>
-      continue(service)
+      sessionCache.userLocation.map { userLocationDetails =>
+        val userLocForm =
+          userLocationDetails.location.fold(userLocationForm)(_ => userLocationForm.fill(userLocationDetails))
+        Ok(userLocationView(userLocForm, service, user.isOrganisation))
+      }
     }
 
   def submit(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
-      userLocationForm.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(
-            BadRequest(userLocationView(formWithErrors, service, isAffinityOrganisation(loggedInUser.affinityGroup)))
-          ),
-        details =>
-          Future.successful(
-            Redirect(OrganisationTypeController.form(service))
-              .withSession(
-                requestSessionData
-                  .sessionWithUserLocationAdded(sessionInfoBasedOnJourney(details.location))
-              )
-          )
-      )
+      val boundForm = userLocationForm.bindFromRequest()
+
+      if (boundForm.hasErrors)
+        Future.successful(BadRequest(userLocationView(boundForm, service, loggedInUser.isOrganisation)))
+      else {
+        val formUserLocation = boundForm.value.head
+        registrationDetailsService.initialise(formUserLocation).map { _ =>
+          Redirect(OrganisationTypeController.form(service))
+            .withSession(
+              requestSessionData.sessionWithUserLocationAdded(sessionInfoBasedOnJourney(formUserLocation.location))
+            )
+        }
+      }
     }
 
   private def sessionInfoBasedOnJourney(location: Option[String]): String =

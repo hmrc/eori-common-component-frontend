@@ -21,7 +21,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   CdsOrganisationType,
   RegistrationDetailsIndividual,
-  RegistrationDetailsOrganisation
+  RegistrationDetailsOrganisation,
+  UserLocationDetails
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 
@@ -44,6 +45,13 @@ class RegistrationDetailsService @Inject() (sessionCache: SessionCache)(implicit
           sessionCache.saveRegistrationDetails(RegistrationDetailsIndividual())
         case _ => sessionCache.saveRegistrationDetails(RegistrationDetailsOrganisation())
       }
+    }
+
+  def initialise(userLocation: UserLocationDetails)(implicit request: Request[_]): Future[Boolean] =
+    sessionCache.subscriptionDetails.flatMap { subDetails =>
+      sessionCache.saveSubscriptionDetails(
+        subDetails.copy(formData = subDetails.formData.copy(userLocation = Some(userLocation)))
+      )
     }
 
 }
