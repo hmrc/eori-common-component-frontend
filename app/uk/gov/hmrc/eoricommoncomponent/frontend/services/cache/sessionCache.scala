@@ -187,9 +187,7 @@ class SessionCache @Inject() (
     })
 
   def userLocation(implicit request: Request[_]): Future[UserLocationDetails] =
-    getData[String](userLocationKey).map(
-      _.fold(throwException(userLocationKey))(userLoc => UserLocationDetails(Some(userLoc)))
-    )
+    getData[String](userLocationKey).map(location => UserLocationDetails(location))
 
   def emailOpt(implicit request: Request[_]): Future[Option[String]] =
     getData[String](emailKey)
