@@ -26,8 +26,11 @@ import play.api.mvc.{AnyContent, Request, Result, Session}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.UserLocationDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{FormData, SubscriptionDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.user_location
 import unit.controllers.CdsPage
@@ -36,19 +39,29 @@ import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import java.util.UUID
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with BeforeAndAfterEach with AuthActionMock {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockAuthAction    = authAction(mockAuthConnector)
+  private val mockAuthConnector              = mock[AuthConnector]
+  private val mockAuthAction                 = authAction(mockAuthConnector)
+  private val mockSessionCache               = mock[SessionCache]
+  private val mockRegistrationDetailsService = mock[RegistrationDetailsService]
 
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
   private val userLocationView = instanceOf[user_location]
 
-  private val controller = new UserLocationController(mockAuthAction, mockRequestSessionData, mcc, userLocationView)
+  private val controller = new UserLocationController(
+    mockAuthAction,
+    mockRequestSessionData,
+    mockRegistrationDetailsService,
+    mockSessionCache,
+    mcc,
+    userLocationView
+  )
 
   private val ProblemWithSelectionError = "Select where you are based"
 
@@ -76,6 +89,10 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
   }
 
   "Viewing the user location form" should {
+
+    when(mockSessionCache.userLocation(any[Request[AnyContent]])).thenReturn(
+      Future.successful(UserLocationDetails(Some("islands")))
+    )
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.form(atarService))
     "display the form with no errors" in {
@@ -135,7 +152,9 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     test(controller.submit(atarService).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))
   }
 
-  private def assertCorrectSessionDataAndRedirect(selectedOptionValue: String): Unit =
+  private def assertCorrectSessionDataAndRedirect(selectedOptionValue: String): Unit = {
+    when(mockRegistrationDetailsService.initialise(any())(any[Request[AnyContent]])).thenReturn(Future.successful(true))
+
     s"store the correct organisation type when '$selectedOptionValue' is selected" in {
       val selectedOptionToJourney = selectedOptionValue match {
         case UserLocation.Eu           => "eu"
@@ -153,5 +172,6 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         )
       }
     }
+  }
 
 }

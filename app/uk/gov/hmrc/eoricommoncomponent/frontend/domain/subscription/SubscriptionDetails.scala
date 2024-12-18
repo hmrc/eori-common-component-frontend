@@ -70,7 +70,8 @@ case class FormData(
   utrMatch: Option[UtrMatchModel] = None,
   ninoMatch: Option[NinoMatchModel] = None,
   organisationType: Option[CdsOrganisationType] = None,
-  ninoOrUtrChoice: Option[String] = None
+  ninoOrUtrChoice: Option[String] = None,
+  userLocation: Option[UserLocationDetails] = None
 )
 
 object FormData {

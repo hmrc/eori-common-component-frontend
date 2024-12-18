@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
+import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 
 case class LoggedInUserWithEnrolments(
@@ -25,4 +26,7 @@ case class LoggedInUserWithEnrolments(
   email: Option[String],
   groupId: Option[String],
   credId: String
-)
+) {
+
+  def isOrganisation: Boolean = affinityGroup.contains(Organisation)
+}

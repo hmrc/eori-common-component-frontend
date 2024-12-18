@@ -139,6 +139,10 @@ object CustomsId extends Logging {
 
 case class UserLocationDetails(location: Option[String])
 
+object UserLocationDetails {
+  implicit val formatUserLocation: OFormat[UserLocationDetails] = Json.format[UserLocationDetails]
+}
+
 trait NameIdOrganisationMatch {
   def name: String
   def id: String

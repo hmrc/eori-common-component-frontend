@@ -47,7 +47,8 @@ sealed case class CachedData(
   eori: Option[String] = None,
   addressLookupParams: Option[AddressLookupParams] = None,
   submissionCompleteDetails: Option[SubmissionCompleteData] = None,
-  completed: Option[Boolean] = None
+  completed: Option[Boolean] = None,
+  userLocation: Option[UserLocationDetails] = None
 )
 
 object CachedData {
@@ -59,6 +60,7 @@ object CachedData {
   val sub02OutcomeKey                      = "sub02Outcome"
   val registerWithEoriAndIdResponseKey     = "registerWithEoriAndIdResponse"
   val emailKey                             = "email"
+  val userLocationKey                      = "userLocation"
   val keepAliveKey                         = "keepAlive"
   val safeIdKey                            = "safeId"
   val groupIdKey                           = "cachedGroupId"
@@ -183,6 +185,9 @@ class SessionCache @Inject() (
       // $COVERAGE-ON
       throwException(emailKey)
     })
+
+  def userLocation(implicit request: Request[_]): Future[UserLocationDetails] =
+    getData[String](userLocationKey).map(location => UserLocationDetails(location))
 
   def emailOpt(implicit request: Request[_]): Future[Option[String]] =
     getData[String](emailKey)

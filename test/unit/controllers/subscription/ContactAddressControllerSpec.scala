@@ -26,6 +26,7 @@ import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactAddressController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController.submit
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.UserLocationDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactAddressSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Country
@@ -64,6 +65,8 @@ class ContactAddressControllerSpec
     mockSubscriptionDetailsService,
     mockSubscriptionBusinessService,
     mockSubscriptionFlowManager,
+    mockRequestSessionData,
+    mockCdsFrontendDataCache,
     viewAddress
   )
 
@@ -119,6 +122,9 @@ class ContactAddressControllerSpec
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.displayPage(atarService))
 
     "display title as 'What is your contact address?'" in {
+      when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
+        Future.successful(UserLocationDetails(None))
+      )
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.title() should startWith("What is your contact address?")
@@ -126,14 +132,23 @@ class ContactAddressControllerSpec
     }
 
     "submit in create mode" in {
+      when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
+        Future.successful(UserLocationDetails(None))
+      )
       showCreateForm()(verifyFormActionInCreateMode)
     }
 
     "display the back link" in {
+      when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
+        Future.successful(UserLocationDetails(None))
+      )
       showCreateForm()(verifyBackLinkInCreateModeRegister)
     }
 
     "have Address input field without data if not cached previously" in {
+      when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
+        Future.successful(UserLocationDetails(None))
+      )
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
         verifyAddressFieldExistsWithNoData(page)
@@ -141,6 +156,9 @@ class ContactAddressControllerSpec
     }
 
     "have Address input field prepopulated if cached previously" in {
+      when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
+        Future.successful(UserLocationDetails(Some("uk")))
+      )
       when(mockSubscriptionBusinessService.contactAddress(any[Request[_]]))
         .thenReturn(Future.successful(Some(ContactAddressPage.filledValues)))
       showCreateForm() { result =>
@@ -150,6 +168,9 @@ class ContactAddressControllerSpec
     }
 
     "display the correct text for the continue button" in {
+      when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
+        Future.successful(UserLocationDetails(None))
+      )
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.getElementsText(AddressPage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
@@ -163,6 +184,9 @@ class ContactAddressControllerSpec
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(atarService))
 
     "display title as 'What is your contact address?'" in {
+      when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
+        Future.successful(UserLocationDetails(None))
+      )
       showReviewForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.title() should startWith("What is your contact address?")
@@ -170,14 +194,23 @@ class ContactAddressControllerSpec
     }
 
     "submit in review mode" in {
+      when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
+        Future.successful(UserLocationDetails(None))
+      )
       showReviewForm()(verifyFormSubmitsInReviewMode)
     }
 
     "display the back link" in {
+      when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
+        Future.successful(UserLocationDetails(None))
+      )
       showReviewForm()(verifyBackLinkInReviewMode)
     }
 
     "have Address input field without data if not cached previously" in {
+      when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
+        Future.successful(UserLocationDetails(None))
+      )
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
         verifyAddressFieldExistsWithNoData(page)
@@ -185,6 +218,9 @@ class ContactAddressControllerSpec
     }
 
     "have Address input field prepopulated if cached previously" in {
+      when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
+        Future.successful(UserLocationDetails(Some("uk")))
+      )
       when(mockSubscriptionBusinessService.contactAddress(any[Request[_]]))
         .thenReturn(Future.successful(Some(ContactAddressPage.filledValues)))
       showCreateForm() { result =>
@@ -194,6 +230,9 @@ class ContactAddressControllerSpec
     }
 
     "display the correct text for the continue button" in {
+      when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
+        Future.successful(UserLocationDetails(Some("uk")))
+      )
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.getElementsText(AddressPage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
@@ -257,6 +296,7 @@ class ContactAddressControllerSpec
 
   "Contact Address Detail form" should {
     "be mandatory" in {
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(None)))
       submitForm(addressFieldsEmpty) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
@@ -283,6 +323,7 @@ class ContactAddressControllerSpec
     }
 
     "have postcode mandatory when country is GB" in {
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
       submitForm(
         Map(
           "line-1"      -> "addressLine1",
@@ -304,6 +345,7 @@ class ContactAddressControllerSpec
     }
 
     "have postcode mandatory when country is a channel island" in {
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GG"))))
       submitForm(
         Map(
           "line-1"      -> "addressLine1",
@@ -324,6 +366,7 @@ class ContactAddressControllerSpec
     }
 
     "not allow spaces to satisfy minimum length requirements" in {
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
       submitForm(Map("line-1" -> 7.spaces, "line-3" -> 10.spaces)) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
@@ -344,6 +387,7 @@ class ContactAddressControllerSpec
     }
 
     "be restricted to 35 character for street validation only" in {
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
       val streetLine = stringOfLengthXGen(35)
       submitForm(addressFields ++ Map("line-1" -> streetLine.sample.get)) { result =>
         status(result) shouldBe BAD_REQUEST
@@ -355,6 +399,7 @@ class ContactAddressControllerSpec
     }
 
     "be restricted to 35 character for city validation only" in {
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
       val city = stringOfLengthXGen(35)
       submitForm(addressFields ++ Map("line-3" -> city.sample.get)) { result =>
         status(result) shouldBe BAD_REQUEST
@@ -366,6 +411,7 @@ class ContactAddressControllerSpec
       }
     }
     "be restricted to 35 character for region validation only" in {
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
       val city = stringOfLengthXGen(35)
       submitForm(addressFields ++ Map("line-4" -> city.sample.get)) { result =>
         status(result) shouldBe BAD_REQUEST
@@ -378,6 +424,7 @@ class ContactAddressControllerSpec
     }
 
     "be validating postcode length to 8 when country is a channel island" in {
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("JE"))))
       submitForm(
         Map(
           "line-1"      -> "addressLine1",
@@ -398,6 +445,7 @@ class ContactAddressControllerSpec
     }
 
     "be validating postcode length to 9 when country is not GB" in {
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("FR"))))
       submitForm(
         Map(
           "line-1"      -> "addressLine1",
