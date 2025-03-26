@@ -652,6 +652,10 @@ cds.matching.organisation-address.line-2.error.too-long=The second line of the a
 cds.matching.organisation-address.line-3.error.empty=Enter your town or city
 cds.matching.organisation-address.line-3.error.too-long=The town or city must be 35 characters or less
 cds.matching.organisation-address.line-4.error.too-long=The Region or state must be 35 characters or less	
+cds.matching.organisation-address.line-1.error.invalid-chars=The first line of the address must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces
+cds.matching.organisation-address.line-2.error.invalid-chars=The second line of the address must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces
+cds.matching.organisation-address.line-3.error.invalid-chars=The town or city must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces
+cds.matching.organisation-address.line-4.error.invalid-chars=The region or state must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces
 cds.matching.organisation-address.postcode.error.empty=Enter a postcode
 cds.matching.organisation-address.country.error.empty=Enter your country
 
@@ -1287,11 +1291,13 @@ cds.subscription.address-details.countryCode-auto-complete.label=Country
 cds.subscription.address-details.country.label=Country
 cds.subscription.address-details.street.empty.error=Enter the first line of your address
 cds.subscription.address-details.street.too-long.error=The first line of the address must be 70 characters or less
+cds.subscription.address-details.street.error.invalid-chars=The first line of the address must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces
 cds.subscription.address-details.city.error.label=Enter your town or city
 cds.subscription.address-details.postcode.error.label=Enter a valid postcode
 cds.subscription.address-details.page-error.street=Enter the first line of your address
 cds.subscription.address-details.page-error.city=Enter your town or city
 cds.subscription.address-details.page-error.city.too-long=The town or city must be 35 characters or less
+cds.subscription.address-details.page-error.city.invalid-chars=The town or city must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces
 
 cds.matching.organisation-address.line-3.error.empty=Enter your town or city
 cds.matching.organisation-address.line-3.error.too-long=The town or city must be 35 characters or less
