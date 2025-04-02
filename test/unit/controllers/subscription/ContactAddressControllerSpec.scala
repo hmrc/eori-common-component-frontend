@@ -386,6 +386,39 @@ class ContactAddressControllerSpec
       }
     }
 
+    "not allow special characters" in {
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
+      submitForm(Map("line-1" -> "#1", "line-2" -> "#2", "line-3" -> "#3", "line-4" -> "#4")) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(ContactAddressPage.pageLevelErrorSummaryListXPath) should include(
+          "The first line of the address must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces"
+        )
+        page.getElementsText(ContactAddressPage.pageLevelErrorSummaryListXPath) should include(
+          "The second line of the address must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces"
+        )
+        page.getElementsText(ContactAddressPage.pageLevelErrorSummaryListXPath) should include(
+          "The town or city must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces"
+        )
+        page.getElementsText(ContactAddressPage.pageLevelErrorSummaryListXPath) should include(
+          "The region or state must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces"
+        )
+
+        page.getElementsText(
+          ContactAddressPage.fieldLevelErrorAddressLineOne
+        ) shouldBe "Error: The first line of the address must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces"
+        page.getElementsText(
+          ContactAddressPage.fieldLevelErrorAddressLineTwo
+        ) shouldBe "Error: The second line of the address must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces"
+        page.getElementsText(
+          ContactAddressPage.fieldLevelErrorAddressLineThree
+        ) shouldBe "Error: The town or city must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces"
+        page.getElementsText(
+          ContactAddressPage.fieldLevelErrorAddressLineFour
+        ) shouldBe "Error: The region or state must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces"
+      }
+    }
+
     "be restricted to 35 character for street validation only" in {
       when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
       val streetLine = stringOfLengthXGen(35)

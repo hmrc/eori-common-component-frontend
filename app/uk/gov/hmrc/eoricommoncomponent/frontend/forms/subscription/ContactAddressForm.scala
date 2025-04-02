@@ -43,6 +43,8 @@ object ContactAddressForm {
       case s if s.trim.isEmpty => Invalid(ValidationError("cds.matching.organisation-address.line-1.error.empty"))
       case s if s.trim.length > 35 =>
         Invalid(ValidationError("cds.matching.organisation-address.line-1.error.too-long"))
+      case s if !s.matches(validCharsRegex) =>
+        Invalid(ValidationError("cds.matching.organisation-address.line-1.error.invalid-chars"))
       case _ => Valid
     })
 
@@ -50,6 +52,8 @@ object ContactAddressForm {
     Constraint({
       case s if s.trim.length > 34 =>
         Invalid(ValidationError("cds.matching.organisation-address.line-2.error.too-long"))
+      case s if !s.matches(validCharsRegex) =>
+        Invalid(ValidationError("cds.matching.organisation-address.line-2.error.invalid-chars"))
       case _ => Valid
     })
 
@@ -58,6 +62,8 @@ object ContactAddressForm {
       case s if s.trim.isEmpty => Invalid(ValidationError("cds.matching.organisation-address.line-3.error.empty"))
       case s if s.trim.length > 34 =>
         Invalid(ValidationError("cds.matching.organisation-address.line-3.error.too-long"))
+      case s if !s.matches(validCharsRegex) =>
+        Invalid(ValidationError("cds.matching.organisation-address.line-3.error.invalid-chars"))
       case _ => Valid
     })
 
@@ -65,6 +71,8 @@ object ContactAddressForm {
     Constraint({
       case s if s.trim.length > 35 =>
         Invalid(ValidationError("cds.matching.organisation-address.line-4.error.too-long"))
+      case s if !s.matches(validCharsRegex) =>
+        Invalid(ValidationError("cds.matching.organisation-address.line-4.error.invalid-chars"))
       case _ => Valid
     })
 

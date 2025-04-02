@@ -42,7 +42,9 @@ object AddressDetailsForm {
     Constraint({
       case s if s.trim.isEmpty     => Invalid(ValidationError("cds.subscription.address-details.street.empty.error"))
       case s if s.trim.length > 70 => Invalid(ValidationError("cds.subscription.address-details.street.too-long.error"))
-      case _                       => Valid
+      case s if !s.matches(validCharsRegex) =>
+        Invalid(ValidationError("cds.subscription.address-details.street.error.invalid-chars"))
+      case _ => Valid
     })
 
 }
