@@ -3,8 +3,8 @@ import sbt._
 object AppDependencies {
   import play.core.PlayVersion
 
-  val mongoDbVersion   = "1.8.0"
-  val bootstrapVersion = "8.5.0"
+  val mongoDbVersion   = "1.9.0"
+  val bootstrapVersion = "8.6.0"
 
   val compileDependencies: Seq[ModuleID] = Seq(
     "org.typelevel"     %% "cats-core"                             % "2.10.0",
@@ -12,8 +12,8 @@ object AppDependencies {
     "uk.gov.hmrc"       %% "bootstrap-frontend-play-30"            % bootstrapVersion,
     "uk.gov.hmrc"       %% "domain-play-30"                        % "9.0.0",
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-30"                    % mongoDbVersion,
-    "uk.gov.hmrc"       %% "emailaddress-play-30"                  % "4.0.0",
-    "uk.gov.hmrc"       %% "play-frontend-hmrc-play-30"            % "9.10.0",
+    "uk.gov.hmrc"       %% "emailaddress-play-30"                  % "4.1.0",
+    "uk.gov.hmrc"       %% "play-frontend-hmrc-play-30"            % "9.11.0",
     "uk.gov.hmrc"       %% "internal-auth-client-play-30"          % "2.0.0"
   )
 

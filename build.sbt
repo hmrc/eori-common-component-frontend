@@ -12,7 +12,7 @@ Universal / mappings ++= directory(baseDirectory.value / "public")
 
 name := "eori-common-component-frontend"
 
-scalaVersion := "2.13.13"
+scalaVersion := "2.13.16"
 
 majorVersion := 0
 
