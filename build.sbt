@@ -40,7 +40,7 @@ lazy val microservice = (project in file("."))
       "-Wunused:explicits", // Warn if an explicit parameter is unused.
       "-Wunused:implicits", // Warn if an implicit parameter is unused.
       "-Wunused:nowarn",     // Warn if unnecessary @nowarn annotations are used.
-      "-Wconf:cat=unused-imports&src=html/.*:s", // silence html warnings as they are wrong
+      "-Wconf:cat=unused-imports&src=html/.*:s", // Silence html warnings as they are wrong
       "-Wconf:cat=unused-imports&src=routes/.*:s" // Silence warnings from routes files
     ),
     commonSettings,
