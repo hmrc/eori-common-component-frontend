@@ -20,7 +20,6 @@ import play.api.data.Forms._
 import play.api.data.validation._
 import play.api.data.{Form, Forms}
 import play.api.i18n.Messages
-import uk.gov.hmrc.emailaddress.EmailAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EmailVerificationKeys
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 
@@ -34,7 +33,7 @@ object EmailForm {
     Constraint({
       case e if e.trim.isEmpty => Invalid(ValidationError("cds.subscription.contact-details.form-error.email"))
       case e if e.length > 50  => Invalid(ValidationError("cds.subscription.contact-details.form-error.email.too-long"))
-      case e if !EmailAddress.isValid(e) =>
+      case e if !EmailAddressValidation.isValid(e) =>
         Invalid(ValidationError("cds.subscription.contact-details.form-error.email.wrong-format"))
       case _ => Valid
     })
