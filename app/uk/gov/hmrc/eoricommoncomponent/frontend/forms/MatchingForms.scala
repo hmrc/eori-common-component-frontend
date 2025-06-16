@@ -21,12 +21,10 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation._
 import play.api.i18n.Messages
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
-
 import java.time.LocalDate
 
 object MatchingForms extends Logging {

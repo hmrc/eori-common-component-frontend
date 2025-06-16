@@ -18,19 +18,38 @@ package unit.forms
 
 import base.UnitSpec
 import play.api.data.{Form, FormError}
-import uk.gov.hmrc.domain.Generator
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{IdMatchModel, NameDobMatchModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{IdMatchModel, NameDobMatchModel, Nino}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
-
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, Year}
 import scala.collection.compat.immutable.ArraySeq
 import scala.util.Random
 
+class Generator(random: Random = new Random) {
+  def this(seed: Int) = this(new scala.util.Random(seed))
+
+  val invalidPrefixes       = List("BG", "GB", "NK", "KN", "TN", "NT", "ZZ")
+  val validFirstCharacters  = ('A' to 'Z').filterNot(List('D', 'F', 'I', 'Q', 'U', 'V').contains).map(_.toString)
+  val validSecondCharacters = ('A' to 'Z').filterNot(List('D', 'F', 'I', 'O', 'Q', 'U', 'V').contains).map(_.toString)
+
+  val validPrefixes =
+    validFirstCharacters.flatMap(a => validSecondCharacters.map(a + _)).filterNot(invalidPrefixes.contains(_))
+
+  val validSuffixes = ('A' to 'D').map(_.toString)
+
+  def nextNino: Nino = {
+    val prefix = validPrefixes(random.nextInt(validPrefixes.length))
+    val number = random.nextInt(1000000)
+    val suffix = validSuffixes(random.nextInt(validSuffixes.length))
+    Nino(f"$prefix$number%06d$suffix")
+  }
+
+}
+
 class FormValidationSpec extends UnitSpec {
 
-  def randomNino: String = new Generator(new Random()).nextNino.nino
+  def randomNino: String = new Generator(new Random()).nextNino.id
 
   val nameDobForm: Form[NameDobMatchModel] = MatchingForms.enterNameDobForm
 
