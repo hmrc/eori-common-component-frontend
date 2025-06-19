@@ -61,7 +61,7 @@ class ApplicationController @Inject() (
     authorise.ggAuthorisedUserAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         cache.remove map { _ =>
-          Redirect(appConfig.feedbackUrl(service)).withNewSession
+          Redirect(appConfig.feedbackUrl(service))
         }
     }
 
