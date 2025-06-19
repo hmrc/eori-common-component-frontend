@@ -48,11 +48,12 @@ class AppConfig @Inject() (
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierSubscribe")
 
   private val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
+  private val signOutLink           = config.get[String]("bas-gateway-frontend.sign-out")
 
   lazy val checkEoriNumberUrlPath: String = servicesConfig.getConfString("check-eori-number.context", "")
   lazy val checkEoriNumberUrl: String     = s"${servicesConfig.baseUrl("check-eori-number")}/${checkEoriNumberUrlPath}"
 
-  def feedbackUrl(service: Service) = s"$feedbackLinkSubscribe-${service.code}"
+  def feedbackUrl(service: Service) = s"$signOutLink?continue=$feedbackLinkSubscribe-${service.code}"
 
   private val eoriCommonComponentRegistrationFrontendBaseUrl: String =
     config.get[String]("external-url.eori-common-component-registration-frontend.url")
