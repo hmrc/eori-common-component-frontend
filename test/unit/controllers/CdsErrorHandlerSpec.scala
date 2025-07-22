@@ -26,9 +26,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.util.{Constants, InvalidUrlValue
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{error_template, notFound}
 import util.ControllerSpec
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
+class CdsErrorHandlerSpec (implicit val ec: ExecutionContext) extends ControllerSpec with ScalaFutures {
   val configuration: Configuration = mock[Configuration]
 
   private val errorTemplateView = instanceOf[error_template]
