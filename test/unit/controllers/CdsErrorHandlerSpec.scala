@@ -28,7 +28,7 @@ import util.ControllerSpec
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CdsErrorHandlerSpec (implicit val ec: ExecutionContext) extends ControllerSpec with ScalaFutures {
+class CdsErrorHandlerSpec(implicit val ec: ExecutionContext) extends ControllerSpec with ScalaFutures {
   val configuration: Configuration = mock[Configuration]
 
   private val errorTemplateView = instanceOf[error_template]

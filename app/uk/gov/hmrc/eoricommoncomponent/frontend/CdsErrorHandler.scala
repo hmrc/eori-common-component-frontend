@@ -38,7 +38,7 @@ class CdsErrorHandler @Inject() (
   errorTemplateView: error_template,
   notFoundView: notFound
 )(implicit override val ec: ExecutionContext)
-  extends FrontendErrorHandler {
+    extends FrontendErrorHandler {
 
   private val logger = Logger(this.getClass)
 
@@ -90,4 +90,5 @@ class CdsErrorHandler @Inject() (
         Future.successful(Results.InternalServerError(errorTemplateView(service)))
     }
   }
+
 }
