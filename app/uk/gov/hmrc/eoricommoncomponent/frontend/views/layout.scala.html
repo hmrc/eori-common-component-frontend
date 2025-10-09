@@ -104,9 +104,9 @@
 
 
         @hmrcTimeoutDialog(TimeoutDialog(
-            title = Some(" "),
-            timeout = Some(1200),
-            countdown = Some(300),
+            title = Some(messages("cds.timeout.title")),
+            timeout = Some(900),
+            countdown = Some(120),
             keepAliveUrl = Some(keepAliveUrl),
             signOutUrl = Some(logOutUrl),
             timeoutUrl = Some(signOutUrl),
