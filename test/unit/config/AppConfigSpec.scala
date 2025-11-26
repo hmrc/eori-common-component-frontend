@@ -157,7 +157,7 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
       appConfig.addressLookup shouldBe "http://localhost:6754/lookup"
     }
 
-    "eu-euro feature flag" in {
+    "EU-Eori feature flag" in {
       appConfig.euEoriEnabled shouldBe false
     }
   }
