@@ -41,46 +41,42 @@ class EoriUnableToUseController @Inject() (
     extends CdsController(mcc) {
 
   def displayPage(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
-      subscriptionBusinessService.cachedEoriNumber.flatMap { eoriOpt =>
-        eoriOpt match {
-          case Some(eori) =>
-            enrolmentStoreProxyService.isEnrolmentInUse(service, ExistingEori(eori, service.enrolmentKey)).map {
-              existingEori =>
-                if (existingEori.isDefined) Ok(eoriUnableToUsePage(service, eori, EoriUnableToUse.form()))
-                else
-                  Redirect(
-                    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(
-                      service
-                    )
-                  )
-            }
-          case _ =>
-            Future.successful(
-              Redirect(
-                uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(
-                  service
-                )
-              )
-            )
-        }
-      }
-    }
-
-  def submit(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
-      EoriUnableToUse.form().bindFromRequest().fold(
-        formWithErrors =>
-          subscriptionBusinessService.cachedEoriNumber.map { eoriOpt =>
-            eoriOpt match {
-              case Some(eori) => BadRequest(eoriUnableToUsePage(service, eori, formWithErrors))
-              case _ =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
+      subscriptionBusinessService.cachedEoriNumber.flatMap {
+        case Some(eori) =>
+          enrolmentStoreProxyService.isEnrolmentInUse(service, ExistingEori(eori, service.enrolmentKey)).map {
+            existingEori =>
+              if (existingEori.isDefined) Ok(eoriUnableToUsePage(service, eori, EoriUnableToUse.form()))
+              else
                 Redirect(
                   uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(
                     service
                   )
                 )
-            }
+          }
+        case _ =>
+          Future.successful(
+            Redirect(
+              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(
+                service
+              )
+            )
+          )
+      }
+    }
+
+  def submit(service: Service): Action[AnyContent] =
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
+      EoriUnableToUse.form().bindFromRequest().fold(
+        formWithErrors =>
+          subscriptionBusinessService.cachedEoriNumber.map {
+            case Some(eori) => BadRequest(eoriUnableToUsePage(service, eori, formWithErrors))
+            case _ =>
+              Redirect(
+                uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(
+                  service
+                )
+              )
           },
         answer =>
           if (answer.isAnswerChangeEori())

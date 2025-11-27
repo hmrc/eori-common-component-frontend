@@ -16,18 +16,20 @@
 
 package util
 
+import base.{Injector, UnitSpec}
+import com.google.inject.name.Names
 import org.apache.pekko.stream.Materializer
 import org.apache.pekko.stream.testkit.NoMaterializer
-import base.{Injector, UnitSpec}
 import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypesConfiguration}
-import play.api.i18n.Lang._
+import play.api.i18n.Lang.*
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesImpl}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc._
+import play.api.mvc.*
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.api.{Application, Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{
@@ -42,10 +44,19 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext.global
 import scala.util.Random
 
-trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with Injector with TestData {
+trait ControllerSpec
+    extends UnitSpec with MockitoSugar with I18nSupport with Injector with TestData with GuiceOneAppPerSuite {
 
-  implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])
+  override implicit lazy val app: Application = new GuiceApplicationBuilder()
+    .configure(
+      "microservice.services.internal-auth.port" -> 0,
+      "messages.file.names"                      -> Seq("messages", "messages-ecc"),
+      "create-internal-auth-token-on-start"      -> false
+    )
+    .overrides {
+      bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser]
+      bind[String].qualifiedWith(Names.named("appName")).toInstance("eori-common-component-frontend")
+    }
     .build()
 
   implicit val messagesApi: MessagesApi = instanceOf[MessagesApi]

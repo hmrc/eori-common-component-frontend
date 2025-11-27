@@ -93,9 +93,9 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector)(im
           SubscriptionFailed(SubscriptionInProgress, processingDate)
         case MessagingServiceParam.Fail =>
           val message =
-            s"Response status of FAIL returned for a SUB02: Create Subscription.${responseCommon.statusText.map(
-              text => s" $text"
-            ).getOrElse("")}"
+            s"Response status of FAIL returned for a SUB02: Create Subscription.${responseCommon.statusText.map(text =>
+                s" $text"
+              ).getOrElse("")}"
           logger.error(message)
           SubscriptionFailed(message, processingDate)
         case _ =>

@@ -71,8 +71,8 @@ case class CdsPage(html: String) {
 
   def formAction(formId: String): String = {
     val element = Option(page.getElementById(formId))
-    element.fold(throw new IllegalStateException(s"Element with ID $formId was not found on the page."))(
-      x => x.attr("action")
+    element.fold(throw new IllegalStateException(s"Element with ID $formId was not found on the page."))(x =>
+      x.attr("action")
     )
   }
 

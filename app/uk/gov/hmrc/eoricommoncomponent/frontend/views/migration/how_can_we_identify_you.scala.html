@@ -27,7 +27,7 @@
 @this(layout_di: layout, errorSummary: helpers.errorSummary, govukButton: GovukButton, inputRadioGroup: helpers.inputRadioGroup, appConfig: AppConfig)
 
 
-@(ninoUtrForm: Form[NinoOrUtrChoice], isInReviewMode: Boolean, service: Service, organisationType: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(ninoUtrForm: Form[NinoOrUtrChoice], isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
 @title = @{
     messages("subscription-journey.how-confirm-identity")

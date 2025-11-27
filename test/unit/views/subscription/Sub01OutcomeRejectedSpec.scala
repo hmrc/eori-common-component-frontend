@@ -73,9 +73,9 @@ class Sub01OutcomeRejectedSpec extends ViewSpec {
   }
 
   def docWithName(service: Service = atarService): Document =
-    Jsoup.parse(contentAsString(view(Some(orgName), processedDate, service)))
+    Jsoup.parse(contentAsString(view(service)))
 
   def docWithoutName(service: Service = atarService): Document =
-    Jsoup.parse(contentAsString(view(None, processedDate, service)))
+    Jsoup.parse(contentAsString(view(service)))
 
 }

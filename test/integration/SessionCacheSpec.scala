@@ -30,7 +30,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.Addres
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, DataUnavailableException, SessionCache}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.mongo.CurrentTimestampSupport
 import uk.gov.hmrc.mongo.cache.DataKey
 import uk.gov.hmrc.mongo.test.MongoSupport
@@ -44,7 +45,7 @@ import scala.concurrent.Future
 class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with MongoSupport {
 
   lazy val appConfig: AppConfig                     = app.injector.instanceOf[AppConfig]
-  lazy val mockHttpClient: HttpClient               = mock[HttpClient]
+  lazy val mockHttpClient: HttpClientV2             = mock[HttpClientV2]
   lazy val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
   val mockTimeStampSupport                          = new CurrentTimestampSupport()
 

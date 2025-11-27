@@ -39,11 +39,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.{
   AddressLookupFailure,
   AddressLookupSuccess
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
-  DataUnavailableException,
-  RequestSessionData,
-  SessionCache
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.address_lookup_results
 import util.ControllerSpec
@@ -68,7 +64,6 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
     mockAuthAction,
     mockSessionCache,
     mockSubscriptionDetailsService,
-    mockRequestSessionData,
     mockSubscriptionFlowManager,
     mockAddressLookupConnector,
     mcc,
@@ -79,8 +74,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
     super.beforeEach()
 
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(mockAddressLookupResultsPage.apply(any(), any(), any(), any(), any(), any())(any(), any()))
-      .thenReturn(HtmlFormat.empty)
+    when(mockAddressLookupResultsPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -113,8 +107,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         val result = controller.displayPage(atarService)(getRequest)
 
         status(result) shouldBe OK
-        verify(mockAddressLookupResultsPage)
-          .apply(any(), any(), any(), ArgumentMatchers.eq(false), any(), any())(any(), any())
+        verify(mockAddressLookupResultsPage).apply(any(), any(), ArgumentMatchers.eq(false), any())(any(), any())
       }
 
       "display review page method is invoked, address lookup params are in cache and connector returns addresses" in {
@@ -127,8 +120,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         val result = controller.reviewPage(atarService)(getRequest)
 
         status(result) shouldBe OK
-        verify(mockAddressLookupResultsPage)
-          .apply(any(), any(), any(), ArgumentMatchers.eq(true), any(), any())(any(), any())
+        verify(mockAddressLookupResultsPage).apply(any(), any(), ArgumentMatchers.eq(true), any())(any(), any())
       }
 
       "display page with results" when {
@@ -150,26 +142,8 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
 
           verify(mockAddressLookupConnector).lookup(meq("postcode"), meq(Some("line1")))(any())
           verify(mockAddressLookupConnector).lookup(meq("postcode"), meq(None))(any())
-          verify(mockAddressLookupResultsPage)
-            .apply(any(), any(), meq(Seq(addressLookup)), meq(false), any(), any())(any(), any())
+          verify(mockAddressLookupResultsPage).apply(any(), meq(Seq(addressLookup)), meq(false), any())(any(), any())
         }
-      }
-    }
-
-    "throw an exception" when {
-
-      "user selected organisation type is not in cache" in {
-
-        when(mockSessionCache.addressLookupParams(any())).thenReturn(Future.successful(Some(addressLookupParams)))
-        when(mockAddressLookupConnector.lookup(any(), any())(any()))
-          .thenReturn(Future.successful(AddressLookupSuccess(Seq(addressLookup))))
-        when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
-
-        intercept[DataUnavailableException] {
-          await(controller.displayPage(atarService)(getRequest))
-        }
-
-        verifyNoMoreInteractions(mockAddressLookupResultsPage)
       }
     }
 
@@ -185,8 +159,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         val result = controller.submit(atarService, isInReviewMode = false)(postRequest("address" -> ""))
 
         status(result) shouldBe BAD_REQUEST
-        verify(mockAddressLookupResultsPage)
-          .apply(any(), any(), any(), ArgumentMatchers.eq(false), any(), any())(any(), any())
+        verify(mockAddressLookupResultsPage).apply(any(), any(), ArgumentMatchers.eq(false), any())(any(), any())
       }
     }
 

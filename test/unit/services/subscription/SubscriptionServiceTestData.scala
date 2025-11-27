@@ -624,7 +624,7 @@ trait SubscriptionServiceTestData extends TestData {
     isOrganisationEvenIfOrganisationTypeIsNone: Boolean
   ): String = {
     val typeOfPerson = organisationType match {
-      case Some(o: EtmpOrganisationType)                      => Some(etmpOrganisationTypeToTypeOfPersonMap(o).typeOfPerson)
+      case Some(o: EtmpOrganisationType) => Some(etmpOrganisationTypeToTypeOfPersonMap(o).typeOfPerson)
       case None if isOrganisationEvenIfOrganisationTypeIsNone => None
       case _                                                  => Some(EtmpTypeOfPerson.NaturalPerson)
     }
@@ -642,7 +642,7 @@ trait SubscriptionServiceTestData extends TestData {
     val legalStatus = organisationType match {
       case Some(o: CdsOrganisationType)  => Some(cdsOrganisationTypeToTypeOfPersonMap(o).legalStatus)
       case Some(o: EtmpOrganisationType) => Some(etmpOrganisationTypeToTypeOfPersonMap(o).legalStatus)
-      case None                          => if (isOrganisationEvenIfOrganisationTypeIsNone) None else Some(EtmpLegalStatus.UnincorporatedBody)
+      case None => if (isOrganisationEvenIfOrganisationTypeIsNone) None else Some(EtmpLegalStatus.UnincorporatedBody)
     }
 
     legalStatus match {

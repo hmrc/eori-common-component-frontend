@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactAddre
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactAddressForm.contactAddressCreateForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -44,21 +44,20 @@ class ContactAddressController @Inject() (
   subscriptionDetailsService: SubscriptionDetailsService,
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionFlowManager: SubscriptionFlowManager,
-  requestSessionData: RequestSessionData,
   sessionCache: SessionCache,
   contactAddressView: contact_address
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
   def displayPage(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       subscriptionBusinessService.contactAddress.flatMap {
         populateOkView(_, isInReviewMode = false, service)
       }
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       subscriptionBusinessService.contactAddress.flatMap {
         populateOkView(_, isInReviewMode = true, service)
       }
@@ -83,7 +82,7 @@ class ContactAddressController @Inject() (
     }
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       contactAddressCreateForm().bindFromRequest()
         .fold(
           formWithErrors => populateCountriesToInclude(service, isInReviewMode, formWithErrors, BadRequest),

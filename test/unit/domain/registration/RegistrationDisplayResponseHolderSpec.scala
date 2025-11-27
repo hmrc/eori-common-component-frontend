@@ -100,4 +100,12 @@ class RegistrationDisplayResponseHolderSpec extends UnitSpec {
       Json.toJson(responseHolder) shouldBe expectedJson
     }
   }
+  
+  "RegistrationDisplayResponse" should {
+    "throw exception exception" in {
+      intercept[IllegalArgumentException] {
+        RegistrationDisplayResponse(responseCommon, None).getResponseDetail
+      }.getMessage shouldBe "RegisterWithIDResponse did not include expected ResponseDetail object"
+    }
+  }
 }

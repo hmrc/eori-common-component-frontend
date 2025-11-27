@@ -175,7 +175,7 @@ class FormValidationSpec extends UnitSpec {
       val updatedData = Map("date-of-birth.day" -> "32", "date-of-birth.month" -> "1", "date-of-birth.year" -> "2019")
       val data        = formData ++ updatedData
       val res         = nameDobForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-birth.day", Seq("date.day.error"), ArraySeq()))
+      res.errors shouldBe Seq(FormError("date-of-birth.day", Seq("date.day.error"), ArraySeq[FormError]()))
     }
 
     "pass when the date has a month of 12" in {
@@ -190,7 +190,7 @@ class FormValidationSpec extends UnitSpec {
       val data = formData ++ updatedFormData
 
       val res = nameDobForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-birth.month", Seq("date.month.error"), ArraySeq()))
+      res.errors shouldBe Seq(FormError("date-of-birth.month", Seq("date.month.error"), ArraySeq[FormError]()))
     }
 
     "fail when the date contains a day greater than 31 and a month greater than 12" in {
@@ -199,8 +199,8 @@ class FormValidationSpec extends UnitSpec {
       val data = formData ++ updatedFormData
       val res  = nameDobForm.bind(data)
       res.errors shouldBe Seq(
-        FormError("date-of-birth.day", Seq("date.day.error"), ArraySeq()),
-        FormError("date-of-birth.month", Seq("date.month.error"), ArraySeq())
+        FormError("date-of-birth.day", Seq("date.day.error"), ArraySeq[FormError]()),
+        FormError("date-of-birth.month", Seq("date.month.error"), ArraySeq[FormError]())
       )
     }
 
@@ -273,7 +273,7 @@ class FormValidationSpec extends UnitSpec {
         "date-of-establishment.year"  -> "2019"
       )
       val res = dateOfEstablishmentForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-establishment.day", Seq("date.day.error"), ArraySeq()))
+      res.errors shouldBe Seq(FormError("date-of-establishment.day", Seq("date.day.error"), ArraySeq[FormError]()))
     }
 
     "pass when the date has a month of 12" in {
@@ -293,7 +293,7 @@ class FormValidationSpec extends UnitSpec {
         "date-of-establishment.year"  -> "2019"
       )
       val res = dateOfEstablishmentForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-establishment.month", Seq("date.month.error"), ArraySeq()))
+      res.errors shouldBe Seq(FormError("date-of-establishment.month", Seq("date.month.error"), ArraySeq[FormError]()))
     }
 
     "fail when the date contains a day greater than 31 and a month greater than 12" in {
@@ -304,8 +304,8 @@ class FormValidationSpec extends UnitSpec {
       )
       val res = dateOfEstablishmentForm.bind(data)
       res.errors shouldBe Seq(
-        FormError("date-of-establishment.day", Seq("date.day.error"), ArraySeq()),
-        FormError("date-of-establishment.month", Seq("date.month.error"), ArraySeq())
+        FormError("date-of-establishment.day", Seq("date.day.error"), ArraySeq[FormError]()),
+        FormError("date-of-establishment.month", Seq("date.month.error"), ArraySeq[FormError]())
       )
     }
 

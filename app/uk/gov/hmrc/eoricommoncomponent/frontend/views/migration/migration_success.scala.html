@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(layout_di: layout, feedback_di: helpers.feedback, dateFormatter: DateFormatter, govukPanel : GovukPanel )
-@(eori: Option[String], name: String, processedDate: String, subscriptionTo: String, service: Service)(implicit messages: Messages, request: Request[_])
+@(processedDate: String, subscriptionTo: String, service: Service)(implicit messages: Messages, request: Request[_])
 
 @confirmationHtml = {
         <strong><span class="govuk-!-font-size-27" id="active-from">@messages("subscription.subscription-results.active-from") @dateFormatter.format(processedDate)</span></strong>

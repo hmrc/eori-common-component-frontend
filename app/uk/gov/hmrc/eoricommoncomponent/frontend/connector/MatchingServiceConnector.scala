@@ -19,17 +19,18 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import play.api.Logger
 import play.api.http.HeaderNames.AUTHORIZATION
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{
   RegisterWithId,
   RegisterWithIdConfirmation,
   RegisterWithIdSubmitted
 }
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.{Inject, Singleton}
@@ -55,9 +56,9 @@ class MatchingServiceConnector @Inject() (httpClient: HttpClientV2, appConfig: A
     req: MatchingRequestHolder
   )(implicit hc: HeaderCarrier, originatingService: Service): Future[Option[MatchingResponse]] = {
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"REG01 Lookup: $url, requestCommon: ${req.registerWithIDRequest.requestCommon} and hc: $hc")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
     val httpRequest = httpClient
       .post(url)
@@ -65,9 +66,9 @@ class MatchingServiceConnector @Inject() (httpClient: HttpClientV2, appConfig: A
       .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
 
     httpRequest.execute[MatchingResponse] map { resp =>
-      // $COVERAGE-OFF$Loggers
+      // $COVERAGE-OFF$
       logger.debug(s"REG01 Lookup: responseCommon: ${resp.registerWithIDResponse.responseCommon}")
-      // $COVERAGE-ON
+      // $COVERAGE-ON$
 
       auditCall(url.toString, req, resp)
       handleResponse(resp)

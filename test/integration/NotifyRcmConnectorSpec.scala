@@ -25,7 +25,7 @@ import play.api.http.HeaderNames
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.mvc.Http.MimeTypes
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.NotifyRcmConnector
@@ -33,6 +33,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NotifyRcmReq
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import util.externalservices.ExternalServicesConfig.{Host, Port}
 import util.externalservices.NotifyRcmStubService
+
+import java.net.SocketException
 
 class NotifyRcmConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
@@ -115,6 +117,17 @@ class NotifyRcmConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
       )
 
       a[BadRequestException] should be thrownBy {
+        await(notifyRcmConnector.notifyRCM(request))
+      }
+    }
+
+    "return a failed future when notifyRCM endpoint returns error" in {
+      NotifyRcmStubService.returnFault(
+        expectedPostUrl,
+        serviceRequestJson.toString,
+      )
+
+      a[SocketException] should be thrownBy {
         await(notifyRcmConnector.notifyRCM(request))
       }
     }

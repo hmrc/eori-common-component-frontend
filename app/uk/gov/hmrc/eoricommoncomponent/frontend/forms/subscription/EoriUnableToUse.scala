@@ -38,7 +38,7 @@ object EoriUnableToUse {
         "ecc.what-is-your-eori.unable-to-use.empty",
         answer => answer.fold(false)(oneOf(validAnswers))
       )
-    )(EoriUnableToUse.apply)(EoriUnableToUse.unapply)
+    )(EoriUnableToUse.apply)(eoriUnableToUse => Some(eoriUnableToUse.answer))
   )
 
 }

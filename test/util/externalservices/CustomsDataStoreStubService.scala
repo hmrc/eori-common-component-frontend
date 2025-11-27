@@ -16,7 +16,8 @@
 
 package util.externalservices
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.http.Fault
 
 object CustomsDataStoreStubService {
 
@@ -30,4 +31,13 @@ object CustomsDataStoreStubService {
         )
     )
 
+  def returnFault(url: String, request: String): Unit =
+    stubFor(
+      post(urlEqualTo(url))
+        .withRequestBody(equalToJson(request))
+        .willReturn(
+          aResponse()
+            .withStatus(524).withFault(Fault.CONNECTION_RESET_BY_PEER)
+        )
+    )
 }

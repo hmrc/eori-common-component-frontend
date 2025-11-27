@@ -16,23 +16,31 @@
 
 package integration
 
+import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.mvc.Http.Status._
+import play.mvc.Http.Status.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
+  EoriHttpResponse,
   SUB09SubscriptionDisplayConnector,
   ServiceUnavailableResponse
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionDisplayResponseHolder
-import uk.gov.hmrc.http._
-import util.externalservices.ExternalServicesConfig._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
+  ContactInformation,
+  SubscriptionDisplayResponse,
+  SubscriptionDisplayResponseHolder
+}
+import uk.gov.hmrc.http.*
+import util.externalservices.ExternalServicesConfig.*
 import util.externalservices.SubscriptionDisplayMessagingService
 
-class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
+import java.time.temporal.ChronoUnit.MINUTES
+
+class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with ScalaFutures with EitherValues {
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
@@ -62,7 +70,7 @@ class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with Sc
   private val reqEori =
     Seq(("regime", "CDS"), ("EORI", requestEori), ("acknowledgementReference", requestAcknowledgementReference))
 
-  private val expectedResponse = Json
+  private val expectedResponse: SubscriptionDisplayResponse = Json
     .parse(SubscriptionDisplayMessagingService.validResponse(typeOfLegalEntity = "0001"))
     .as[SubscriptionDisplayResponseHolder]
     .subscriptionDisplayResponse
@@ -86,7 +94,33 @@ class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with Sc
         requestEori,
         requestAcknowledgementReference
       )
-      await(connector.subscriptionDisplay(reqEori, "atar")) mustBe Right(expectedResponse)
+
+      whenReady(connector.subscriptionDisplay(reqEori, "atar")) { eitherResponse =>
+        val response: SubscriptionDisplayResponse = eitherResponse.value
+        val responseWithTruncatedTimeValues: SubscriptionDisplayResponse = response.copy(responseDetail =
+          response.responseDetail.copy(contactInformation =
+            Some(
+              response.responseDetail.contactInformation.head.copy(emailVerificationTimestamp =
+                response.responseDetail.contactInformation.head.emailVerificationTimestamp.map(_.truncatedTo(MINUTES))
+              )
+            )
+          )
+        )
+
+        val expectedResponseWithTruncatedTimeValues = expectedResponse.copy(responseDetail =
+          expectedResponse.responseDetail.copy(contactInformation =
+            Some(
+              expectedResponse.responseDetail.contactInformation.head.copy(emailVerificationTimestamp =
+                expectedResponse.responseDetail.contactInformation.head.emailVerificationTimestamp.map(
+                  _.truncatedTo(MINUTES)
+                )
+              )
+            )
+          )
+        )
+
+        responseWithTruncatedTimeValues mustBe expectedResponseWithTruncatedTimeValues
+      }
     }
 
     "return Service Unavailable Response when subscription display service returns an exception" in {
@@ -96,7 +130,10 @@ class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with Sc
         requestAcknowledgementReference,
         returnedStatus = SERVICE_UNAVAILABLE
       )
-      await(connector.subscriptionDisplay(reqTaxPayerId, "atar")) mustBe Left(ServiceUnavailableResponse)
+
+      whenReady(connector.subscriptionDisplay(reqTaxPayerId, "atar")) { response =>
+        response mustBe Left(ServiceUnavailableResponse)
+      }
     }
   }
 }

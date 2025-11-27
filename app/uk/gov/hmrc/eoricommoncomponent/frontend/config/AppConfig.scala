@@ -81,15 +81,15 @@ class AppConfig @Inject() (
   val userResearchBannerUrl: String                      = config.get[String]("external-url.user-research-bannerUrl")
   def callCharges()(implicit messages: Messages): String = config.get[String](s"external-url.call-charges-$languageKey")
 
-  //get help link feedback for Subscribe journey
+  // get help link feedback for Subscribe journey
   def reportAProblemPartialUrlSubscribe(service: Service): String =
     s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierSubscribe-${service.code}"
 
   def reportAProblemNonJSUrlSubscribe(service: Service): String =
     s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierSubscribe-${service.code}"
 
-  //email verification service
-  val emailVerificationEnabled: Boolean          = config.get[Boolean]("microservice.services.email-verification.enabled")
+  // email verification service
+  val emailVerificationEnabled: Boolean = config.get[Boolean]("microservice.services.email-verification.enabled")
   val emailVerificationContinueUrlPrefix: String = config.get[String]("external-url.email-verification.continue-url")
 
   val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
@@ -106,7 +106,7 @@ class AppConfig @Inject() (
   val emailVerificationLinkExpiryDuration: String =
     config.get[String]("microservice.services.email-verification.linkExpiryDuration")
 
-  //handle subscription service
+  // handle subscription service
   val handleSubscriptionBaseUrl: String = servicesConfig.baseUrl("handle-subscription")
 
   val handleSubscriptionServiceContext: String =

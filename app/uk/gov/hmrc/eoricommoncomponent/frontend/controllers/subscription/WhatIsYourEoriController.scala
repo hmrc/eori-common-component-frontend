@@ -26,12 +26,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, MissingGroupId}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{ExistingEori, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm.eoriNumberForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   EnrolmentStoreProxyService,
   SubscriptionBusinessService,
@@ -51,7 +49,6 @@ class WhatIsYourEoriController @Inject() (
   groupEnrolment: GroupEnrolmentExtractor,
   enrolmentStoreProxyService: EnrolmentStoreProxyService,
   checkEoriNumberConnector: CheckEoriNumberConnector,
-  requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
   whatIsYourEoriView: what_is_your_eori
 )(implicit ec: ExecutionContext)
@@ -65,14 +62,13 @@ class WhatIsYourEoriController @Inject() (
 
   private def displayForm(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
-      implicit request => user: LoggedInUserWithEnrolments =>
+      implicit request => (user: LoggedInUserWithEnrolments) =>
         existingEori(user).flatMap {
           case Some(e) =>
             useExistingEori(e, service)
           case None =>
             subscriptionBusinessService.cachedEoriNumber.map(eori => populateView(eori, isInReviewMode, service))
         }
-
     }
 
   private def useExistingEori(eori: ExistingEori, service: Service)(implicit request: Request[_]): Future[Result] =
@@ -88,18 +84,13 @@ class WhatIsYourEoriController @Inject() (
     val eoriForForm = eoriNumber.map(eoriWithoutCountry)
 
     val form = eoriForForm.map(EoriNumberViewModel.apply).fold(eoriNumberForm)(eoriNumberForm.fill)
-    Ok(whatIsYourEoriView(form, isInReviewMode, UserLocation.isRow(requestSessionData), service))
+    Ok(whatIsYourEoriView(form, isInReviewMode, service))
   }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
       eoriNumberForm.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(
-            BadRequest(
-              whatIsYourEoriView(formWithErrors, isInReviewMode, UserLocation.isRow(requestSessionData), service)
-            )
-          ),
+        formWithErrors => Future.successful(BadRequest(whatIsYourEoriView(formWithErrors, isInReviewMode, service))),
         formData => {
           val eori = eoriWithCountry(formData.eoriNumber)
           checkEoriNumberConnector.check(eori).flatMap {
@@ -115,7 +106,7 @@ class WhatIsYourEoriController @Inject() (
 
   private def submitEori(formData: EoriNumberViewModel, isInReviewMode: Boolean, service: Service)(implicit
     request: Request[_]
-  ) = {
+  ): Future[Result] = {
     val eori = eoriWithCountry(formData.eoriNumber)
 
     subscriptionDetailsHolderService.cacheEoriNumber(eori).flatMap { _ =>

@@ -21,8 +21,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 
-@this(layout_di: layout, appConfig: AppConfig, govukButton: GovukButton, govukWarningText : GovukWarningText)
-
+@this(layout_di: layout, appConfig: AppConfig, govukButton: GovukButton)
 
 @(service: Service, headingAndTitleMessage: String)(implicit messages: Messages, request: Request[_])
 
@@ -34,9 +33,6 @@
         @Html(messages(s"ecc.subscription.information.only.once.para1.${service.code}"))
 }
 
-@askUtrCopyLink = {
-    <a class="govuk-link" href=@appConfig.askUtrCopy target="_blank" rel="noopener noreferrer">@messages("ecc.subscription.information.section.organisation.find-utr.label", messages("cds.navigation.opens-in-new-tab"))</a>.
-}
 @detailsContent = {
 <p id="gb-eori-text" class="govuk-body">
     @Html(messages("ecc.subscription.information.para2", getEoriLink))

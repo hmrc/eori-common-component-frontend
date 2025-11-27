@@ -59,9 +59,9 @@ class Reg06Service @Inject() (
       case _: Utr  => UTR
       case unexpected =>
         val error = "Expected only nino or utr to be populated but got: " + unexpected
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw new IllegalArgumentException(error)
     }
 
@@ -94,9 +94,9 @@ class Reg06Service @Inject() (
       email        <- dataCache.email
       organisationType = requestSessionData.userSelectedOrganisationType.getOrElse {
         val error = "Org type missing from cache"
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw DataUnavailableException(error)
       }
       maybeOrganisationTypeConfiguration: Option[OrganisationTypeConfiguration] =

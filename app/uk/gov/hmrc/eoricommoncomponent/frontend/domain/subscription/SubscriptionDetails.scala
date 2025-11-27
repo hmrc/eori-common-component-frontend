@@ -51,12 +51,12 @@ case class SubscriptionDetails(
     nameIdOrganisationDetails.map(_.name) orElse nameOrganisationDetails.map(_.name) orElse nameDobDetails.map(
       _.name
     ) orElse nameDetails
-      .map(_.name) getOrElse ({
-      // $COVERAGE-OFF$Loggers
+      .map(_.name) getOrElse {
+      // $COVERAGE-OFF$
       logger.error("name is missing from subscriptionDetails")
-      // $COVERAGE-ON
+      // $COVERAGE-ON$
       throw DataUnavailableException("Name is missing")
-    })
+    }
 
 }
 

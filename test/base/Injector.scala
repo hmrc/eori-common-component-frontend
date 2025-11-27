@@ -25,8 +25,7 @@ trait Injector {
 
   def app: Application
 
-  /**
-    * Clearing shared metrics registries to avoid `A metric named jvm.attribute.vendor already exists` error.
+  /** Clearing shared metrics registries to avoid `A metric named jvm.attribute.vendor already exists` error.
     *
     * It appears very often with places with injector. This is enough solution for this problem.
     *

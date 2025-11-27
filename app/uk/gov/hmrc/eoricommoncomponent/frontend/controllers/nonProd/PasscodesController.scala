@@ -34,7 +34,7 @@ class PasscodesController @Inject() (
     extends CdsController(mcc) with EnrolmentExtractor {
 
   def getEmailVerificationPasscodes(): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
       connector.getPasscodes.map(response => Ok(response.body))
     }
 

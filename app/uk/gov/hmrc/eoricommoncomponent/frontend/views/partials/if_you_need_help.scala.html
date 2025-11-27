@@ -31,6 +31,6 @@
         @helpers.noMarginParagraph(messages("cds.if.you.need.help.telephone2"))
     </p>
     <p>
-        @helpers.noMarginParagraph(html = Some(link("cds.if.you.need.help.telephone.link", appConfig.callCharges, "_self")))
+        @helpers.noMarginParagraph(html = Some(link("cds.if.you.need.help.telephone.link", appConfig.callCharges(), "_self")))
     </p>
 </div>

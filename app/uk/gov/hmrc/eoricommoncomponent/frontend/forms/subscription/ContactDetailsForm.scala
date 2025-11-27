@@ -27,23 +27,23 @@ object ContactDetailsForm {
     Form(
       mapping("full-name" -> text.verifying(validFullName), "telephone" -> text.verifying(validPhone))(
         (fullName, telephone) => ContactDetailsSubscribeModel(fullName.trim, telephone.trim)
-      )(ContactDetailsSubscribeModel.unapply)
+      )(contactDetailsSubscribeModel => Some(Tuple.fromProductTyped(contactDetailsSubscribeModel)))
     )
 
   private val validFullName: Constraint[String] =
-    Constraint({
+    Constraint {
       case s if s.trim.isEmpty => Invalid(ValidationError("cds.subscription.contact-details.form-error.full-name"))
       case s if s.length > 70  => Invalid(ValidationError("cds.subscription.full-name.error.too-long"))
       case _                   => Valid
-    })
+    }
 
   private val validPhone: Constraint[String] =
-    Constraint({
+    Constraint {
       case e if e.length > 24 =>
         Invalid(ValidationError("cds.contact-details.page-error.telephone.wrong-length.too-long"))
       case e if !e.matches("""[A-Z0-9 +)/(\\\-\*#]{0,24}""") =>
         Invalid(ValidationError("cds.contact-details.page-error.telephone.wrong-format"))
       case _ => Valid
-    })
+    }
 
 }

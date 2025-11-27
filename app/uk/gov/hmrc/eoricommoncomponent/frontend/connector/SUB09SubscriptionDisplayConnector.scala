@@ -53,9 +53,7 @@ class SUB09SubscriptionDisplayConnector @Inject() (httpClient: HttpClientV2, app
 
     val url = new URL(s"$baseUrl?${makeQueryString(sub09Request)}")
 
-    // $COVERAGE-OFF$Loggers
-    logger.debug(s"SubscriptionDisplay SUB09: $url, body: $sub09Request and hc: $hc")
-    // $COVERAGE-ON
+    logRequest(sub09Request, hc, url)
 
     val httpRequest = httpClient
       .get(url)
@@ -63,18 +61,30 @@ class SUB09SubscriptionDisplayConnector @Inject() (httpClient: HttpClientV2, app
       .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
 
     httpRequest.execute[SubscriptionDisplayResponseHolder] map { resp =>
-      // $COVERAGE-OFF$Loggers
-      logger.debug(s"SubscriptionDisplay SUB09: responseCommon: ${resp.subscriptionDisplayResponse.responseCommon}")
-      // $COVERAGE-ON
-
+      logResponse(resp)
       auditCall(url.toString, sub09Request, originatingService, resp)
       Right(resp.subscriptionDisplayResponse)
     } recover {
       case NonFatal(e) =>
-        logger.error(s"SubscriptionDisplay SUB09 failed. url: $url, error: $e")
+        logError(url, e)
         Left(ServiceUnavailableResponse)
     }
   }
+
+  // $COVERAGE-OFF$
+  private def logRequest(sub09Request: Seq[(String, String)], hc: HeaderCarrier, url: URL): Unit =
+    logger.debug(s"SubscriptionDisplay SUB09: $url, body: $sub09Request and hc: $hc")
+  // $COVERAGE-ON$
+
+  // $COVERAGE-OFF$
+  private def logResponse(resp: SubscriptionDisplayResponseHolder): Unit =
+    logger.debug(s"SubscriptionDisplay SUB09: responseCommon: ${resp.subscriptionDisplayResponse.responseCommon}")
+  // $COVERAGE-ON$
+
+  // $COVERAGE-OFF$
+  private def logError(url: URL, e: Throwable): Unit =
+    logger.error(s"SubscriptionDisplay SUB09 failed. url: $url, error: $e")
+  // $COVERAGE-ON$
 
   private def auditCall(
     url: String,

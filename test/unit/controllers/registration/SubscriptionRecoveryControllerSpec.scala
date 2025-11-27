@@ -16,21 +16,28 @@
 
 package unit.controllers.registration
 
-import org.mockito.ArgumentMatchers.{any, anyString, contains, matches, eq => meq}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{any, anyString, contains, eq as meq, matches}
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SUB09SubscriptionDisplayConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.SubscriptionRecoveryController
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.{
+  MissingDateException,
+  SubscriptionRecoveryController
+}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDetails, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   Error,
   HandleSubscriptionService,
@@ -43,7 +50,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{email_error_template
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SubscriptionInfoBuilder._
+import util.builders.SubscriptionInfoBuilder.*
 import util.builders.{AuthActionMock, SessionBuilder}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.VerifiedEmailResponse.RequestCouldNotBeProcessed
 import unit.controllers.CdsPage
@@ -383,6 +390,51 @@ class SubscriptionRecoveryControllerSpec
       verify(mockUpdateVerifiedEmailService).updateVerifiedEmail(any(), meq("test@example.com"), meq("testEORInumber"))(
         any[HeaderCarrier]
       )
+    }
+
+    "throw DataUnavailableException when EORI number not in subscription details" in {
+      setupMockCommon()
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(None)
+
+      when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
+      when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
+
+      when(
+        mockTaxEnrolmentsService
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
+
+      intercept[DataUnavailableException] {
+        await(controller.complete(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      }
+    }
+
+    "throw MissingDateException when date of birth & date of establishment are missing from Subscription Display Response" in {
+      setupMockCommon()
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+      when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(responseDetailsMissingDateOfEstablishment)))
+      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
+
+      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
+      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("{testEORInumber"))
+      when(mockSubscriptionDetailsHolder.dateEstablished).thenReturn(None)
+      when(mockSubscriptionDetailsHolder.nameDetails).thenReturn(None)
+      when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
+      when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
+
+      when(
+        mockTaxEnrolmentsService
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(NO_CONTENT))
+
+      intercept[MissingDateException] {
+        await(controller.complete(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      }
     }
   }
 

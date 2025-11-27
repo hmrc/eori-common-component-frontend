@@ -22,10 +22,12 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
-import uk.gov.hmrc.http._
-import util.externalservices.AuditService
-import util.externalservices.ExternalServicesConfig._
-import util.externalservices.Save4LaterService._
+import uk.gov.hmrc.http.*
+import util.externalservices.ExternalServicesConfig.*
+import util.externalservices.Save4LaterService.*
+import util.externalservices.{AuditService, Save4LaterService}
+
+import java.net.SocketException
 
 class Save4LaterConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
@@ -111,6 +113,13 @@ class Save4LaterConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
       stubSave4LaterNotFoundDELETEKey()
       intercept[BadRequestException] {
         await(save4LaterConnector.delete[String](id))
+      }
+    }
+
+    "return SocketException with response status INTERNAL SERVER ERROR status for key entry" in {
+      stubSave4LaterFault(expectedDeleteKeyUrl)
+      intercept[SocketException] {
+        await(save4LaterConnector.deleteKey[HttpResponse](id, emailKey))
       }
     }
   }

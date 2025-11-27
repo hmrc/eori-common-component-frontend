@@ -37,10 +37,10 @@ class UpdateVerifiedEmailConnectorSpec extends IntegrationTestsSpec with ScalaFu
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "microservice.services.eori-common-component-hods-proxy.port"                          -> Port,
+        "microservice.services.eori-common-component-hods-proxy.port" -> Port,
         "microservice.services.eori-common-component-hods-proxy.update-verified-email.context" -> "update-verified-email",
-        "auditing.enabled"                                                                     -> false,
-        "auditing.consumer.baseUri.port"                                                       -> Port
+        "auditing.enabled"               -> false,
+        "auditing.consumer.baseUri.port" -> Port
       )
     )
     .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])

@@ -45,5 +45,7 @@ class RandomUUIDGenerator {
 
 @Singleton
 class UtcClock {
+  // $COVERAGE-OFF$
   def generateUtcTime: Clock = Clock.systemUTC()
+  // $COVERAGE-ON$
 }

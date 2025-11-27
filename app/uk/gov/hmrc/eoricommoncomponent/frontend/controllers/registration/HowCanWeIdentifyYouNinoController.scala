@@ -50,13 +50,13 @@ class HowCanWeIdentifyYouNinoController @Inject() (
 
   def createForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         populateView(service, isInReviewMode = false)
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         populateView(service, isInReviewMode = true)
     }
 
@@ -83,7 +83,7 @@ class HowCanWeIdentifyYouNinoController @Inject() (
     }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       subscriptionNinoForm
         .bindFromRequest()
         .fold(
@@ -107,16 +107,15 @@ class HowCanWeIdentifyYouNinoController @Inject() (
   ): Future[Result] =
     subscriptionDetailsHolderService
       .cacheCustomsId(Nino(formData.id))
-      .map(
-        _ =>
-          if (inReviewMode)
-            Redirect(DetermineReviewPageController.determineRoute(service))
-          else if (requestSessionData.isUKJourney)
-            Redirect(AddressLookupPostcodeController.displayPage(service))
-          else
-            Redirect(
-              subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage).nextPage.url(service)
-            )
+      .map(_ =>
+        if (inReviewMode)
+          Redirect(DetermineReviewPageController.determineRoute(service))
+        else if (requestSessionData.isUKJourney)
+          Redirect(AddressLookupPostcodeController.displayPage(service))
+        else
+          Redirect(
+            subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage).nextPage.url(service)
+          )
       )
 
 }

@@ -28,7 +28,7 @@ class UnableToUseIdViewSpec extends ViewSpec {
   private val view                   = instanceOf[unable_to_use_id]
   implicit val request: Request[Any] = withFakeCSRF(fakeAtarSubscribeRequest)
 
-  private val doc: Document = Jsoup.parse(contentAsString(view(atarService, "GB123456789123")))
+  private val doc: Document = Jsoup.parse(contentAsString(view(atarService)))
 
   "Unable to use id page" should {
 

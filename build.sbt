@@ -12,7 +12,7 @@ Universal / mappings ++= directory(baseDirectory.value / "public")
 
 name := "eori-common-component-frontend"
 
-scalaVersion := "2.13.16"
+scalaVersion := "3.3.7"
 
 majorVersion := 0
 
@@ -38,8 +38,10 @@ lazy val microservice = (project in file("."))
       "-Wunused:explicits", // Warn if an explicit parameter is unused.
       "-Wunused:implicits", // Warn if an implicit parameter is unused.
       "-Wunused:nowarn",     // Warn if unnecessary @nowarn annotations are used.
-      "-Wconf:cat=unused-imports&src=html/.*:s", // Silence html warnings as they are wrong
-      "-Wconf:cat=unused-imports&src=routes/.*:s" // Silence warnings from routes files
+      "-Wconf:msg=unused import&src=html/.*:s", // Silence html warnings as they are wrong
+      "-Wconf:src=routes/.*:s", // Silence warnings from routes files
+      "-Wconf:msg=Flat.*repeatedly:s", // Silence warnings from routes files
+      "-Wconf:msg=Flag.*repeatedly:s"
     ),
     commonSettings,
     unitTestSettings,

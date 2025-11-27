@@ -30,17 +30,17 @@ object EmailForm {
   private val validYesNoAnswerOptions = Set("true", "false")
 
   def validEmail: Constraint[String] =
-    Constraint({
+    Constraint {
       case e if e.trim.isEmpty => Invalid(ValidationError("cds.subscription.contact-details.form-error.email"))
       case e if e.length > 50  => Invalid(ValidationError("cds.subscription.contact-details.form-error.email.too-long"))
       case e if !EmailAddressValidation.isValid(e) =>
         Invalid(ValidationError("cds.subscription.contact-details.form-error.email.wrong-format"))
       case _ => Valid
-    })
+    }
 
   val emailForm: Form[EmailViewModel] = Form(
-    Forms.mapping(EmailVerificationKeys.EmailKey -> text.verifying(validEmail))(EmailViewModel.apply)(
-      EmailViewModel.unapply
+    Forms.mapping(EmailVerificationKeys.EmailKey -> text.verifying(validEmail))(EmailViewModel.apply)(emailModel =>
+      Some(emailModel.email)
     )
   )
 
@@ -57,7 +57,7 @@ object EmailForm {
         )
       ).verifying(messages("cds.subscription.check-your-email.page-error.yes-no-answer"), _.isDefined)
         .transform[Boolean](str => str.get.toBoolean, bool => Option(String.valueOf(bool)))
-    )(YesNo.apply)(YesNo.unapply)
+    )(YesNo.apply)(yesNo => Some(yesNo.isYes))
   )
 
   private def confirmContactAddressForm()(implicit messages: Messages): Form[YesNo] = Form(
@@ -66,7 +66,7 @@ object EmailForm {
         text.verifying(messages("confirm-contact-details.page-error.yes-no-answer"), oneOf(validYesNoAnswerOptions))
       ).verifying(messages("confirm-contact-details.page-error.yes-no-answer"), _.isDefined)
         .transform[Boolean](str => str.get.toBoolean, bool => Option(String.valueOf(bool)))
-    )(YesNo.apply)(YesNo.unapply)
+    )(YesNo.apply)(yesNo => Some(yesNo.isYes))
   )
 
 }

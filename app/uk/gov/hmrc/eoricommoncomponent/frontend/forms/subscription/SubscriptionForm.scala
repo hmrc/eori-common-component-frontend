@@ -40,7 +40,7 @@ object SubscriptionForm {
     )
 
   def validEoriWithOrWithoutGB: Constraint[String] =
-    Constraint({
+    Constraint {
       case e if formatInput(e).isEmpty =>
         Invalid(ValidationError("ecc.matching-error.eori.isEmpty"))
       case e if formatInput(e).forall(_.isDigit) && formatInput(e).length < 12 =>
@@ -56,11 +56,11 @@ object SubscriptionForm {
       case e if !formatInput(e).matches("^GB[0-9]{12,15}$") && !formatInput(e).matches("[0-9]{12,15}") =>
         Invalid(ValidationError("ecc.matching-error.eori"))
       case _ => Valid
-    })
+    }
 
   val eoriNumberForm: Form[EoriNumberViewModel] = Form(
     Forms.mapping("eori-number" -> text.verifying(validEoriWithOrWithoutGB))(EoriNumberViewModel.apply)(
-      EoriNumberViewModel.unapply
+      eoriNumberViewModel => Some(eoriNumberViewModel.eoriNumber)
     )
   )
 

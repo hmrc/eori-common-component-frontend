@@ -56,9 +56,9 @@ object InternalId extends Logging {
   def apply(id: Option[String]): InternalId =
     new InternalId(id.getOrElse {
       val error = "InternalId is missing"
-      // $COVERAGE-OFF$Loggers
+      // $COVERAGE-OFF$
       logger.warn(error)
-      // $COVERAGE-ON
+      // $COVERAGE-ON$
       throw new IllegalArgumentException(error)
     })
 
@@ -72,9 +72,9 @@ object GroupId extends Logging {
   def apply(id: Option[String]): GroupId =
     new GroupId(id.getOrElse {
       val error = "GroupId is missing"
-      // $COVERAGE-OFF$Loggers
+      // $COVERAGE-OFF$
       logger.warn(error)
-      // $COVERAGE-ON
+      // $COVERAGE-ON$
       throw new IllegalArgumentException("GroupId is missing")
     })
 
@@ -97,8 +97,8 @@ object CustomsId extends Logging {
   val taxPayerID = "taxPayerID"
 
   private val idTypeMapping = Map[String, String => CustomsId](
-    utr        -> Utr,
-    eori       -> Eori,
+    utr        -> Utr.apply,
+    eori       -> Eori.apply,
     nino       -> Nino.apply,
     safeId     -> (s => SafeId(s)),
     taxPayerId -> (s => TaxPayerId(s))
@@ -129,9 +129,9 @@ object CustomsId extends Logging {
       case "SAFEID"                     => SafeId(idNumber)
       case _ =>
         val error = s"Unknown Identifier: $idType. Expected Nino, UTR or EORI number"
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw new IllegalArgumentException(error)
     }
 
@@ -292,9 +292,9 @@ object ExistingEori extends Logging {
     new ExistingEori(
       id.getOrElse {
         val error = "EORI is missing"
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw new IllegalArgumentException(error)
       },
       enrolmentKey

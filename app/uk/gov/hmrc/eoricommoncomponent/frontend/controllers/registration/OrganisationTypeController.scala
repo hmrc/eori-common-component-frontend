@@ -47,10 +47,10 @@ class OrganisationTypeController @Inject() (
 
   def form(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         subscriptionDetailsService.cachedOrganisationType map { orgType =>
           val isUk       = requestSessionData.selectedUserLocation.forall(_ == UserLocation.Uk)
-          val filledForm = orgType.map(organisationTypeDetailsForm.fill(_)).getOrElse(organisationTypeDetailsForm)
+          val filledForm = orgType.map(organisationTypeDetailsForm.fill).getOrElse(organisationTypeDetailsForm)
           val radioItem  = getRadioItem(isUk, filledForm)
 
           Ok(organisationTypeView(filledForm, radioItem, service))
@@ -69,7 +69,7 @@ class OrganisationTypeController @Inject() (
           }
         }
 
-        _: LoggedInUserWithEnrolments =>
+        (_: LoggedInUserWithEnrolments) =>
           organisationTypeDetailsForm.bindFromRequest().fold(
             formWithErrors => {
               val isUk      = requestSessionData.selectedUserLocation.forall(_ == UserLocation.Uk)

@@ -45,10 +45,10 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
         .getElementById("what-happens-next")
         .text mustBe
         s"${messages("cds.subscription.outcomes.in-processing.second.title")} ${messages("cds.subscription.outcomes.in-processing.ordered.list.para")} ${messages(
-          "cds.subscription.outcomes.in-processing.ordered.list.one"
-        )} ${messages("cds.subscription.outcomes.in-processing.ordered.list.two")} ${messages(
-          "cds.subscription.outcomes.in-processing.ordered.list.three"
-        )} ${messages("cds.subscription.outcomes.pending.steps.next")} ${messages("cds.subscription.outcomes.pending.steps.next.para")}"
+            "cds.subscription.outcomes.in-processing.ordered.list.one"
+          )} ${messages("cds.subscription.outcomes.in-processing.ordered.list.two")} ${messages(
+            "cds.subscription.outcomes.in-processing.ordered.list.three"
+          )} ${messages("cds.subscription.outcomes.pending.steps.next")} ${messages("cds.subscription.outcomes.pending.steps.next.para")}"
 
     }
 
@@ -65,6 +65,6 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
   }
 
   def doc(service: Service = atarService): Document =
-    Jsoup.parse(contentAsString(view(eoriNumber, processedDate, orgName, service)))
+    Jsoup.parse(contentAsString(view(service)))
 
 }

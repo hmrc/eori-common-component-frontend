@@ -352,10 +352,9 @@ class SubscriptionServiceSpec
     subscriptionResponse: SubscriptionResponse
   ): SubscriptionCallResult = {
     val subscribeDataCaptor = ArgumentCaptor.forClass(classOf[SubscriptionRequest])
-    val service = constructService(
-      connectorMock =>
-        when(connectorMock.subscribe(subscribeDataCaptor.capture())(ArgumentMatchers.any()))
-          .thenReturn(Future.successful(subscriptionResponse))
+    val service = constructService(connectorMock =>
+      when(connectorMock.subscribe(subscribeDataCaptor.capture())(ArgumentMatchers.any()))
+        .thenReturn(Future.successful(subscriptionResponse))
     )
 
     val actualServiceCallResult = await(
@@ -374,10 +373,9 @@ class SubscriptionServiceSpec
     email: String
   ): SubscriptionCallResult = {
     val subscribeDataCaptor = ArgumentCaptor.forClass(classOf[SubscriptionRequest])
-    val service = constructService(
-      connectorMock =>
-        when(connectorMock.subscribe(subscribeDataCaptor.capture())(ArgumentMatchers.any()))
-          .thenReturn(Future.successful(subscriptionResponse))
+    val service = constructService(connectorMock =>
+      when(connectorMock.subscribe(subscribeDataCaptor.capture())(ArgumentMatchers.any()))
+        .thenReturn(Future.successful(subscriptionResponse))
     )
 
     val actualServiceCallResult = await(

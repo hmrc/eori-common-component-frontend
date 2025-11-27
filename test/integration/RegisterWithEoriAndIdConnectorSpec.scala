@@ -38,12 +38,12 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "microservice.services.eori-common-component-hods-proxy.host"                              -> Host,
-        "microservice.services.eori-common-component-hods-proxy.port"                              -> Port,
+        "microservice.services.eori-common-component-hods-proxy.host" -> Host,
+        "microservice.services.eori-common-component-hods-proxy.port" -> Port,
         "microservice.services.eori-common-component-hods-proxy.register-with-eori-and-id.context" -> "register-with-eori-and-id",
-        "auditing.enabled"                                                                         -> true,
-        "auditing.consumer.baseUri.host"                                                           -> Host,
-        "auditing.consumer.baseUri.port"                                                           -> Port
+        "auditing.enabled"               -> true,
+        "auditing.consumer.baseUri.host" -> Host,
+        "auditing.consumer.baseUri.port" -> Port
       )
     )
     .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])

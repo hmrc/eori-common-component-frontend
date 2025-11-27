@@ -18,19 +18,22 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import play.api.Logger
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.GovernmentGatewayEnrolmentRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{IssuerCall, IssuerRequest, IssuerResponse}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.HttpStatusCheck
-import uk.gov.hmrc.http.{HttpClient, _}
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.HttpClientV2
 
+import java.net.URI
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+class TaxEnrolmentsConnector @Inject() (http: HttpClientV2, appConfig: AppConfig, audit: Auditable)(implicit
   ec: ExecutionContext
 ) {
 
@@ -38,24 +41,22 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, 
   private val baseUrl        = appConfig.taxEnrolmentsBaseUrl
   val serviceContext: String = appConfig.taxEnrolmentsServiceContext
 
-  /**
-    *
-    * @param request
+  /** @param request
     * @param formBundleId
     * @param hc
     * @param e
     * @return
-    *  This is a issuer call which ETMP makes but we will do this for migrated users
-    *  when subscription status((SUB02 Api CALL)) is 04 (SubscriptionExists)
+    *   This is a issuer call which ETMP makes but we will do this for migrated users when subscription status((SUB02
+    *   Api CALL)) is 04 (SubscriptionExists)
     */
   def enrol(request: TaxEnrolmentsRequest, formBundleId: String)(implicit hc: HeaderCarrier): Future[Int] = {
     val url = s"$baseUrl/$serviceContext/subscriptions/$formBundleId/issuer"
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"[Enrol: $url, body: $request and hc: $hc")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
-    http.PUT[TaxEnrolmentsRequest, HttpResponse](url, request) map { response: HttpResponse =>
+    http.put(new URI(url).toURL).withBody(Json.toJson(request)).execute[HttpResponse].map { (response: HttpResponse) =>
       logResponse("Enrol", response)
       auditCall(url, request, response)
       response.status
@@ -67,11 +68,11 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, 
   ): Future[HttpResponse] = {
     val url = s"$baseUrl/$serviceContext/service/$enrolmentKey/enrolment"
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"[EnrolAndActivate: $url, body: $request and hc: $hc")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
-    http.PUT[GovernmentGatewayEnrolmentRequest, HttpResponse](url = url, body = request) map { response =>
+    http.put(new URI(url).toURL).withBody(Json.toJson(request)).execute[HttpResponse].map { response =>
       logResponse("EnrolAndActivate", response)
       response
     }

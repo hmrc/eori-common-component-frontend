@@ -33,17 +33,17 @@ class AddressController @Inject() (
 ) extends CdsController(mcc) {
 
   def createForm(service: Service): Action[AnyContent] =
-    authorise.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authorise.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
       addressService.populateFormViewCached(isInReviewMode = false, service)
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
-    authorise.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authorise.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
       addressService.populateReviewViewCached(isInReviewMode = true, service)
     }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authorise.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authorise.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
       addressService.handleFormDataAndRedirect(addressDetailsCreateForm(), isInReviewMode, service)
     }
 

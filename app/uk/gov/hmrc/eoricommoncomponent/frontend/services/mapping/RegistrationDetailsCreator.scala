@@ -66,9 +66,9 @@ class RegistrationDetailsCreator extends Logging {
       .find(_.paramName == "SAP_NUMBER")
       .fold {
         val error = "Invalid Response. SAP Number not returned by Messaging."
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw new IllegalArgumentException(error)
       }(_.paramValue)
 
@@ -85,14 +85,13 @@ class RegistrationDetailsCreator extends Logging {
       individualResponse.dateOfBirth.flatMap(toLocalDate).orElse(dateOfBirth)
     dob.fold(ifEmpty = {
       val error = "Date of Birth is neither provided in registration response nor captured in the application page"
-      // $COVERAGE-OFF$Loggers
+      // $COVERAGE-OFF$
       logger.warn(error)
-      // $COVERAGE-ON
+      // $COVERAGE-ON$
       throw new IllegalArgumentException(error)
-    })(
-      dateOfBirth =>
-        RegistrationDetails
-          .individual(sapNumber, safeId, name, address, dateOfBirth, customsId)
+    })(dateOfBirth =>
+      RegistrationDetails
+        .individual(sapNumber, safeId, name, address, dateOfBirth, customsId)
     )
   }
 
@@ -139,9 +138,9 @@ class RegistrationDetailsCreator extends Logging {
         response.responseDetail
           .getOrElse {
             val error = "Organisation registrationDetails: No responseDetail"
-            // $COVERAGE-OFF$Loggers
+            // $COVERAGE-OFF$
             logger.warn(error)
-            // $COVERAGE-ON
+            // $COVERAGE-ON$
             throw new IllegalStateException(error)
           }
           .SAFEID
@@ -169,9 +168,9 @@ class RegistrationDetailsCreator extends Logging {
         response.responseDetail
           .getOrElse {
             val error = "Individual RegistrationDetails: No responseDetail"
-            // $COVERAGE-OFF$Loggers
+            // $COVERAGE-OFF$
             logger.warn(error)
-            // $COVERAGE-ON
+            // $COVERAGE-ON$
             throw new IllegalStateException("No responseDetail")
           }
           .SAFEID
@@ -206,9 +205,9 @@ class RegistrationDetailsCreator extends Logging {
         )
       case _ =>
         val error = "RegistrationDetails: Unexpected Response or Missing Key Information"
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw new IllegalStateException(error)
     }
   }

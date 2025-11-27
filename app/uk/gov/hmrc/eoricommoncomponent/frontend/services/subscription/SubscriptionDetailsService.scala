@@ -84,12 +84,11 @@ class SubscriptionDetailsService @Inject() (
     saveSubscriptionDetails(sd => sd.copy(nameIdOrganisationDetails = Some(nameIdOrganisationMatchModel)))
 
   def cacheNameAndCustomsId(name: String, customsId: CustomsId)(implicit request: Request[_]): Future[Unit] =
-    saveSubscriptionDetails(
-      sd =>
-        sd.copy(
-          nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel(name, customsId.id)),
-          customsId = Some(customsId)
-        )
+    saveSubscriptionDetails(sd =>
+      sd.copy(
+        nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel(name, customsId.id)),
+        customsId = Some(customsId)
+      )
     )
 
   def cachedNameIdDetails(implicit request: Request[_]): Future[Option[NameIdOrganisationMatchModel]] =
@@ -128,17 +127,16 @@ class SubscriptionDetailsService @Inject() (
     saveSubscriptionDetails(sd => sd.copy(customsId = Some(subscriptionCustomsId)))
 
   def cacheNinoOrUtrChoice(ninoOrUtrChoice: NinoOrUtrChoice)(implicit request: Request[_]): Future[Unit] =
-    saveSubscriptionDetails(
-      sd => sd.copy(formData = sd.formData.copy(ninoOrUtrChoice = ninoOrUtrChoice.ninoOrUtrRadio))
+    saveSubscriptionDetails(sd =>
+      sd.copy(formData = sd.formData.copy(ninoOrUtrChoice = ninoOrUtrChoice.ninoOrUtrRadio))
     )
 
   def cacheNinoMatchForNoAnswer(ninoMatch: Option[NinoMatchModel])(implicit request: Request[_]): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(formData = sd.formData.copy(ninoMatch = ninoMatch), customsId = None))
 
   def cacheUtrMatchForNoAnswer(utrMatch: Option[UtrMatchModel])(implicit request: Request[_]): Future[Unit] =
-    saveSubscriptionDetails(
-      sd =>
-        sd.copy(formData = sd.formData.copy(utrMatch = utrMatch), customsId = None, nameIdOrganisationDetails = None)
+    saveSubscriptionDetails(sd =>
+      sd.copy(formData = sd.formData.copy(utrMatch = utrMatch), customsId = None, nameIdOrganisationDetails = None)
     )
 
   def cacheUtrMatch(utrMatch: Option[UtrMatchModel])(implicit request: Request[_]): Future[Unit] =

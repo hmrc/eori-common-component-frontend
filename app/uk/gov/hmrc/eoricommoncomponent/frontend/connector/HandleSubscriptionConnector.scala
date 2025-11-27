@@ -17,13 +17,14 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import play.api.Logger
-import play.api.http.HeaderNames._
+import play.api.http.HeaderNames.*
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.mvc.Http.MimeTypes
 import play.mvc.Http.Status.{NO_CONTENT, OK}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.HandleSubscriptionRequest
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.{Inject, Singleton}
@@ -40,9 +41,9 @@ class HandleSubscriptionConnector @Inject() (httpClient: HttpClientV2, appConfig
 
   def call(request: HandleSubscriptionRequest)(implicit hc: HeaderCarrier): Future[Unit] = {
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"Call: $url, eori: ${request.eori}, and hc: $hc")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
     val httpRequest = httpClient
       .post(url)
@@ -53,18 +54,26 @@ class HandleSubscriptionConnector @Inject() (httpClient: HttpClientV2, appConfig
     httpRequest.execute[HttpResponse] map { response =>
       response.status match {
         case OK | NO_CONTENT =>
+          // $COVERAGE-OFF$
           logger.debug(s"Call complete for call to $url and  hc: $hc. Status:${response.status}")
+          // $COVERAGE-ON$
           ()
         case _ =>
+          // $COVERAGE-OFF$
           logger.error(s"${response.status} : ${response.body}")
+          // $COVERAGE-ON$
           throw new BadRequestException(s"Status:${response.status}")
       }
     } recoverWith {
       case e: BadRequestException =>
+        // $COVERAGE-OFF$
         logger.warn(s"Call failed with BAD_REQUEST status for call to $url and  hc: $hc: ${e.getMessage}", e)
+        // $COVERAGE-ON$
         Future.failed(e)
       case NonFatal(e) =>
+        // $COVERAGE-OFF$
         logger.warn(s"Call failed for call to $url: ${e.getMessage}", e)
+        // $COVERAGE-ON$
         Future.failed(e)
     }
   }

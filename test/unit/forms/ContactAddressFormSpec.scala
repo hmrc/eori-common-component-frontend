@@ -55,7 +55,7 @@ class ContactAddressFormSpec extends UnitSpec {
 
       "line 1 is longer than 35 characters" in {
         val formData = Map(
-          "line-1"      -> "ofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjdofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjd",
+          "line-1" -> "ofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjdofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjd",
           "line-2"      -> "Battersea",
           "line-3"      -> "London",
           "postcode"    -> "SW3 5DA",
@@ -79,8 +79,8 @@ class ContactAddressFormSpec extends UnitSpec {
 
       "line 2 is longer than 34 characters" in {
         val formData = Map(
-          "line-1"      -> "line 1",
-          "line-2"      -> "ofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjdofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjd",
+          "line-1" -> "line 1",
+          "line-2" -> "ofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjdofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjd",
           "line-3"      -> "London",
           "postcode"    -> "SW3 5DA",
           "countryCode" -> "GB"

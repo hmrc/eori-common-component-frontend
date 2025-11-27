@@ -34,7 +34,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
   private val view = instanceOf[what_is_your_eori]
 
   private def doc(form: Form[EoriNumberViewModel] = SubscriptionForm.eoriNumberForm): Document = {
-    val result = view(form, isInReviewMode = false, isRestOfWorldJourney = false, atarService)
+    val result = view(form, isInReviewMode = false, atarService)
     Jsoup.parse(contentAsString(result))
   }
 

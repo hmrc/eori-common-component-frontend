@@ -23,9 +23,9 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.html.helper._
 
-@this(layout_di: layout, inputText: helpers.inputText, p: helpers.paragraph, h1: helpers.h1, h2: helpers.h2, errorSummary: helpers.errorSummary, govukButton: GovukButton, fieldset: helpers.fieldset)
+@this(layout_di: layout, inputText: helpers.inputText, p: helpers.paragraph, h1: helpers.h1, h2: helpers.h2, errorSummary: helpers.errorSummary, govukButton: GovukButton)
 
-@(contactForm: Form[ContactDetailsSubscribeModel], email: String, isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
+@(contactForm: Form[ContactDetailsSubscribeModel], isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
 @layout_di(messages("cds.subscription.contact-details.page.title"), form = Some(contactForm), service = service) {
 

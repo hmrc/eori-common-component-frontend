@@ -36,13 +36,13 @@ class EoriTextDownloadController @Inject() (
     extends CdsController(mcc) {
 
   def download(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithServiceAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
+    implicit request => (_: LoggedInUserWithEnrolments) =>
       for {
         Some(eori) <- cdsFrontendDataCache.sub02Outcome.map(_.eori)
         name       <- cdsFrontendDataCache.sub02Outcome.map(_.fullName.trim)
         processedDate <- cdsFrontendDataCache.sub02Outcome
           .map(_.processedDate)
-      } yield Ok(eoriNumberTextDownloadView(eori, name, processedDate, service.friendlyName))
+      } yield Ok(eoriNumberTextDownloadView(eori, name, processedDate))
         .as("plain/text")
         .withHeaders(CONTENT_DISPOSITION -> "attachment; filename=EORI-number.txt")
   }

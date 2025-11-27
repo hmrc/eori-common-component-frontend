@@ -73,7 +73,6 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     mockAuthAction,
     mockSubscriptionBusinessService,
     mockRequestSessionData,
-    mockCdsFrontendDataCache,
     mockSubscriptionFlowManager,
     mcc,
     nameIdView,

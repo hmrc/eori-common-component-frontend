@@ -30,15 +30,14 @@ class ContactDetailsSpec extends ViewSpec {
 
   implicit val request: Request[Any] = withFakeCSRF(fakeAtarSubscribeRequest)
 
-  private val email = "john.doe@example.com"
-  private val form  = ContactDetailsForm.form()
+  private val form = ContactDetailsForm.form()
 
   private val formWithError = form.bind(Map("full-name" -> "", "telephone" -> ""))
 
-  private val doc: Document = Jsoup.parse(contentAsString(view(form, email, false, atarService)))
+  private val doc: Document = Jsoup.parse(contentAsString(view(form, isInReviewMode = false, atarService)))
 
   private val docWithErrorSummary: Document =
-    Jsoup.parse(contentAsString(view(formWithError, email, false, atarService)))
+    Jsoup.parse(contentAsString(view(formWithError, isInReviewMode = false, atarService)))
 
   "Contact details view" should {
 

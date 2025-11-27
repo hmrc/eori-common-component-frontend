@@ -25,7 +25,7 @@ import play.api.test.Helpers.{defaultAwaitTimeout, status}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, HasExistingEoriController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.ExistingEoriService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.has_existing_eori
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
@@ -36,7 +36,6 @@ class HasExistingEoriControllerSpec extends ControllerSpec with AuthActionMock w
   private val mockAuthConnector       = mock[AuthConnector]
   private val mockExistingEoriService = mock[ExistingEoriService]
   private val hasExistingEoriView     = instanceOf[has_existing_eori]
-  private val enrolSuccessView        = instanceOf[eori_enrol_success]
   private val mockAuthAction          = authAction(mockAuthConnector)
 
   private val controller = new HasExistingEoriController(mockAuthAction, mcc, mockExistingEoriService)
@@ -77,6 +76,16 @@ class HasExistingEoriControllerSpec extends ControllerSpec with AuthActionMock w
         controller.enrol(atarService).apply(request)
 
       status(result) shouldBe NO_CONTENT
+    }
+
+    "return when OK (200) when user has EORI" in {
+      val request = SessionBuilder.buildRequestWithSession(defaultUserId)
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+      when(mockExistingEoriService.onEnrolSuccess(any())(any(), any(), any())).thenReturn(Future.successful(Ok))
+
+      val result = controller.enrolSuccess(atarService).apply(request)
+
+      status(result) shouldBe OK
     }
   }
 }

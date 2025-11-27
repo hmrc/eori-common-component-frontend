@@ -71,10 +71,10 @@ class EmailControllerSpec
   private val mockSubscriptionStatusService                              = mock[SubscriptionStatusService]
   private val mockUpdateVerifiedEmailService: UpdateVerifiedEmailService = mock[UpdateVerifiedEmailService]
   private val mockExistingEoriService                                    = mock[ExistingEoriService]
-  private val enrolmentPendingAgainstGroupIdView                         = instanceOf[enrolment_pending_against_group_id]
-  private val enrolmentPendingForUserView                                = instanceOf[enrolment_pending_for_user]
-  private val errorEmailView                                             = instanceOf[email_error_template]
-  private val errorView                                                  = instanceOf[error_template]
+  private val enrolmentPendingAgainstGroupIdView = instanceOf[enrolment_pending_against_group_id]
+  private val enrolmentPendingForUserView        = instanceOf[enrolment_pending_for_user]
+  private val errorEmailView                     = instanceOf[email_error_template]
+  private val errorView                          = instanceOf[error_template]
 
   private val userGroupIdSubscriptionStatusCheckService =
     new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterService)
@@ -176,8 +176,10 @@ class EmailControllerSpec
         mockEmailVerificationService
           .getVerificationStatus(any[String], any[String])(any[HeaderCarrier])
       ).thenReturn(EitherT(unverifiedEitherT))
+
       val startVerificationResponse: Future[Either[ResponseError, ResponseWithURI]] =
         Future.successful(Right(ResponseWithURI("Some URI")))
+
       when(
         mockEmailVerificationService
           .startVerificationJourney(any(), any(), any(), any())(any(), any())
@@ -196,8 +198,10 @@ class EmailControllerSpec
         mockEmailVerificationService
           .getVerificationStatus(any[String], any[String])(any[HeaderCarrier])
       ).thenReturn(EitherT(unverifiedEitherT))
+
       val startVerificationResponse: Future[Either[ResponseError, ResponseWithURI]] =
         Future.successful(Right(ResponseWithURI("Some URI")))
+
       when(
         mockEmailVerificationService
           .startVerificationJourney(any(), any(), any(), any())(any(), any())

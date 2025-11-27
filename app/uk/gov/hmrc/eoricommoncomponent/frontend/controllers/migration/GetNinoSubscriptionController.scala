@@ -45,13 +45,13 @@ class GetNinoSubscriptionController @Inject() (
 
   def createForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         populateView(isInReviewMode = false, service)
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         populateView(isInReviewMode = true, service)
     }
 
@@ -80,7 +80,7 @@ class GetNinoSubscriptionController @Inject() (
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         subscriptionNinoForm.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(
@@ -100,12 +100,11 @@ class GetNinoSubscriptionController @Inject() (
   private def cacheAndContinue(isInReviewMode: Boolean, form: IdMatchModel, service: Service)(implicit
     request: Request[AnyContent]
   ): Future[Result] =
-    subscriptionDetailsHolderService.cacheCustomsId(Nino(form.id)).map(
-      _ =>
-        if (isInReviewMode && !isItRowJourney())
-          Redirect(DetermineReviewPageController.determineRoute(service))
-        else
-          Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))
+    subscriptionDetailsHolderService.cacheCustomsId(Nino(form.id)).map(_ =>
+      if (isInReviewMode && !isItRowJourney())
+        Redirect(DetermineReviewPageController.determineRoute(service))
+      else
+        Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))
     )
 
   private def isItRowJourney()(implicit request: Request[AnyContent]): Boolean =

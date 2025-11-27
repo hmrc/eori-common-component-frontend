@@ -342,10 +342,10 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
 
       "REG06 establishment address contains correct country code" in {
 
-        val reg06Country                 = "GB"
-        val reg06PostCode                = Some("AA11 1AA")
-        val reg06ResponseData            = responseData(postCode = reg06PostCode, countryCode = reg06Country)
-        val sub02Request                 = SubscriptionCreateRequest(reg06ResponseData, subscriptionDetails, email, service)
+        val reg06Country      = "GB"
+        val reg06PostCode     = Some("AA11 1AA")
+        val reg06ResponseData = responseData(postCode = reg06PostCode, countryCode = reg06Country)
+        val sub02Request      = SubscriptionCreateRequest(reg06ResponseData, subscriptionDetails, email, service)
         val expectedEstablishmentAddress = EstablishmentAddress(reg06Street, reg06City, reg06PostCode, reg06Country)
 
         sub02Request.requestDetail.CDSEstablishmentAddress shouldBe expectedEstablishmentAddress
@@ -356,10 +356,10 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
 
       "REG06 contains incorrect country" in {
 
-        val reg06Country                 = "incorrect"
-        val reg06PostCode                = Some("AA11 1AA")
-        val reg06ResponseData            = responseData(postCode = reg06PostCode, countryCode = reg06Country)
-        val sub02Request                 = SubscriptionCreateRequest(reg06ResponseData, subscriptionDetails, email, service)
+        val reg06Country      = "incorrect"
+        val reg06PostCode     = Some("AA11 1AA")
+        val reg06ResponseData = responseData(postCode = reg06PostCode, countryCode = reg06Country)
+        val sub02Request      = SubscriptionCreateRequest(reg06ResponseData, subscriptionDetails, email, service)
         val expectedEstablishmentAddress = EstablishmentAddress(reg06Street, reg06City, reg06PostCode, cachedCountry)
 
         sub02Request.requestDetail.CDSEstablishmentAddress shouldBe expectedEstablishmentAddress

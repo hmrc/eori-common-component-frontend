@@ -30,11 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.{
   nameUtrPartnershipForm
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
-  DataUnavailableException,
-  RequestSessionData,
-  SessionCache
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.EtmpLegalStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -51,7 +47,6 @@ class NameIDOrgController @Inject() (
   authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
   requestSessionData: RequestSessionData,
-  sessionCache: SessionCache,
   subscriptionFlowManager: SubscriptionFlowManager,
   mcc: MessagesControllerComponents,
   nameIdView: nameId,
@@ -59,13 +54,13 @@ class NameIDOrgController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  private def form(implicit request: Request[AnyContent]) =
+  private def form(implicit request: Request[AnyContent]): Form[NameIdOrganisationMatchModel] =
     if (requestSessionData.isPartnership) nameUtrPartnershipForm
     else if (requestSessionData.isCompany) nameUtrCompanyForm
     else nameUtrOrganisationForm
 
   def createForm(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       subscriptionBusinessService.cachedNameIdOrganisationViewModel flatMap { cachedNameUtrViewModel =>
         val selectedOrganisationType =
           requestSessionData.userSelectedOrganisationType.map(_.id)
@@ -88,7 +83,7 @@ class NameIDOrgController @Inject() (
     requireThatUrlValue(OrganisationTypeConfigurations.contains(orgType), invalidOrganisationType(orgType))
 
   def reviewForm(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       subscriptionBusinessService.getCachedNameIdViewModel flatMap { cdm =>
         val selectedOrganisationType =
           requestSessionData.userSelectedOrganisationType.map(_.id)
@@ -103,28 +98,27 @@ class NameIDOrgController @Inject() (
     }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       form.bindFromRequest()
         .fold(
-          formWithErrors =>
-            sessionCache.registrationDetails map { registrationDetails =>
-              val selectedOrganisationType =
-                requestSessionData.userSelectedOrganisationType.map(_.id)
-              selectedOrganisationType match {
-                case Some(orgType) =>
-                  validateOrganisationType(orgType)
+          formWithErrors => {
+            val selectedOrganisationType = requestSessionData.userSelectedOrganisationType.map(_.id)
+            selectedOrganisationType match {
+              case Some(orgType) =>
+                validateOrganisationType(orgType)
+                Future.successful(
                   BadRequest(
                     nameIdView(
                       formWithErrors,
-                      registrationDetails,
                       isInReviewMode,
                       OrganisationTypeConfigurations(orgType).displayMode,
                       service
                     )
                   )
-                case None => throw DataUnavailableException("Organisation type is not available in cache")
-              }
-            },
+                )
+              case None => throw DataUnavailableException("Organisation type is not available in cache")
+            }
+          },
           formData => storeNameUtrDetails(formData, isInReviewMode, service)
         )
     }
@@ -137,9 +131,7 @@ class NameIDOrgController @Inject() (
   )(implicit request: Request[AnyContent]): Future[Result] = {
 
     lazy val nameUtrForm = nameUtrViewModel.fold(form)(form.fill)
-    sessionCache.registrationDetails map { registrationDetails =>
-      Ok(nameIdView(nameUtrForm, registrationDetails, isInReviewMode, nameIdOrgViewMode.displayMode, service))
-    }
+    Future.successful(Ok(nameIdView(nameUtrForm, isInReviewMode, nameIdOrgViewMode.displayMode, service)))
   }
 
   private def storeNameUtrDetails(formData: NameIdOrganisationMatchModel, inReviewMode: Boolean, service: Service)(
@@ -147,20 +139,19 @@ class NameIDOrgController @Inject() (
   ): Future[Result] =
     subscriptionDetailsHolderService
       .cacheNameIdDetails(formData)
-      .map(
-        _ =>
-          if (inReviewMode)
-            Redirect(
-              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
-                .determineRoute(service)
-            )
-          else
-            Redirect(
-              subscriptionFlowManager
-                .stepInformation(NameUtrDetailsSubscriptionFlowPage)
-                .nextPage
-                .url(service)
-            )
+      .map(_ =>
+        if (inReviewMode)
+          Redirect(
+            uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
+              .determineRoute(service)
+          )
+        else
+          Redirect(
+            subscriptionFlowManager
+              .stepInformation(NameUtrDetailsSubscriptionFlowPage)
+              .nextPage
+              .url(service)
+          )
       )
 
   case class NameIdOrgViewModel(

@@ -42,9 +42,9 @@ class CompletedEnrolmentController @Inject() (
       activatedEnrolmentForService(loggedInUser, service) match {
         case Some(_) => sessionCache.remove.map(_ => Ok(enrolSuccessView(service)))
         case _       =>
-          // $COVERAGE-OFF$Loggers
+          // $COVERAGE-OFF$
           logger.error("CompletedEnrolmentController - enrolSuccess: No enrolment found for the user.")
-          // $COVERAGE-ON
+          // $COVERAGE-ON$
           throw DataUnavailableException("No enrolment found for the user")
       }
   }

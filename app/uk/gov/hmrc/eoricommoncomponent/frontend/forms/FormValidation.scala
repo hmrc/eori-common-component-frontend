@@ -43,25 +43,25 @@ object FormValidation {
     ).transform[Option[String]](_.map(_.filterNot(_.isWhitespace)), identity).verifying(lift(postcodeMax(9)))
 
   def validPostcode: Constraint[String] =
-    Constraint({
+    Constraint {
       case s if s.replaceAll(" ", "").matches(postcodeRegex.regex) => Valid
-      case _                                                       => Invalid(ValidationError("cds.subscription.contact-details.error.postcode"))
-    })
+      case _ => Invalid(ValidationError("cds.subscription.contact-details.error.postcode"))
+    }
 
   private def postcodeMax(limit: Int): Constraint[String] =
-    Constraint({
+    Constraint {
       case s if s.length > limit => Invalid(ValidationError("cds.subscription.postcode.error.too-long." + limit))
       case _                     => Valid
-    })
+    }
 
   def validCity: Constraint[String] =
-    Constraint({
+    Constraint {
       case s if s.trim.isEmpty => Invalid(ValidationError("cds.subscription.address-details.page-error.city"))
       case s if s.trim.length > 35 =>
         Invalid(ValidationError("cds.subscription.address-details.page-error.city.too-long"))
       case s if !s.matches(validCharsRegex) =>
         Invalid(ValidationError("cds.subscription.address-details.page-error.city.invalid-chars"))
       case _ => Valid
-    })
+    }
 
 }

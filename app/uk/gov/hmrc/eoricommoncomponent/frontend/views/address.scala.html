@@ -23,7 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.html.helper.CSRF
 
-@this(layout_di: layout, countryField: helpers.countryField, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton, fieldset: helpers.fieldset)
+@this(layout_di: layout, countryField: helpers.countryField, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton)
 
 @(addressForm: Form[AddressViewModel],
         countries: List[Country],
@@ -35,15 +35,6 @@
         isCompany: Boolean,
         isRow: Boolean = false)(implicit request: Request[_], messages: Messages)
 
-
-@labelForEUCountry(countryCode: String) = @{
-    messages(messageKeyForEUCountryCode(countryCode))
-}
-
-@messageKeyForEUCountryCode(countryCode: String) = @{
-    s"cds.country.$countryCode"
-}
-
 @titleAndHeading = @{
     if(isIndividualOrSoleTrader) {
         messages("cds.enter-address-details.individual.title-and-heading")
@@ -54,10 +45,6 @@
     } else {
         messages("cds.enter-address-details.organisation.title-and-heading")
     }
-}
-
-@isEUCountryCode(countryCode: String) = @{
-    messages.isDefinedAt(messageKeyForEUCountryCode(countryCode))
 }
 
 @displayCountryField = {

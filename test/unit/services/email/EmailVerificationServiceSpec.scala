@@ -198,8 +198,8 @@ class EmailVerificationServiceSpec
     }
 
     "return Verified where they return a verified email all lowercase, but the email in our cache is upper case" in {
-      val expected                                                    = Right(EmailVerificationStatus.Verified)
-      val sequence                                                    = Seq(VerificationStatus(emailAddress = "test@test.com", verified = true, locked = false))
+      val expected = Right(EmailVerificationStatus.Verified)
+      val sequence = Seq(VerificationStatus(emailAddress = "test@test.com", verified = true, locked = false))
       val response: Either[ResponseError, VerificationStatusResponse] = Right(VerificationStatusResponse(sequence))
       mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse] {
         Future.successful(response)

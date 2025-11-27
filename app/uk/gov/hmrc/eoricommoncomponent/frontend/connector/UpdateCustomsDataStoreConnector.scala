@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import play.api.Logger
 import play.api.http.HeaderNames._
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.mvc.Http.MimeTypes
 import play.mvc.Http.Status.{NO_CONTENT, OK}
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
@@ -56,8 +57,7 @@ class UpdateCustomsDataStoreConnector @Inject() (httpClient: HttpClientV2, appCo
       auditCallResponse(url.toString, response)
       response.status match {
         case OK | NO_CONTENT =>
-          logger.info(s"[$LoggerComponentId][call] complete to $url with status:${response.status}")
-          ()
+          logger.info(s"[$LoggerComponentId][call] complete to $url with status:${response.status}")()
         case _ => throw new BadRequestException(s"Status:${response.status}")
       }
     } recoverWith {
@@ -75,10 +75,10 @@ class UpdateCustomsDataStoreConnector @Inject() (httpClient: HttpClientV2, appCo
 
   private def auditCallRequest(url: String, request: CustomsDataStoreRequest)(implicit hc: HeaderCarrier): Unit =
     Future.successful {
-      audit.sendDataEvent(
+      audit.sendExtendedDataEvent(
         transactionName = "update-data-store",
         path = url,
-        detail = request.toMap(),
+        details = Json.toJson(request),
         eventType = "Customs-Data-Store-Update-Request"
       )
     }

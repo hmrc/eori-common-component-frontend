@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend
+package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import play.api.i18n.MessagesApi
-import play.api.mvc.Results._
-import play.api.mvc._
+import play.api.mvc.*
+import play.api.mvc.Results.*
 import play.api.{Configuration, Logger}
-import play.mvc.Http.Status._
+import play.mvc.Http.Status.*
 import play.twirl.api.Html
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionTimeOutException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.{Constants, InvalidUrlValueException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
@@ -48,9 +48,9 @@ class CdsErrorHandler @Inject() (
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.error(s"Error with status code: $statusCode and message: $message")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
     implicit val req: Request[_] = Request(request, "")
 
     statusCode match {
@@ -69,26 +69,26 @@ class CdsErrorHandler @Inject() (
 
     exception match {
       case sessionTimeOut: SessionTimeOutException =>
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn("SessionTimeout with message - " + sessionTimeOut.errorMessage)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         Future.successful(Redirect(SecuritySignOutController.displayPage(service)).withNewSession)
       case invalidRequirement: InvalidUrlValueException =>
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn(invalidRequirement.message)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         Future.successful(Results.NotFound(notFoundView(service)))
       case dataUnavailableException: DataUnavailableException =>
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn("DataUnavailableException with message - " + dataUnavailableException.message)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         Future.successful(Redirect(ApplicationController.startSubscription(service)))
       case _ =>
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.error("Internal server error: " + exception.getMessage, exception)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         Future.successful(Results.InternalServerError(errorTemplateView(service)))
     }
   }
-
 }
+

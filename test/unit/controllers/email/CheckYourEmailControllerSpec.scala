@@ -26,7 +26,7 @@ import play.api.mvc.Result
 import play.api.mvc.Results.Ok
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{CheckYourEmailController, routes => emailRoutes}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes => emailRoutes, CheckYourEmailController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.GroupId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
@@ -145,6 +145,18 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       "display emailConfirmedView when email is not confirmed" in {
         when(mockSave4LaterService.fetchEmailForService(any(), any(), any[GroupId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(EmailStatus(Some(email)))))
+        when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any[GroupId])(any[HeaderCarrier]))
+          .thenReturn(Future.successful(unit))
+        emailConfirmed(defaultUserId) { result =>
+          status(result) shouldBe OK
+          val page = CdsPage(contentAsString(result))
+          page.title() should startWith("You have confirmed your email address")
+        }
+      }
+
+      "display emailConfirmedView when email is confirmed" in {
+        when(mockSave4LaterService.fetchEmailForService(any(), any(), any[GroupId])(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(EmailStatus(Some(email), false, Some(true)))))
         when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any[GroupId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(unit))
         emailConfirmed(defaultUserId) { result =>

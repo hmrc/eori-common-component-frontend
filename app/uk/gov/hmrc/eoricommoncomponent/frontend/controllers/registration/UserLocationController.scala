@@ -51,20 +51,21 @@ class UserLocationController @Inject() (
     }
 
   def submit(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
-      val boundForm = userLocationForm.bindFromRequest()
+    authAction.enrolledUserWithSessionAction(service) {
+      implicit request => (loggedInUser: LoggedInUserWithEnrolments) =>
+        val boundForm = userLocationForm.bindFromRequest()
 
-      if (boundForm.hasErrors)
-        Future.successful(BadRequest(userLocationView(boundForm, service, loggedInUser.isOrganisation)))
-      else {
-        val formUserLocation = boundForm.value.head
-        registrationDetailsService.initialise(formUserLocation).map { _ =>
-          Redirect(OrganisationTypeController.form(service))
-            .withSession(
-              requestSessionData.sessionWithUserLocationAdded(sessionInfoBasedOnJourney(formUserLocation.location))
-            )
+        if (boundForm.hasErrors)
+          Future.successful(BadRequest(userLocationView(boundForm, service, loggedInUser.isOrganisation)))
+        else {
+          val formUserLocation = boundForm.value.head
+          registrationDetailsService.initialise(formUserLocation).map { _ =>
+            Redirect(OrganisationTypeController.form(service))
+              .withSession(
+                requestSessionData.sessionWithUserLocationAdded(sessionInfoBasedOnJourney(formUserLocation.location))
+              )
+          }
         }
-      }
     }
 
   private def sessionInfoBasedOnJourney(location: Option[String]): String =

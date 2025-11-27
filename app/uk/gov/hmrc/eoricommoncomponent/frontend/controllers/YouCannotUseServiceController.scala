@@ -40,7 +40,7 @@ class YouCannotUseServiceController @Inject() (
   subscriptionBusinessService: SubscriptionBusinessService,
   youCantUseService: you_cant_use_service,
   unauthorisedView: unauthorized,
-  unableToUseIdPage: unable_to_use_id,
+  unableToUseIdPageView: unable_to_use_id,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with AuthorisedFunctions with AuthRedirectSupport with EnrolmentExtractor {
@@ -57,9 +57,9 @@ class YouCannotUseServiceController @Inject() (
   }
 
   def unableToUseIdPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
+    implicit request => (_: LoggedInUserWithEnrolments) =>
       subscriptionBusinessService.cachedEoriNumber.map {
-        case Some(eori) => Ok(unableToUseIdPage(service, eori))
+        case Some(_) => Ok(unableToUseIdPageView(service))
         case _ =>
           Redirect(
             uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(

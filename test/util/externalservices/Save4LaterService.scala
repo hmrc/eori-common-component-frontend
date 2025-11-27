@@ -16,11 +16,12 @@
 
 package util.externalservices
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.http.Fault
 import play.api.libs.json.{JsValue, Json, OFormat}
 import play.mvc.Http.HeaderNames.CONTENT_TYPE
 import play.mvc.Http.MimeTypes.JSON
-import play.mvc.Http.Status._
+import play.mvc.Http.Status.*
 
 object Save4LaterService {
 
@@ -58,7 +59,7 @@ object Save4LaterService {
   def stubSave4LaterDELETEKey(): Unit = stubSave4LaterDeleteResponse(expectedDeleteKeyUrl, NO_CONTENT)
 
   def stubSave4LaterNotFoundDELETEKey(): Unit = stubSave4LaterDeleteResponse(expectedDeleteKeyUrl, NOT_FOUND)
-
+  
   def stubSave4LaterGETResponse(url: String, response: String, status: Int): Unit =
     stubFor(
       get(urlMatching(url))
@@ -89,6 +90,15 @@ object Save4LaterService {
           aResponse()
             .withStatus(status)
             .withHeader(CONTENT_TYPE, JSON)
+        )
+    )
+
+  def stubSave4LaterFault(url: String): Unit =
+    stubFor(
+      delete(urlMatching(url))
+        .willReturn(
+          aResponse()
+            .withFault(Fault.CONNECTION_RESET_BY_PEER)
         )
     )
 

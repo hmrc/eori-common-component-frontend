@@ -34,7 +34,7 @@ trait MatchingServiceTestData {
   val individualLastName                    = "Doe"
   val individualDateOfBirth                 = "1999-12-20"
   val individualLocalDateOfBirth: LocalDate = LocalDate.parse(individualDateOfBirth)
-  val individual: Individual                = Individual.noMiddle(individualFirstName, individualLastName, individualDateOfBirth)
+  val individual: Individual = Individual.noMiddle(individualFirstName, individualLastName, individualDateOfBirth)
 
   val individualWithMiddleName: Individual =
     Individual(individualFirstName, Some(individualMiddleName), individualLastName, individualDateOfBirth)

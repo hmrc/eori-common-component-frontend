@@ -69,85 +69,88 @@ class SubscriptionRecoveryController @Inject() (
   // End of subscription recovery journey
   def complete(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithServiceAction {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         val isRowF           = Future.successful(UserLocation.isRow(requestSessionData))
         val cachedCustomsIdF = subscriptionDetailsService.cachedCustomsId
-        val result = for {
-          isRow    <- isRowF
-          customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
-        } yield (isRow, customId) match {
-          case (true, Some(_)) => subscribeForCDS(service)    // UK journey
-          case (true, None)    => subscribeForCDSROW(service) // subscribeForCDSROW //ROW
-          case (false, _)      => subscribeForCDS(service)    // UK Journey
-        }
+        val result =
+          for {
+            isRow    <- isRowF
+            customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
+          } yield (isRow, customId) match {
+            case (true, Some(_)) => subscribeForCDS(service)    // UK journey
+            case (true, None)    => subscribeForCDSROW(service) // subscribeForCDSROW //ROW
+            case (false, _)      => subscribeForCDS(service)    // UK Journey
+          }
         result.flatMap(identity)
     }
 
   private def subscribeForCDS(
     service: Service
   )(implicit ec: ExecutionContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
-    val result = for {
-      subscriptionDetails <- sessionCache.subscriptionDetails
-      eori = subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("no eori found in the cache"))
-      registerWithEoriAndIdResponse <- sessionCache.registerWithEoriAndIdResponse
-      safeId = registerWithEoriAndIdResponse.responseDetail
-        .flatMap(_.responseData.map(_.SAFEID))
-        .getOrElse(throw new IllegalStateException("no SAFEID found in the response"))
-      queryParameters = (EORI -> eori) :: buildQueryParams
-      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters, service.code)
-      sub01Outcome <- sessionCache.sub01Outcome
-      email        <- sessionCache.email
-    } yield sub09Result match {
-      case Right(subscriptionDisplayResponse) =>
-        onSUB09Success(
-          sub01Outcome.processedDate,
-          email,
-          safeId,
-          Eori(eori),
-          subscriptionDisplayResponse,
-          getDateOfBirthOrDateOfEstablishment(
+    val result =
+      for {
+        subscriptionDetails <- sessionCache.subscriptionDetails
+        eori = subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("no eori found in the cache"))
+        registerWithEoriAndIdResponse <- sessionCache.registerWithEoriAndIdResponse
+        safeId = registerWithEoriAndIdResponse.responseDetail
+          .flatMap(_.responseData.map(_.SAFEID))
+          .getOrElse(throw new IllegalStateException("no SAFEID found in the response"))
+        queryParameters = (EORI -> eori) :: buildQueryParams
+        sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters, service.code)
+        sub01Outcome <- sessionCache.sub01Outcome
+        email        <- sessionCache.email
+      } yield sub09Result match {
+        case Right(subscriptionDisplayResponse) =>
+          onSUB09Success(
+            sub01Outcome.processedDate,
+            email,
+            safeId,
+            Eori(eori),
             subscriptionDisplayResponse,
-            subscriptionDetails.dateEstablished,
-            subscriptionDetails.nameDobDetails.map(_.dateOfBirth)
-          ),
-          service
-        )(Redirect(Sub02Controller.migrationEnd(service)))
-      case Left(_) =>
-        Future.successful(InternalServerError(errorTemplateView(service)))
-    }
+            getDateOfBirthOrDateOfEstablishment(
+              subscriptionDisplayResponse,
+              subscriptionDetails.dateEstablished,
+              subscriptionDetails.nameDobDetails.map(_.dateOfBirth)
+            ),
+            service
+          )(Redirect(Sub02Controller.migrationEnd(service)))
+        case Left(_) =>
+          Future.successful(InternalServerError(errorTemplateView(service)))
+      }
     result.flatMap(identity)
   }
 
   private def subscribeForCDSROW(
     service: Service
   )(implicit ec: ExecutionContext, request: Request[AnyContent]): Future[Result] = {
-    val result = for {
-      subscriptionDetails <- sessionCache.subscriptionDetails
-      registrationDetails <- sessionCache.registrationDetails
-      eori            = subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("no eori found in the cache"))
-      safeId          = registrationDetails.safeId.id
-      queryParameters = (EORI -> eori) :: buildQueryParams
-      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters, service.code)
-      sub01Outcome <- sessionCache.sub01Outcome
-      email        <- sessionCache.email
-    } yield sub09Result match {
-      case Right(subscriptionDisplayResponse) =>
-        onSUB09Success(
-          sub01Outcome.processedDate,
-          email,
-          safeId,
-          Eori(eori),
-          subscriptionDisplayResponse,
-          getDateOfBirthOrDateOfEstablishment(
+    val result =
+      for {
+        subscriptionDetails <- sessionCache.subscriptionDetails
+        registrationDetails <- sessionCache.registrationDetails
+        eori   = subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("no eori found in the cache"))
+        safeId = registrationDetails.safeId.id
+        queryParameters = (EORI -> eori) :: buildQueryParams
+        sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters, service.code)
+        sub01Outcome <- sessionCache.sub01Outcome
+        email        <- sessionCache.email
+      } yield sub09Result match {
+        case Right(subscriptionDisplayResponse) =>
+          onSUB09Success(
+            sub01Outcome.processedDate,
+            email,
+            safeId,
+            Eori(eori),
             subscriptionDisplayResponse,
-            subscriptionDetails.dateEstablished,
-            subscriptionDetails.nameDobDetails.map(_.dateOfBirth)
-          ),
-          service
-        )(Redirect(Sub02Controller.migrationEnd(service)))
-      case Left(_) =>
-        Future.successful(InternalServerError(errorTemplateView(service)))
-    }
+            getDateOfBirthOrDateOfEstablishment(
+              subscriptionDisplayResponse,
+              subscriptionDetails.dateEstablished,
+              subscriptionDetails.nameDobDetails.map(_.dateOfBirth)
+            ),
+            service
+          )(Redirect(Sub02Controller.migrationEnd(service)))
+        case Left(_) =>
+          Future.successful(InternalServerError(errorTemplateView(service)))
+      }
     result.flatMap(identity)
   }
 
@@ -180,7 +183,7 @@ class SubscriptionRecoveryController @Inject() (
         .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue))
         .getOrElse(throw new IllegalStateException("NO ETMPFORMBUNDLENUMBER specified"))
 
-    //As the result of migration person of contact is likely to be empty use string Customer
+    // As the result of migration person of contact is likely to be empty use string Customer
     val recipientFullName =
       subscriptionDisplayResponse.responseDetail.contactInformation.flatMap(_.personOfContact).getOrElse("Customer")
     val name = subscriptionDisplayResponse.responseDetail.CDSFullName
@@ -191,7 +194,7 @@ class SubscriptionRecoveryController @Inject() (
      * When subscribing for CDS as a safeguard we're using historical CDS formBundleId enrichment.
      * See: https://github.com/hmrc/customs-rosm-frontend/blob/477a1e1432938b004c463444ed851e69fc6214b5/app/uk/gov/hmrc/customs/rosmfrontend/controllers/registration/SubscriptionRecoveryController.scala#L220
      *
-    * For other non-cds services we can use existing enrichment algorithm.
+     * For other non-cds services we can use existing enrichment algorithm.
      * */
     def enrichFormBundleId(serviceCode: String, formBundleId: String) =
       if (Service.cds.code.equalsIgnoreCase(serviceCode))
@@ -242,7 +245,7 @@ class SubscriptionRecoveryController @Inject() (
         .flatMap {
           case Right(_)                  => Future.successful(true)
           case Left(UpdateEmailError(_)) => Future.failed(UpdateEmailRetryException)
-          case Left(error)               => Future.failed(new Exception(s"UpdateEmail failed with status: ${error.message}"))
+          case Left(error) => Future.failed(new Exception(s"UpdateEmail failed with status: ${error.message}"))
         }
     else Future.successful(false)
 
@@ -300,9 +303,9 @@ class SubscriptionRecoveryController @Inject() (
     }
   }
 
-  case class MissingDateException(msg: String = "Missing date of enrolment or birth") extends Exception(msg)
-
 }
+
+case class MissingDateException(msg: String = "Missing date of enrolment or birth") extends Exception(msg)
 
 case object UpdateEmailRetryException
     extends Exception("Email update failed due to a downstream batch process. User can retry later.")

@@ -19,10 +19,10 @@ package common.pages
 abstract class RegistrationOutcomeRejectedPage extends WebPage
 
 object RegistrationRejectedPage extends RegistrationOutcomeRejectedPage {
-  override val title                = "The Advance Tariff Rulings subscription request has been unsuccessful"
-  val titleRegistration             = "The Advance Tariff Rulings registration request has been unsuccessful"
-  val processedDateXpath            = "//*[@id='processed-date']"
-  val heading                       = "The Advance Tariff Rulings subscription request for orgName has been unsuccessful"
+  override val title     = "The Advance Tariff Rulings subscription request has been unsuccessful"
+  val titleRegistration  = "The Advance Tariff Rulings registration request has been unsuccessful"
+  val processedDateXpath = "//*[@id='processed-date']"
+  val heading            = "The Advance Tariff Rulings subscription request for orgName has been unsuccessful"
   val individualHeadingSubscription = "Your application has been unsuccessful"
   val individualHeadingRegistration = "The Advance Tariff Rulings registration request for Name has been unsuccessful"
   val pageHeadingXpath              = "//*[@id='page-heading']"

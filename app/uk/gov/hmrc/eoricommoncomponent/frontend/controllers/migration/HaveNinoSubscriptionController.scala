@@ -46,13 +46,13 @@ class HaveNinoSubscriptionController @Inject() (
 
   def createForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         populateView(false, service)
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         populateView(true, service)
     }
 
@@ -66,7 +66,7 @@ class HaveNinoSubscriptionController @Inject() (
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         haveRowIndividualsNinoForm.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(matchNinoSubscriptionView(formWithErrors, isInReviewMode, service))),
@@ -81,20 +81,18 @@ class HaveNinoSubscriptionController @Inject() (
       case Some(true) =>
         subscriptionDetailsHolderService
           .cacheNinoMatch(Some(form))
-          .map(
-            _ =>
-              Redirect(
-                if (isInReviewMode) GetNinoSubscriptionController.reviewForm(service)
-                else GetNinoSubscriptionController.createForm(service)
-              )
+          .map(_ =>
+            Redirect(
+              if (isInReviewMode) GetNinoSubscriptionController.reviewForm(service)
+              else GetNinoSubscriptionController.createForm(service)
+            )
           )
       case Some(false) =>
-        subscriptionDetailsHolderService.cacheNinoMatchForNoAnswer(Some(form)) map (
-          _ =>
-            if (requestSessionData.userSubscriptionFlow == RowIndividualFlow)
-              Redirect(CompanyRegisteredCountryController.displayPage(service))
-            else
-              Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))
+        subscriptionDetailsHolderService.cacheNinoMatchForNoAnswer(Some(form)) map (_ =>
+          if (requestSessionData.userSubscriptionFlow == RowIndividualFlow)
+            Redirect(CompanyRegisteredCountryController.displayPage(service))
+          else
+            Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))
         )
       case _ => throw new IllegalStateException("No Data from the form")
     }

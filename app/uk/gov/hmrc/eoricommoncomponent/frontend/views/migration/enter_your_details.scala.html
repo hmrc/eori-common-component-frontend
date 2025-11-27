@@ -23,7 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.helper._
 
-@this(govukDateInput : GovukDateInput,  errorSummary: helpers.errorSummary, layout_di: layout, h1: helpers.h1, p: helpers.paragraph, inputText: helpers.inputText, inputDate: helpers.inputDate, govukButton: GovukButton)
+@this(errorSummary: helpers.errorSummary, layout_di: layout, h1: helpers.h1, p: helpers.paragraph, inputText: helpers.inputText, inputDate: helpers.inputDate, govukButton: GovukButton)
 
 @(subscriptionNameDobForm: Form[NameDobMatchModel],isInReviewMode: Boolean, service: Service, selectedUserLocationWithIslands: Option[String])(implicit request: Request[_], messages: Messages)
 

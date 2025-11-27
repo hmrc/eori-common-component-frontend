@@ -45,7 +45,7 @@ case class Mailbox(value: String) extends StringValue
 case class Domain(value: String) extends StringValue {
   value match {
     case EmailAddressValidation.validDomain(_) => //
-    case invalidDomain                         => throw new IllegalArgumentException(s"'$invalidDomain' is not a valid email domain")
+    case invalidDomain => throw new IllegalArgumentException(s"'$invalidDomain' is not a valid email domain")
   }
 }
 

@@ -33,7 +33,7 @@ object CompanyRegisteredCountry {
         errorMessage,
         s => s.trim.nonEmpty && s != messages("cds.subscription.address-details.country.emptyValueText")
       )
-    )(CompanyRegisteredCountry.apply)(CompanyRegisteredCountry.unapply)
+    )(CompanyRegisteredCountry.apply)(companyRegisteredCountry => Some(companyRegisteredCountry.country))
   )
 
 }

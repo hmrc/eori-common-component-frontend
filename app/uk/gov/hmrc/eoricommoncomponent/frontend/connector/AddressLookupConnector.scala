@@ -17,16 +17,20 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import play.api.Logger
-import play.mvc.Http.Status._
+import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+import play.mvc.Http.Status.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.address._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.*
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import java.net.URI
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AddressLookupConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
+class AddressLookupConnector @Inject() (http: HttpClientV2, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   private val logger = Logger(this.getClass)
 
@@ -36,13 +40,13 @@ class AddressLookupConnector @Inject() (http: HttpClient, appConfig: AppConfig)(
 
     val body = AddressRequestBody(postcode, firstLineOpt)
 
-    val url = appConfig.addressLookup //+ queryParams
+    val url = appConfig.addressLookup // + queryParams
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"Address lookup url: $url, body: $body")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
-    http.POST[AddressRequestBody, HttpResponse](url, body) map { response =>
+    http.post(new URI(url).toURL).withBody(Json.toJson(body)).execute[HttpResponse].map { response =>
       response.status match {
         case OK => AddressLookupSuccess(response.json.as[Seq[AddressLookup]]).sorted()
         case _ =>

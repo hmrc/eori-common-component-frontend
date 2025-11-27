@@ -43,9 +43,9 @@ class RequestSessionData extends Logging {
       case Some(flowName) => SubscriptionFlow(flowName)
       case None =>
         val error = "Subscription flow is not cached"
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw DataUnavailableException(error)
     }
 
