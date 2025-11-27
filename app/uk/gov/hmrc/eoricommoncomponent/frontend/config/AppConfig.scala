@@ -140,4 +140,6 @@ class AppConfig @Inject() (
   val accessibilityStatement: String = config.get[String]("accessibility-statement.service-path")
 
   val askHMRCOnline: String = config.get[String]("ask-HMRC-online")
+
+  lazy val euEoriEnabled: Boolean = config.get[Boolean]("features.eu-eori-enabled")
 }

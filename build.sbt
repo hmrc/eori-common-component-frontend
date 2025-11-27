@@ -18,8 +18,6 @@ majorVersion := 0
 
 PlayKeys.devSettings := Seq("play.server.http.port" -> "6750")
 
-lazy val allResolvers = resolvers ++= Seq(Resolver.jcenterRepo)
-
 lazy val IntegrationTest = config("it") extend Test
 
 val testConfig = Seq(IntegrationTest, Test)
@@ -47,7 +45,6 @@ lazy val microservice = (project in file("."))
     unitTestSettings,
     integrationTestSettings,
     playSettings,
-    allResolvers,
     scoverageSettings,
     twirlSettings,
     TwirlKeys.templateImports += "uk.gov.hmrc.eoricommoncomponent.frontend.models._"
