@@ -22,7 +22,7 @@ object AppDependencies {
     "org.scalacheck"         %% "scalacheck"              % "1.19.0"            % "test,it",
     "uk.gov.hmrc"            %% "bootstrap-test-play-30"  % bootstrapVersion    % "test,it",
     "org.scalatestplus"      %% "scalacheck-1-15"         % "3.2.11.0"          % "test,it",
-    "org.jsoup"               % "jsoup"                   % "1.17.2"            % "test,it",
+    "org.jsoup"               % "jsoup"                   % "1.21.2"            % "test,it",
     "us.codecraft"            % "xsoup"                   % "0.3.7"             % "test,it",
     "org.mockito"             % "mockito-core"            % "5.21.0"            % "test,it",
     "org.scalatestplus"      %% "mockito-4-6"             % "3.2.15.0"          % "test, it",
