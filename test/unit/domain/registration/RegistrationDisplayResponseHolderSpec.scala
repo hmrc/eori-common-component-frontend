@@ -100,7 +100,7 @@ class RegistrationDisplayResponseHolderSpec extends UnitSpec {
       Json.toJson(responseHolder) shouldBe expectedJson
     }
   }
-  
+
   "RegistrationDisplayResponse" should {
     "throw exception exception" in {
       intercept[IllegalArgumentException] {

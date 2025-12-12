@@ -123,7 +123,7 @@ class UpdateCustomsDataStoreConnectorSpec extends IntegrationTestsSpec with Scal
     "return a failed future when update email endpoint returns error" in {
       CustomsDataStoreStubService.returnFault(
         expectedPostUrl,
-        serviceRequestJson.toString,
+        serviceRequestJson.toString
       )
 
       a[SocketException] should be thrownBy {

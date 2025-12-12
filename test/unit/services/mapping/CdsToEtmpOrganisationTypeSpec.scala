@@ -21,7 +21,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.EtmpTypeOfPerson.{AssociationOfPerson, LegalPerson}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{CdsToEtmpOrganisationType, EtmpLegalStatus, OrganisationTypeConfiguration}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
+  CdsToEtmpOrganisationType,
+  EtmpLegalStatus,
+  OrganisationTypeConfiguration
+}
 
 class CdsToEtmpOrganisationTypeSpec extends UnitSpec {
 
@@ -38,7 +42,10 @@ class CdsToEtmpOrganisationTypeSpec extends UnitSpec {
         Some(Partnership)
       )
 
-      CdsToEtmpOrganisationType(orgDetails).head shouldBe OrganisationTypeConfiguration(LegalPerson, EtmpLegalStatus.Partnership)
+      CdsToEtmpOrganisationType(orgDetails).head shouldBe OrganisationTypeConfiguration(
+        LegalPerson,
+        EtmpLegalStatus.Partnership
+      )
     }
 
     "map LLP" in {
@@ -52,7 +59,10 @@ class CdsToEtmpOrganisationTypeSpec extends UnitSpec {
         Some(LLP)
       )
 
-      CdsToEtmpOrganisationType(orgDetails).head shouldBe OrganisationTypeConfiguration(LegalPerson, EtmpLegalStatus.Llp)
+      CdsToEtmpOrganisationType(orgDetails).head shouldBe OrganisationTypeConfiguration(
+        LegalPerson,
+        EtmpLegalStatus.Llp
+      )
     }
 
     "map unincorporated body" in {
@@ -66,16 +76,19 @@ class CdsToEtmpOrganisationTypeSpec extends UnitSpec {
         Some(UnincorporatedBody)
       )
 
-      CdsToEtmpOrganisationType(orgDetails).head shouldBe OrganisationTypeConfiguration(AssociationOfPerson, EtmpLegalStatus.UnincorporatedBody)
+      CdsToEtmpOrganisationType(orgDetails).head shouldBe OrganisationTypeConfiguration(
+        AssociationOfPerson,
+        EtmpLegalStatus.UnincorporatedBody
+      )
     }
 
     "throw exception on incomplete journey details" in {
 
-      val eori = Eori("GB123456789123")
+      val eori       = Eori("GB123456789123")
       val taxPayerId = TaxPayerId("taxPayerId")
-      val safeId = SafeId("safeId")
-      val fullName = "Full name"
-      val address = Address("addressLine1", None, Some("city"), None, Some("postcode"), "GB")
+      val safeId     = SafeId("safeId")
+      val fullName   = "Full name"
+      val address    = Address("addressLine1", None, Some("city"), None, Some("postcode"), "GB")
 
       val registrationDetails = RegistrationDetailsSafeId(
         safeId = safeId,

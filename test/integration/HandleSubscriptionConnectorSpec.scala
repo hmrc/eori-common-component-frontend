@@ -136,7 +136,7 @@ class HandleSubscriptionConnectorSpec extends IntegrationTestsSpec with ScalaFut
     "return a failed future when handle subscription endpoint errors" in {
       HandleSubscriptionService.returnFault(
         expectedPostUrl,
-        serviceRequestJson.toString,
+        serviceRequestJson.toString
       )
 
       a[SocketException] should be thrownBy {

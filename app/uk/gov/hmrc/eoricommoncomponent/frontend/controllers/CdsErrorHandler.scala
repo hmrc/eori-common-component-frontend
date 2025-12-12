@@ -90,5 +90,5 @@ class CdsErrorHandler @Inject() (
         Future.successful(Results.InternalServerError(errorTemplateView(service)))
     }
   }
-}
 
+}

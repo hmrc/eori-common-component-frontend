@@ -59,7 +59,7 @@ object Save4LaterService {
   def stubSave4LaterDELETEKey(): Unit = stubSave4LaterDeleteResponse(expectedDeleteKeyUrl, NO_CONTENT)
 
   def stubSave4LaterNotFoundDELETEKey(): Unit = stubSave4LaterDeleteResponse(expectedDeleteKeyUrl, NOT_FOUND)
-  
+
   def stubSave4LaterGETResponse(url: String, response: String, status: Int): Unit =
     stubFor(
       get(urlMatching(url))

@@ -124,7 +124,7 @@ class NotifyRcmConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
     "return a failed future when notifyRCM endpoint returns error" in {
       NotifyRcmStubService.returnFault(
         expectedPostUrl,
-        serviceRequestJson.toString,
+        serviceRequestJson.toString
       )
 
       a[SocketException] should be thrownBy {
