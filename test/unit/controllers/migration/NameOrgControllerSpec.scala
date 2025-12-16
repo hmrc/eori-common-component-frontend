@@ -68,7 +68,6 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
   val nameOrgController = new NameOrgController(
     mockAuthAction,
     mockSubscriptionBusinessService,
-    mockSessionCache,
     mockSubscriptionFlowManager,
     mcc,
     nameOrgView,

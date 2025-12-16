@@ -105,12 +105,7 @@ object CdsToEtmpOrganisationType extends Logging {
     case LLP                => OrganisationTypeConfiguration.EtmpLlp
     case CorporateBody      => OrganisationTypeConfiguration.EtmpCorporateBody
     case UnincorporatedBody => OrganisationTypeConfiguration.EtmpUnincorporatedBody
-    case invalid =>
-      val error = s"Invalid ETMP orgType: $invalid"
-      // $COVERAGE-OFF$Loggers
-      logger.warn(error)
-      // $COVERAGE-ON
-      throw new IllegalArgumentException(error)
+    case invalid            => throw new IllegalArgumentException(invalid.toString)
   }
 
   def apply(cdsOrganisationType: Option[CdsOrganisationType]): Option[OrganisationTypeConfiguration] =
@@ -122,9 +117,9 @@ object CdsToEtmpOrganisationType extends Logging {
       Some(OrganisationTypeConfiguration(EtmpTypeOfPerson.NaturalPerson, EtmpLegalStatus.UnincorporatedBody))
     case _ =>
       val error = "Incomplete cache cannot complete journey"
-      // $COVERAGE-OFF$Loggers
+      // $COVERAGE-OFF$
       logger.warn(error)
-      // $COVERAGE-ON
+      // $COVERAGE-ON$
       throw DataUnavailableException(error)
   }
 

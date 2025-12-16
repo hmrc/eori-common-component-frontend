@@ -18,7 +18,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration
 
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel.trim
 
 case class ContactDetailsModel(
   fullName: String,
@@ -37,9 +36,9 @@ case class ContactDetailsModel(
     emailAddress,
     telephone,
     fax,
-    trim(street).getOrElse(""),
-    trim(city).getOrElse(""),
-    trim(postcode),
+    street.map(_.trim).getOrElse(""),
+    city.map(_.trim).getOrElse(""),
+    postcode.map(_.trim),
     countryCode.getOrElse("")
   )
 
@@ -47,6 +46,4 @@ case class ContactDetailsModel(
 
 object ContactDetailsModel {
   implicit val jsonFormat: OFormat[ContactDetailsModel] = Json.format[ContactDetailsModel]
-
-  def trim(value: Option[String]): Option[String] = value.map(_.trim)
 }

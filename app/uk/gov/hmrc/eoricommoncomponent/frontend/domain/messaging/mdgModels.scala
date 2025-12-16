@@ -106,16 +106,16 @@ trait CommonHeader extends Logging {
 
     def reads(value: JsValue): JsResult[LocalDateTime] =
       try JsSuccess(
-        ZonedDateTime.parse(value.as[String], DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(
-          ZoneId.of("Europe/London")
-        ).toLocalDateTime
-      )
+          ZonedDateTime.parse(value.as[String], DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(
+            ZoneId.of("Europe/London")
+          ).toLocalDateTime
+        )
       catch {
         case e: Exception =>
           val error = s"Could not parse '${value.toString()}' as an ISO date. Reason: $e"
-          // $COVERAGE-OFF$Loggers
+          // $COVERAGE-OFF$
           logger.error(error)
-          // $COVERAGE-ON
+          // $COVERAGE-ON$
           JsError(error)
       }
 

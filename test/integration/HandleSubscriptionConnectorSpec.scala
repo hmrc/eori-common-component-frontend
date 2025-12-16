@@ -24,7 +24,7 @@ import play.api.http.HeaderNames
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.mvc.Http.MimeTypes
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.HandleSubscriptionConnector
@@ -32,6 +32,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.Ha
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import util.externalservices.ExternalServicesConfig.{Host, Port}
 import util.externalservices.{AuditService, HandleSubscriptionService}
+
+import java.net.SocketException
 
 class HandleSubscriptionConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
@@ -127,6 +129,17 @@ class HandleSubscriptionConnectorSpec extends IntegrationTestsSpec with ScalaFut
       )
 
       a[BadRequestException] should be thrownBy {
+        await(handleSubscriptionConnector.call(handleSubscriptionRequest))
+      }
+    }
+
+    "return a failed future when handle subscription endpoint errors" in {
+      HandleSubscriptionService.returnFault(
+        expectedPostUrl,
+        serviceRequestJson.toString
+      )
+
+      a[SocketException] should be thrownBy {
         await(handleSubscriptionConnector.call(handleSubscriptionRequest))
       }
     }

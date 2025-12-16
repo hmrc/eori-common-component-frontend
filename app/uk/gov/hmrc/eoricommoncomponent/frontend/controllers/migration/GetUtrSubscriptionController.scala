@@ -44,13 +44,13 @@ class GetUtrSubscriptionController @Inject() (
 
   def createForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         populateView(isInReviewMode = false, service)
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         populateView(isInReviewMode = true, service)
     }
 
@@ -81,15 +81,15 @@ class GetUtrSubscriptionController @Inject() (
             )
         }
       case None =>
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.error("GetUtrSubscriptionController: populateView - No organisation type selected by user")
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         noOrgTypeSelected
     }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         requestSessionData.userSelectedOrganisationType match {
           case Some(orgType) =>
             subscriptionUtrForm.bindFromRequest().fold(
@@ -108,9 +108,9 @@ class GetUtrSubscriptionController @Inject() (
               formData => cacheAndContinue(isInReviewMode, formData, service, orgType)
             )
           case None =>
-            // $COVERAGE-OFF$Loggers
+            // $COVERAGE-OFF$
             logger.error("GetUtrSubscriptionController: submit - No organisation type selected by user")
-            // $COVERAGE-ON
+            // $COVERAGE-ON$
             noOrgTypeSelected
         }
     }
@@ -121,12 +121,11 @@ class GetUtrSubscriptionController @Inject() (
     service: Service,
     orgType: CdsOrganisationType
   )(implicit request: Request[AnyContent]): Future[Result] =
-    cacheUtr(form, orgType).map(
-      _ =>
-        if (isInReviewMode && !isItRowJourney())
-          Redirect(DetermineReviewPageController.determineRoute(service))
-        else
-          Redirect(AddressController.createForm(service))
+    cacheUtr(form, orgType).map(_ =>
+      if (isInReviewMode && !isItRowJourney())
+        Redirect(DetermineReviewPageController.determineRoute(service))
+      else
+        Redirect(AddressController.createForm(service))
     )
 
   private def isItRowJourney()(implicit request: Request[AnyContent]): Boolean =
@@ -139,9 +138,9 @@ class GetUtrSubscriptionController @Inject() (
         case Some(nameDetails) =>
           subscriptionDetailsService.cacheNameAndCustomsId(nameDetails.name, Utr(form.id))
         case _ =>
-          // $COVERAGE-OFF$Loggers
+          // $COVERAGE-OFF$
           logger.error("GetUtrSubscriptionController: cacheUtr - No business name cached")
-          // $COVERAGE-ON
+          // $COVERAGE-ON$
           noBusinessName
 
       }

@@ -39,7 +39,7 @@ class AllowlistFilter @Inject() (
     if (permittedReferer) {
       val allowlistedSession: Session = rh.session + ("allowlisted" -> "true")
       val cookies: Seq[Cookie]        = (rh.cookies ++ Seq(sessionCookieBaker.encodeAsCookie(allowlistedSession))).toSeq
-      val headers                     = rh.headers.add(HeaderNames.COOKIE -> cookieHeaderEncoding.encodeCookieHeader(cookies))
+      val headers = rh.headers.add(HeaderNames.COOKIE -> cookieHeaderEncoding.encodeCookieHeader(cookies))
       next(rh.withHeaders(headers)) // Ensures the allowlisted param is added to the remainder of THIS request
         .map(
           _.addingToSession("allowlisted" -> "true")(rh)

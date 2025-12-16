@@ -228,6 +228,9 @@ object SubscriptionInfoBuilder {
   val responseWithoutPersonOfContact: SubscriptionDisplayResponse =
     SubscriptionDisplayResponse(sampleResponseCommon, responseDetailWithoutPersonOfContact)
 
+  val responseDetailsMissingDateOfEstablishment =
+    SubscriptionDisplayResponse(sampleResponseCommon, fullyPopulatedResponseDetail.copy(dateOfEstablishment = None))
+
   def fullyPopulatedContactDetails: ContactDetails =
     ContactDetails(
       contactName,

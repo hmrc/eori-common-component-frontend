@@ -40,7 +40,7 @@ class CheckYourDetailsController @Inject() (
 
   def reviewDetails(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         for {
           subscriptionDetailsHolder <- cdsFrontendCache.subscriptionDetails
           email                     <- cdsFrontendCache.email
@@ -59,7 +59,6 @@ class CheckYourDetailsController @Inject() (
             nameOrganisationDetails = subscriptionDetailsHolder.nameOrganisationDetails,
             nameDobDetails = subscriptionDetailsHolder.nameDobDetails,
             dateEstablished = subscriptionDetailsHolder.dateEstablished,
-            idDetails = subscriptionDetailsHolder.idDetails,
             customsId = subscriptionDetailsHolder.customsId,
             registeredCountry = subscriptionDetailsHolder.registeredCompany,
             addressLookupParams = addressLookupParams,

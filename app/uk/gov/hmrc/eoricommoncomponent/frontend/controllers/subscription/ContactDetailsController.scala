@@ -53,31 +53,31 @@ class ContactDetailsController @Inject() (
     extends CdsController(mcc) {
 
   def createForm(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
-      val f = for {
-        orgType <- orgTypeLookup.etmpOrgTypeOpt
-
-        cachedCustomsId <- if (orgType == Some(NA)) subscriptionDetailsService.cachedCustomsId
-        else Future.successful(None)
-        cachedNameIdDetails <- if (orgType == Some(NA)) Future.successful(None)
-        else subscriptionDetailsService.cachedNameIdDetails
-      } yield (cachedCustomsId, cachedNameIdDetails) match {
-        case (None, None) => populateForm(service)(isInReviewMode = false)
-        case _ =>
-          Future.successful(
-            Redirect(
-              subscriptionFlowManager
-                .stepInformation(ConfirmContactAddressSubscriptionFlowPage)
-                .nextPage
-                .url(service)
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
+      val f =
+        for {
+          orgType <- orgTypeLookup.etmpOrgType.map(Some(_))
+          cachedCustomsId <- if (orgType.contains(NA)) subscriptionDetailsService.cachedCustomsId
+          else Future.successful(None)
+          cachedNameIdDetails <- if (orgType.contains(NA)) Future.successful(None)
+          else subscriptionDetailsService.cachedNameIdDetails
+        } yield (cachedCustomsId, cachedNameIdDetails) match {
+          case (None, None) => populateForm(service)(isInReviewMode = false)
+          case _ =>
+            Future.successful(
+              Redirect(
+                subscriptionFlowManager
+                  .stepInformation(ConfirmContactAddressSubscriptionFlowPage)
+                  .nextPage
+                  .url(service)
+              )
             )
-          )
-      }
+        }
       f.flatMap(identity)
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       populateForm(service)(isInReviewMode = true)
     }
 
@@ -85,22 +85,20 @@ class ContactDetailsController @Inject() (
     service: Service
   )(isInReviewMode: Boolean)(implicit request: Request[AnyContent]): Future[Result] = {
     for {
-      email          <- cdsFrontendDataCache.email
       contactDetails <- subscriptionBusinessService.cachedContactDetailsModel
     } yield {
-      val contactDetailsModel = contactDetails.map(ContactDetailsSubscribeModel.fromContactDetailsModel(_))
+      val contactDetailsModel = contactDetails.map(ContactDetailsSubscribeModel.fromContactDetailsModel)
       val form                = contactDetailsModel.fold(ContactDetailsForm.form())(ContactDetailsForm.form().fill(_))
 
-      Future.successful(Ok(contactDetailsView(form, email, isInReviewMode, service)))
+      Future.successful(Ok(contactDetailsView(form, isInReviewMode, service)))
     }
   }.flatMap(identity)
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       cdsFrontendDataCache.email flatMap { email =>
         ContactDetailsForm.form().bindFromRequest().fold(
-          formWithErrors =>
-            Future.successful(BadRequest(contactDetailsView(formWithErrors, email, isInReviewMode, service))),
+          formWithErrors => Future.successful(BadRequest(contactDetailsView(formWithErrors, isInReviewMode, service))),
           formData => storeContactDetails(formData, email, isInReviewMode, service)
         )
       }
@@ -114,16 +112,15 @@ class ContactDetailsController @Inject() (
   )(implicit request: Request[AnyContent]): Future[Result] =
     subscriptionDetailsService
       .cacheContactDetails(formData.toContactDetailsModel(email), isInReviewMode = inReviewMode)
-      .map(
-        _ =>
-          if (inReviewMode) Redirect(DetermineReviewPageController.determineRoute(service))
-          else
-            Redirect(
-              subscriptionFlowManager
-                .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
-                .nextPage
-                .url(service)
-            )
+      .map(_ =>
+        if (inReviewMode) Redirect(DetermineReviewPageController.determineRoute(service))
+        else
+          Redirect(
+            subscriptionFlowManager
+              .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
+              .nextPage
+              .url(service)
+          )
       )
 
 }

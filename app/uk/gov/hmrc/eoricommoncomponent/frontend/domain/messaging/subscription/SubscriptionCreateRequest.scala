@@ -75,9 +75,9 @@ object SubscriptionCreateRequest {
 
       case _ =>
         val error = "Invalid Registration Details. Unable to create SubscriptionCreateRequest."
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw new IllegalArgumentException(error)
     }
 
@@ -92,9 +92,9 @@ object SubscriptionCreateRequest {
         val registeredCompany =
           subscription.registeredCompany.getOrElse {
             val error = "Registered company is not in cache"
-            // $COVERAGE-OFF$Loggers
+            // $COVERAGE-OFF$
             logger.error(".")
-            // $COVERAGE-ON
+            // $COVERAGE-ON$
             throw DataUnavailableException(error)
           }
         registration.address.copy(countryCode = registeredCompany.country)
@@ -152,9 +152,9 @@ object SubscriptionCreateRequest {
           data.establishmentAddress.updateCountryFromAddress(address)
         }.getOrElse {
           val error = "Reg06 EstablishmentAddress cannot be empty"
-          // $COVERAGE-OFF$Loggers
+          // $COVERAGE-OFF$
           logger.warn(error)
-          // $COVERAGE-ON
+          // $COVERAGE-ON$
           throw new IllegalStateException(error)
         }
 

@@ -16,12 +16,9 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
-import java.time.LocalDateTime
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
-
-import java.lang.reflect.Field
 
 case class GovGatewayCredentials(email: String)
 
@@ -215,57 +212,6 @@ case class RegisterWithEoriAndIdResponse(
     this.copy(additionalInformation = Some(additionalInformation))
   }
 
-}
-
-trait CaseClassAuditHelper {
-
-  def toMap(caseClassObject: AnyRef = this, ignoredFields: List[String] = List.empty): Map[String, String] =
-    caseClassObject.getClass.getDeclaredFields
-      .filterNot(field => ignoredFields.contains(field.getName))
-      .foldLeft(Map[String, String]()) {
-
-        (acc, f) =>
-          f.setAccessible(true)
-          val value = f.get(caseClassObject)
-          if (value != null)
-            if (isScalaOption(value)) {
-              val option = value.asInstanceOf[Option[Any]]
-              if (option.isDefined)
-                fetchValue(acc, f, option.get)
-              else
-                acc
-            } else
-              fetchValue(acc, f, value)
-          else
-            acc
-      }
-
-  private def getKeyValue(acc: Map[String, String], value: Any) =
-    value match {
-      case v: CaseClassAuditHelper => v.toMap()
-      case _                       => acc
-    }
-
-  private def fetchValue(acc: Map[String, String], f: Field, value: Any) =
-    if (isLeafNode(value))
-      acc + (f.getName -> value.toString)
-    else
-      getKeyValue(acc, value)
-
-  private def isLeafNode(value: Any) =
-    value match {
-      case _: String        => true
-      case _: Int           => true
-      case _: Long          => true
-      case _: Boolean       => true
-      case _: Double        => true
-      case _: BigDecimal    => true
-      case _: Float         => true
-      case _: LocalDateTime => true
-      case _                => false
-    }
-
-  private def isScalaOption(value: Object): Boolean = value.getClass.getSuperclass.equals(Class.forName("scala.Option"))
 }
 
 object RegisterWithEoriAndIdResponse {

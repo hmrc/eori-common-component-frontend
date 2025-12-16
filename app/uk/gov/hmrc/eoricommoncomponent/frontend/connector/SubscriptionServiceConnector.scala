@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import play.api.Logger
 import play.api.http.HeaderNames.AUTHORIZATION
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
@@ -43,11 +44,11 @@ class SubscriptionServiceConnector @Inject() (httpClient: HttpClientV2, appConfi
 
   def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(
       s"[Subscribe SUB02: $url, requestCommon: ${request.subscriptionCreateRequest.requestCommon} and hc: $hc"
     )
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
     val httpRequest = httpClient
       .post(url)
@@ -55,9 +56,9 @@ class SubscriptionServiceConnector @Inject() (httpClient: HttpClientV2, appConfi
       .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
 
     httpRequest.execute[SubscriptionResponse] map { response =>
-      // $COVERAGE-OFF$Loggers
+      // $COVERAGE-OFF$
       logger.debug(s"[Subscribe SUB02: responseCommon: ${response.subscriptionCreateResponse.responseCommon}")
-      // $COVERAGE-ON
+      // $COVERAGE-ON$
 
       auditCall(url.toString, request, response)
       response

@@ -33,11 +33,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.{
   AddressLookupFailure,
   AddressLookupSuccess
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
-  DataUnavailableException,
-  RequestSessionData,
-  SessionCache
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.address_lookup_results
 import uk.gov.hmrc.http.HeaderCarrier
@@ -50,7 +46,6 @@ class AddressLookupResultsController @Inject() (
   authAction: AuthAction,
   sessionCache: SessionCache,
   subscriptionDetailsService: SubscriptionDetailsService,
-  requestSessionData: RequestSessionData,
   subscriptionFlowManager: SubscriptionFlowManager,
   addressLookupConnector: AddressLookupConnector,
   mcc: MessagesControllerComponents,
@@ -59,13 +54,13 @@ class AddressLookupResultsController @Inject() (
     extends CdsController(mcc) {
 
   def displayPage(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
-      displayPage(service, false)
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
+      displayPage(service, isInReviewMode = false)
     }
 
   def reviewPage(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
-      displayPage(service, true)
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
+      displayPage(service, isInReviewMode = true)
     }
 
   private def displayPage(service: Service, isInReviewMode: Boolean)(implicit
@@ -76,26 +71,18 @@ class AddressLookupResultsController @Inject() (
         addressLookupConnector.lookup(
           addressLookupParams.postcode.replaceAll(" ", ""),
           addressLookupParams.line1
-        ).flatMap { response =>
-          response match {
-            case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
-              Future.successful(
-                Ok(
-                  prepareView(
-                    AddressResultsForm.form(addresses.map(_.dropDownView)),
-                    addressLookupParams,
-                    addresses,
-                    isInReviewMode,
-                    service
-                  )
-                )
+        ).flatMap {
+          case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
+            Future.successful(
+              Ok(
+                prepareView(AddressResultsForm.form(addresses.map(_.dropDownView)), addresses, isInReviewMode, service)
               )
-            case AddressLookupSuccess(_) if addressLookupParams.line1.exists(_.nonEmpty) =>
-              repeatQueryWithoutLine1(addressLookupParams, service, isInReviewMode)
-            case AddressLookupSuccess(_) =>
-              Future.successful(redirectToNoResultsPage(service, isInReviewMode))
-            case AddressLookupFailure => throw AddressLookupException
-          }
+            )
+          case AddressLookupSuccess(_) if addressLookupParams.line1.exists(_.nonEmpty) =>
+            repeatQueryWithoutLine1(addressLookupParams, service, isInReviewMode)
+          case AddressLookupSuccess(_) =>
+            Future.successful(redirectToNoResultsPage(service, isInReviewMode))
+          case AddressLookupFailure => throw AddressLookupException
         }.recoverWith {
           case _: AddressLookupException.type => Future.successful(redirectToErrorPage(service, isInReviewMode))
         }
@@ -104,82 +91,61 @@ class AddressLookupResultsController @Inject() (
 
   private def prepareView(
     form: Form[AddressResultsForm],
-    addressLookupParams: AddressLookupParams,
     addresses: Seq[AddressLookup],
     isInReviewMode: Boolean,
     service: Service
-  )(implicit request: Request[AnyContent]): HtmlFormat.Appendable = {
-    val selectedOrganisationType = requestSessionData.userSelectedOrganisationType.getOrElse(
-      throw DataUnavailableException("Organisation type is not cached")
-    )
-
-    addressLookupResultsPage(form, addressLookupParams, addresses, isInReviewMode, selectedOrganisationType, service)
-  }
+  )(implicit request: Request[AnyContent]): HtmlFormat.Appendable =
+    addressLookupResultsPage(form, addresses, isInReviewMode, service)
 
   private def repeatQueryWithoutLine1(
     addressLookupParams: AddressLookupParams,
     service: Service,
     isInReviewMode: Boolean
   )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
-    val addressLookupParamsWithoutLine1 = AddressLookupParams(addressLookupParams.postcode, None, true)
+    val addressLookupParamsWithoutLine1 = AddressLookupParams(addressLookupParams.postcode, None, skippedLine1 = true)
 
     addressLookupConnector.lookup(addressLookupParamsWithoutLine1.postcode.replaceAll(" ", ""), None).flatMap {
-      secondResponse =>
-        secondResponse match {
-          case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
-            sessionCache.saveAddressLookupParams(addressLookupParamsWithoutLine1).map { _ =>
-              Ok(
-                prepareView(
-                  AddressResultsForm.form(addresses.map(_.dropDownView)),
-                  addressLookupParamsWithoutLine1,
-                  addresses,
-                  isInReviewMode,
-                  service
-                )
-              )
-            }
-          case AddressLookupSuccess(_) => Future.successful(redirectToNoResultsPage(service, isInReviewMode))
-          case AddressLookupFailure    => throw AddressLookupException
+      case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
+        sessionCache.saveAddressLookupParams(addressLookupParamsWithoutLine1).map { _ =>
+          Ok(prepareView(AddressResultsForm.form(addresses.map(_.dropDownView)), addresses, isInReviewMode, service))
         }
+      case AddressLookupSuccess(_) => Future.successful(redirectToNoResultsPage(service, isInReviewMode))
+      case AddressLookupFailure    => throw AddressLookupException
     }
   }
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       sessionCache.addressLookupParams.flatMap {
         case Some(addressLookupParams) =>
           addressLookupConnector.lookup(
             addressLookupParams.postcode.replaceAll(" ", ""),
             addressLookupParams.line1
-          ).flatMap { response =>
-            response match {
-              case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
-                val addressesMap  = addresses.map(address => address.dropDownView -> address).toMap
-                val addressesList = addressesMap.keys.toSeq
-                AddressResultsForm.form(addressesList).bindFromRequest().fold(
-                  formWithErrors =>
-                    Future.successful(
-                      BadRequest(prepareView(formWithErrors, addressLookupParams, addresses, isInReviewMode, service))
-                    ),
-                  validAnswer => {
-                    val address = addressesMap(validAnswer.address).toAddressViewModel
+          ).flatMap {
+            case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
+              val addressesMap  = addresses.map(address => address.dropDownView -> address).toMap
+              val addressesList = addressesMap.keys.toSeq
+              AddressResultsForm.form(addressesList).bindFromRequest().fold(
+                formWithErrors =>
+                  Future.successful(BadRequest(prepareView(formWithErrors, addresses, isInReviewMode, service))),
+                validAnswer => {
+                  val address = addressesMap(validAnswer.address).toAddressViewModel
 
-                    subscriptionDetailsService.cacheAddressDetails(address).map { _ =>
-                      if (isInReviewMode)
-                        Redirect(DetermineReviewPageController.determineRoute(service))
-                      else
-                        Redirect(
-                          subscriptionFlowManager
-                            .stepInformation(AddressDetailsSubscriptionFlowPage)
-                            .nextPage
-                            .url(service)
-                        )
-                    }
+                  subscriptionDetailsService.cacheAddressDetails(address).map { _ =>
+                    if (isInReviewMode)
+                      Redirect(DetermineReviewPageController.determineRoute(service))
+                    else
+                      Redirect(
+                        subscriptionFlowManager
+                          .stepInformation(AddressDetailsSubscriptionFlowPage)
+                          .nextPage
+                          .url(service)
+                      )
                   }
-                )
-              case AddressLookupSuccess(_) => Future.successful(redirectToNoResultsPage(service, isInReviewMode))
-              case AddressLookupFailure    => throw AddressLookupException
-            }
+                }
+              )
+            case AddressLookupSuccess(_) => Future.successful(redirectToNoResultsPage(service, isInReviewMode))
+            case AddressLookupFailure    => throw AddressLookupException
           }.recoverWith {
             case _: AddressLookupException.type => Future.successful(redirectToErrorPage(service, isInReviewMode))
           }

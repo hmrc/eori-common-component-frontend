@@ -50,8 +50,8 @@ class SubscriptionStatusServiceSpec extends UnitSpec with MockitoSugar with Befo
   private val mockSessionCache                                   = mock[SessionCache]
   private val mockConfig                                         = mock[Configuration]
   private val AValidTaxPayerID                                   = "123456789"
-  private val MDGZeroPaddedTaxPayerId                            = AValidTaxPayerID + "000000000000000000000000000000000"
-  private val receiptDate                                        = LocalDateTime.of(2016, 3, 17, 9, 30, 47, 0)
+  private val MDGZeroPaddedTaxPayerId = AValidTaxPayerID + "000000000000000000000000000000000"
+  private val receiptDate             = LocalDateTime.of(2016, 3, 17, 9, 30, 47, 0)
 
   private val request =
     SubscriptionStatusQueryParams(receiptDate = receiptDate, regime = "CDS", "taxPayerID", MDGZeroPaddedTaxPayerId)

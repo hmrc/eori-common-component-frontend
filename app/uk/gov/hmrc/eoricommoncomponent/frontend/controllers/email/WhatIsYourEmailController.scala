@@ -42,7 +42,7 @@ class WhatIsYourEmailController @Inject() (
   private def populateView(email: Option[String], service: Service, subscribeJourney: SubscribeJourney)(implicit
     request: Request[AnyContent]
   ): Future[Result] = {
-    lazy val form = email.map(EmailViewModel).fold(emailForm) {
+    lazy val form = email.map(emailStr => EmailViewModel.apply(emailStr)).fold(emailForm) {
       emailForm.fill
     }
     Future.successful(Ok(whatIsYourEmailView(emailForm = form, service, subscribeJourney)))
@@ -50,13 +50,13 @@ class WhatIsYourEmailController @Inject() (
 
   def createForm(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
     authAction.enrolledUserClearingCacheOnCompletionAction {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         populateView(None, service, subscribeJourney)
     }
 
   def submit(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
     authAction.enrolledUserClearingCacheOnCompletionAction {
-      implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
+      implicit request => (userWithEnrolments: LoggedInUserWithEnrolments) =>
         emailForm.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(whatIsYourEmailView(emailForm = formWithErrors, service, subscribeJourney))),

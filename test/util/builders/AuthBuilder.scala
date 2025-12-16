@@ -126,13 +126,15 @@ object AuthBuilder {
 
   def withNotLoggedInUser(mockAuthConnector: AuthConnector): Unit = {
     val noBearerTokenMatcher: ArgumentMatcher[HeaderCarrier] = new ArgumentMatcher[HeaderCarrier] {
+
       def matches(item: HeaderCarrier): Boolean = item match {
         case hc: HeaderCarrier if hc.authorization.isEmpty => true
         case _                                             => false
       }
+
     }
 
-    when(mockAuthConnector.authorise(any(), any[Retrieval[_]])(ArgumentMatchers.argThat(noBearerTokenMatcher), any()))
+    when(mockAuthConnector.authorise(any(), any())(ArgumentMatchers.argThat(noBearerTokenMatcher), any()))
       .thenReturn(Future.failed(notLoggedInException))
   }
 

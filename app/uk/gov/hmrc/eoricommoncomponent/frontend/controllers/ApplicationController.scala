@@ -59,7 +59,7 @@ class ApplicationController @Inject() (
 
   def logout(service: Service): Action[AnyContent] =
     authorise.ggAuthorisedUserAction {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         cache.remove map { _ =>
           Redirect(appConfig.feedbackUrl(service))
         }

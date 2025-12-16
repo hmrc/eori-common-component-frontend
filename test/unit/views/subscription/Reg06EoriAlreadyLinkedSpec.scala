@@ -28,7 +28,6 @@ import util.ViewSpec
 
 class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
-  private val name              = "John Doe"
   private val email             = "email@email.email"
   private val eori              = "GB123456789012"
   private val expectedPageTitle = "The details you gave us did not match our records"
@@ -87,7 +86,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
     "has specific content for individual with UTR" in {
 
-      val page = docUtr(isIndividual = true, hasUtr = true).body()
+      val page = docUtr().body()
 
       val utrElement     = page.getElementById("individual-utr")
       val contactElement = page.getElementById("contact-info")
@@ -104,7 +103,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
     "has specific content for individual with NINO" in {
 
-      val page = docNino(isIndividual = true, hasUtr = false).body()
+      val page = docNino().body()
 
       val ninoElement    = page.getElementById("individual-nino")
       val contactElement = page.getElementById("contact-info")
@@ -121,7 +120,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
     "has specific content for organisation" in {
 
-      val page = docOrgUtr(isIndividual = false, hasUtr = false).body()
+      val page = docOrgUtr().body()
 
       val utrElement     = page.getElementById("organisation-utr")
       val contactElement = page.getElementById("contact-info")
@@ -138,7 +137,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
     "has specific content for No Ids Organisation" in {
 
-      val page = docNoId(isIndividual = false, hasUtr = false).body()
+      val page = docNoId().body()
 
       val contactElement = page.getElementById("contact-info")
       val introElement   = page.getElementById("intro-text")
@@ -155,7 +154,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
     "has specific content for individual with no UTR or no NINO" in {
 
-      val page = docNinoNone(isIndividual = true, hasUtr = false).body()
+      val page = docNinoNone().body()
 
       val contactElement = page.getElementById("contact-info")
       val introElement   = page.getElementById("intro-ind-text")
@@ -175,57 +174,42 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
   def docUtr(
     isIndividual: Boolean = true,
-    hasUtr: Boolean = true,
     service: Service = atarService,
     customsId: Option[CustomsId] = utr,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
   ): Document =
-    Jsoup.parse(
-      contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email))
-    )
+    Jsoup.parse(contentAsString(view(eori, service, isIndividual, customsId, nameIdOrganisationDetails, email)))
 
   def docNino(
     isIndividual: Boolean = true,
-    hasUtr: Boolean = false,
     service: Service = atarService,
     customsId: Option[CustomsId] = nino,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
   ): Document =
-    Jsoup.parse(
-      contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email))
-    )
+    Jsoup.parse(contentAsString(view(eori, service, isIndividual, customsId, nameIdOrganisationDetails, email)))
 
   def docNinoNone(
     isIndividual: Boolean = true,
-    hasUtr: Boolean = false,
     service: Service = atarService,
     customsId: Option[CustomsId] = None,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
   ): Document =
-    Jsoup.parse(
-      contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email))
-    )
+    Jsoup.parse(contentAsString(view(eori, service, isIndividual, customsId, nameIdOrganisationDetails, email)))
 
   def docOrgUtr(
     isIndividual: Boolean = false,
-    hasUtr: Boolean = false,
     service: Service = atarService,
     customsId: Option[CustomsId] = utr,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
   ): Document =
-    Jsoup.parse(
-      contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email))
-    )
+    Jsoup.parse(contentAsString(view(eori, service, isIndividual, customsId, nameIdOrganisationDetails, email)))
 
   def docNoId(
     isIndividual: Boolean = false,
-    hasUtr: Boolean = false,
     service: Service = atarService,
     customsId: Option[CustomsId] = utr,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = None
   ): Document =
-    Jsoup.parse(
-      contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email))
-    )
+    Jsoup.parse(contentAsString(view(eori, service, isIndividual, customsId, nameIdOrganisationDetails, email)))
 
 }

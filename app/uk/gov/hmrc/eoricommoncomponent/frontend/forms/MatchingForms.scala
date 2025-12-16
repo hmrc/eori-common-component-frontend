@@ -92,9 +92,9 @@ object MatchingForms extends Logging {
             CdsOrganisationType
               .forId(o.getOrElse {
                 val error = "Could not create CdsOrganisationType for empty ID."
-                // $COVERAGE-OFF$Loggers
+                // $COVERAGE-OFF$
                 logger.warn(error)
-                // $COVERAGE-ON
+                // $COVERAGE-ON$
                 throw new IllegalArgumentException(error)
               })
               .id
@@ -122,68 +122,68 @@ object MatchingForms extends Logging {
         )
           .verifying(messages("ecc.unable-to-use.signout.empty"), _.isDefined)
           .transform[Boolean](str => str.get.toBoolean, bool => Option(String.valueOf(bool)))
-      )(YesNo.apply)(YesNo.unapply)
+      )(YesNo.apply)(yesNo => Some(yesNo.isYes))
     )
 
   private def validBusinessName: Constraint[String] =
-    Constraint({
+    Constraint {
       case s if s.trim().isEmpty =>
         Invalid(ValidationError("cds.matching-error.business-details.business-name.isEmpty"))
       case s if s.trim().length > 105 =>
         Invalid(ValidationError("cds.matching-error.business-details.business-name.too-long"))
       case _ => Valid
-    })
+    }
 
   private def validPartnershipName: Constraint[String] =
-    Constraint({
+    Constraint {
       case s if s.trim().isEmpty =>
         Invalid(ValidationError("cds.matching-error.business-details.partnership-name.isEmpty"))
       case s if s.trim().length > 105 =>
         Invalid(ValidationError("cds.matching-error.business-details.partnership-name.too-long"))
       case _ => Valid
-    })
+    }
 
   private def validCompanyName: Constraint[String] =
-    Constraint({
+    Constraint {
       case s if s.trim().isEmpty => Invalid(ValidationError("cds.matching-error.business-details.company-name.isEmpty"))
       case s if s.trim().length > 105 =>
         Invalid(ValidationError("cds.matching-error.business-details.company-name.too-long"))
       case _ => Valid
-    })
+    }
 
   private def validUtr: Constraint[String] = {
 
     def validLength: String => Boolean = s => s.length == 10 || (s.endsWith("k") || s.endsWith("K") && s.length == 11)
 
-    Constraint({
-      case s if formatInput(s).isEmpty                => Invalid(ValidationError("cds.matching-error.business-details.utr.isEmpty"))
+    Constraint {
+      case s if formatInput(s).isEmpty => Invalid(ValidationError("cds.matching-error.business-details.utr.isEmpty"))
       case s if !validLength(formatInput(s))          => Invalid(ValidationError("cds.matching-error.utr.length"))
       case s if !validUtrFormat(Some(formatInput(s))) => Invalid(ValidationError("cds.matching-error.utr.invalid"))
       case _                                          => Valid
-    })
+    }
   }
 
   val nameUtrOrganisationForm: Form[NameIdOrganisationMatchModel] = Form(
     mapping("name" -> text.verifying(validBusinessName), CustomsId.utr -> text.verifying(validUtr))(
       NameIdOrganisationMatchModel.apply
-    )(NameIdOrganisationMatchModel.unapply)
+    )(nameIdOrganisationMatchModel => Some(Tuple.fromProductTyped(nameIdOrganisationMatchModel)))
   )
 
   val nameUtrPartnershipForm: Form[NameIdOrganisationMatchModel] = Form(
     mapping("name" -> text.verifying(validPartnershipName), "utr" -> text.verifying(validUtr))(
       NameIdOrganisationMatchModel.apply
-    )(NameIdOrganisationMatchModel.unapply)
+    )(nameIdOrganisationMatchModel => Some(Tuple.fromProductTyped(nameIdOrganisationMatchModel)))
   )
 
   val nameUtrCompanyForm: Form[NameIdOrganisationMatchModel] = Form(
     mapping("name" -> text.verifying(validCompanyName), CustomsId.utr -> text.verifying(validUtr))(
       NameIdOrganisationMatchModel.apply
-    )(NameIdOrganisationMatchModel.unapply)
+    )(nameIdOrganisationMatchModel => Some(Tuple.fromProductTyped(nameIdOrganisationMatchModel)))
   )
 
   val nameOrganisationForm: Form[NameOrganisationMatchModel] = Form(
     mapping("name" -> text.verifying(validBusinessName))(NameOrganisationMatchModel.apply)(
-      NameOrganisationMatchModel.unapply
+      nameIdOrganisationMatchModel => Some(nameIdOrganisationMatchModel.name)
     )
   )
 
@@ -201,7 +201,7 @@ object MatchingForms extends Logging {
       ).verifying(minDate(minimumDate, "dob.error.minMax", DateConverter.earliestYearDateOfBirth.toString)).verifying(
         maxDate(today, "dob.error.future-date", DateConverter.earliestYearDateOfBirth.toString)
       )
-    )(NameDobMatchModel.apply)(NameDobMatchModel.unapply)
+    )(NameDobMatchModel.apply)(nameDobMatchModel => Some(Tuple.fromProductTyped(nameDobMatchModel)))
   )
 
   val enterNameDobFormRow: Form[NameDobMatchModel] = Form(
@@ -215,96 +215,96 @@ object MatchingForms extends Logging {
       ).verifying(minDate(minimumDate, "dob.error.minMax", DateConverter.earliestYearDateOfBirth.toString)).verifying(
         maxDate(today, "dob.error.future-date", DateConverter.earliestYearDateOfBirth.toString)
       )
-    )(NameDobMatchModel.apply)(NameDobMatchModel.unapply)
+    )(NameDobMatchModel.apply)(nameDobMatchModel => Some(Tuple.fromProductTyped(nameDobMatchModel)))
   )
 
   private def validFirstName: Constraint[String] =
-    Constraint("constraints.first-name")({
+    Constraint("constraints.first-name") {
       case s if s.isEmpty => Invalid(ValidationError("cds.subscription.first-name.error.empty"))
       case s if !s.matches(nameRegex) =>
         Invalid(ValidationError("cds.subscription.first-name.error.wrong-format"))
       case s if s.length > 35 => Invalid(ValidationError("cds.subscription.first-name.error.too-long"))
       case _                  => Valid
-    })
+    }
 
   private def validGivenName: Constraint[String] =
-    Constraint("constraints.first-name")({
+    Constraint("constraints.first-name") {
       case s if s.isEmpty => Invalid(ValidationError("cds.subscription.given-name.error.empty"))
       case s if !s.matches(nameRegex) =>
         Invalid(ValidationError("cds.subscription.given-name.error.wrong-format"))
       case s if s.length > 35 => Invalid(ValidationError("cds.subscription.given-name.error.too-long"))
       case _                  => Valid
-    })
+    }
 
   private def validMiddleName: Constraint[String] =
-    Constraint("constraints.first-name")({
+    Constraint("constraints.first-name") {
       case s if !s.matches(nameRegex) =>
         Invalid(ValidationError("cds.subscription.middle-name.error.wrong-format"))
       case s if s.length > 35 => Invalid(ValidationError("cds.subscription.middle-name.error.too-long"))
       case _                  => Valid
-    })
+    }
 
   private def validLastName: Constraint[String] =
-    Constraint("constraints.last-name")({
+    Constraint("constraints.last-name") {
       case s if s.isEmpty => Invalid(ValidationError("cds.subscription.last-name.error.empty"))
       case s if !s.matches(nameRegex) =>
         Invalid(ValidationError("cds.subscription.last-name.error.wrong-format"))
       case s if s.length > 35 => Invalid(ValidationError("cds.subscription.last-name.error.too-long"))
       case _                  => Valid
-    })
+    }
 
   private def validFamilyName: Constraint[String] =
-    Constraint("constraints.last-name")({
+    Constraint("constraints.last-name") {
       case s if s.isEmpty => Invalid(ValidationError("cds.subscription.family-name.error.empty"))
       case s if !s.matches(nameRegex) =>
         Invalid(ValidationError("cds.subscription.family-name.error.wrong-format"))
       case s if s.length > 35 => Invalid(ValidationError("cds.subscription.family-name.error.too-long"))
       case _                  => Valid
-    })
+    }
 
   private def validNino: Constraint[String] =
-    Constraint({
-      case s if formatInput(s).isEmpty                  => Invalid(ValidationError("cds.subscription.nino.error.empty"))
-      case s if formatInput(s).length != 9              => Invalid(ValidationError("cds.subscription.nino.error.wrong-length"))
+    Constraint {
+      case s if formatInput(s).isEmpty     => Invalid(ValidationError("cds.subscription.nino.error.empty"))
+      case s if formatInput(s).length != 9 => Invalid(ValidationError("cds.subscription.nino.error.wrong-length"))
       case s if !formatInput(s).matches("[a-zA-Z0-9]*") => Invalid(ValidationError("cds.matching.nino.invalidFormat"))
       case s if !Nino.isValid(formatInput(s))           => Invalid(ValidationError("cds.matching.nino.invalidNino"))
       case _                                            => Valid
-    })
+    }
 
   val subscriptionNinoForm: Form[IdMatchModel] = Form(
-    mapping(CustomsId.nino -> text.verifying(validNino))(IdMatchModel.apply)(IdMatchModel.unapply)
+    mapping(CustomsId.nino -> text.verifying(validNino))(IdMatchModel.apply)(idMatchModel => Some(idMatchModel.id))
   )
 
   val subscriptionUtrForm: Form[IdMatchModel] = Form(
-    mapping(CustomsId.utr -> text.verifying(validUtr))(IdMatchModel.apply)(IdMatchModel.unapply)
+    mapping(CustomsId.utr -> text.verifying(validUtr))(IdMatchModel.apply)(idMatchModel => Some(idMatchModel.id))
   )
 
   val ninoOrUtrChoiceForm: Form[NinoOrUtrChoice] = Form(
     mapping(
       "ninoOrUtrRadio" -> optional(text)
         .verifying("cds.subscription.nino.utr.invalid", _.fold(false)(x => x.trim.nonEmpty))
-    )(NinoOrUtrChoice.apply)(NinoOrUtrChoice.unapply)
+    )(NinoOrUtrChoice.apply)(ninoUtrChoice => Some(ninoUtrChoice.ninoOrUtrRadio))
   )
 
   private def validHaveUtr: Constraint[Option[Boolean]] =
-    Constraint({
+    Constraint {
       case None => Invalid(ValidationError("cds.matching.organisation-utr.field-error.have-utr"))
       case _    => Valid
-    })
+    }
 
   val haveUtrForm: Form[UtrMatchModel] = Form(
     mapping("have-utr" -> optional(boolean).verifying(validHaveUtr))(UtrMatchModel.apply)(model => Some(model.haveUtr))
   )
 
   private def validHaveNino: Constraint[Option[Boolean]] =
-    Constraint({
+    Constraint {
       case None => Invalid(ValidationError("cds.matching.nino.row.yes-no.error"))
       case _    => Valid
-    })
+    }
 
   val haveRowIndividualsNinoForm: Form[NinoMatchModel] = Form(
-    mapping("have-nino" -> optional(boolean).verifying(validHaveNino))(NinoMatchModel.apply)(
-      model => Some(model.haveNino)
+    mapping("have-nino" -> optional(boolean).verifying(validHaveNino))(NinoMatchModel.apply)(model =>
+      Some(model.haveNino)
     )
   )
 

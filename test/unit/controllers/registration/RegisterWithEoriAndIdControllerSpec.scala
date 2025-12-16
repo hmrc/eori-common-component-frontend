@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.i18n.Messages
-import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request, Result, Session}
+import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
@@ -47,7 +47,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.language.LanguageUtils
 import unit.controllers.CdsPage
 import util.builders.AuthActionMock
 import util.builders.AuthBuilder._
@@ -80,7 +79,6 @@ class RegisterWithEoriAndIdControllerSpec
 
   private val reg06EoriAlreadyLinked                       = instanceOf[reg06_eori_already_linked]
   private val reg06IdAlreadyLinked                         = instanceOf[reg06_id_already_linked]
-  private val languageUtils                                = instanceOf[LanguageUtils]
   private val subscriptionOutcomeFailCompanyView           = instanceOf[subscription_outcome_fail_company]
   private val subscriptionOutcomeFailLlpView               = instanceOf[subscription_outcome_fail_llp]
   private val subscriptionOutcomeFailPartnershipView       = instanceOf[subscription_outcome_fail_partnership]
@@ -113,7 +111,6 @@ class RegisterWithEoriAndIdControllerSpec
     reg06EoriAlreadyLinked,
     reg06IdAlreadyLinked,
     groupEnrolmentExtractor,
-    languageUtils,
     mockNotifyRcmService
   )(global)
 
@@ -1259,8 +1256,8 @@ class RegisterWithEoriAndIdControllerSpec
     "populate Company view" in {
       val company              = CdsOrganisationType.Company
       val isCustomsIdPopulated = true
-      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
-      val page                 = CdsPage(result.toString())
+      val result = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
+      val page   = CdsPage(result.toString())
       page.title() should startWith("Some details you entered do not match our records")
       page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.company")
     }
@@ -1269,8 +1266,8 @@ class RegisterWithEoriAndIdControllerSpec
 
       val company              = CdsOrganisationType.LimitedLiabilityPartnership
       val isCustomsIdPopulated = true
-      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
-      val page                 = CdsPage(result.toString())
+      val result = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
+      val page   = CdsPage(result.toString())
       page.title() should startWith("Some details you entered do not match our records")
       page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.llp")
 
@@ -1279,8 +1276,8 @@ class RegisterWithEoriAndIdControllerSpec
 
       val company              = CdsOrganisationType.Partnership
       val isCustomsIdPopulated = true
-      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
-      val page                 = CdsPage(result.toString())
+      val result = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
+      val page   = CdsPage(result.toString())
       page.title() should startWith("Some details you entered do not match our records")
       page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.llp")
 
@@ -1289,8 +1286,8 @@ class RegisterWithEoriAndIdControllerSpec
 
       val company              = CdsOrganisationType.CharityPublicBodyNotForProfit
       val isCustomsIdPopulated = true
-      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
-      val page                 = CdsPage(result.toString())
+      val result = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
+      val page   = CdsPage(result.toString())
       page.title() should startWith("Some details you entered do not match our records")
       page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.organisation")
 
@@ -1299,8 +1296,8 @@ class RegisterWithEoriAndIdControllerSpec
 
       val company              = CdsOrganisationType.SoleTrader
       val isCustomsIdPopulated = true
-      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
-      val page                 = CdsPage(result.toString())
+      val result = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
+      val page   = CdsPage(result.toString())
       page.title() should startWith("Some details you entered do not match our records")
       page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.sole")
 
@@ -1310,8 +1307,8 @@ class RegisterWithEoriAndIdControllerSpec
 
       val company              = CdsOrganisationType.Individual
       val isCustomsIdPopulated = true
-      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
-      val page                 = CdsPage(result.toString())
+      val result = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
+      val page   = CdsPage(result.toString())
       page.title() should startWith("Some details you entered do not match our records")
       page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.sole")
 
@@ -1320,8 +1317,8 @@ class RegisterWithEoriAndIdControllerSpec
 
       val company              = CdsOrganisationType.Company
       val isCustomsIdPopulated = true
-      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, false)
-      val page                 = CdsPage(result.toString())
+      val result = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = false)
+      val page   = CdsPage(result.toString())
       page.title() should startWith("Some details you entered do not match our records")
       page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.organisation")
 
@@ -1330,8 +1327,8 @@ class RegisterWithEoriAndIdControllerSpec
 
       val company              = CdsOrganisationType.ThirdCountryOrganisation
       val isCustomsIdPopulated = false
-      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = false)
-      val page                 = CdsPage(result.toString())
+      val result = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = false)
+      val page   = CdsPage(result.toString())
       page.title() should startWith("The name you entered does not match our records")
 
     }

@@ -24,7 +24,7 @@ import play.api.http.HeaderNames
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.mvc.Http.MimeTypes
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.UpdateCustomsDataStoreConnector
@@ -32,6 +32,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.Cu
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import util.externalservices.CustomsDataStoreStubService
 import util.externalservices.ExternalServicesConfig.{Host, Port}
+
+import java.net.SocketException
 
 class UpdateCustomsDataStoreConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
@@ -114,6 +116,17 @@ class UpdateCustomsDataStoreConnectorSpec extends IntegrationTestsSpec with Scal
       )
 
       a[BadRequestException] should be thrownBy {
+        await(customsDataStoreConnector.updateCustomsDataStore(request))
+      }
+    }
+
+    "return a failed future when update email endpoint returns error" in {
+      CustomsDataStoreStubService.returnFault(
+        expectedPostUrl,
+        serviceRequestJson.toString
+      )
+
+      a[SocketException] should be thrownBy {
         await(customsDataStoreConnector.updateCustomsDataStore(request))
       }
     }

@@ -65,9 +65,9 @@ case class RegistrationDisplayResponse(responseCommon: ResponseCommon, responseD
     case Some(detail) => detail
     case None =>
       val error = "RegisterWithIDResponse did not include expected ResponseDetail object"
-      // $COVERAGE-OFF$Loggers
+      // $COVERAGE-OFF$
       logger.warn(error)
-      // $COVERAGE-ON
+      // $COVERAGE-ON$
       throw new IllegalArgumentException(error)
   }
 

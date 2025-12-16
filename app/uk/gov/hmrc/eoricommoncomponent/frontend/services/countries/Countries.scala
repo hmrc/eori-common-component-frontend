@@ -44,9 +44,9 @@ object Countries extends Logging {
           }
         case _ =>
           val error = "Could not read JSON array of countries from : location-autocomplete-canonical-list.json"
-          // $COVERAGE-OFF$Loggers
+          // $COVERAGE-OFF$
           logger.warn(error)
-          // $COVERAGE-ON
+          // $COVERAGE-ON$
           throw new IllegalArgumentException(error)
       }
 

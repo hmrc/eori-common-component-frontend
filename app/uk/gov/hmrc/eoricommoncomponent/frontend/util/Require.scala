@@ -23,9 +23,9 @@ object Require extends Logging {
   @inline final def requireThatUrlValue(requirement: Boolean, message: => Any): Unit =
     if (!requirement) {
       val error = "invalid value: " + message
-      // $COVERAGE-OFF$Loggers
+      // $COVERAGE-OFF$
       logger.warn(error)
-      // $COVERAGE-ON
+      // $COVERAGE-ON$
       throw InvalidUrlValueException(error)
     }
 

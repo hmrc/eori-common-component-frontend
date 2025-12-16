@@ -64,140 +64,147 @@ trait SubscriptionDataGenerators {
     country      <- stringWithoutEmptyString
   } yield ContactAddressModel(addressLine1, addressLine2, addressLine3, addressLine4, Some(" "), country)
 
-  val subscriptionContactDetailsGenerator: Gen[ContactDetails] = for {
-    faxOption        <- Gen.option("01632961234")
-    postalCodeOption <- Gen.option("SE28 1AA")
-  } yield ContactDetails(
-    "John Doe",
-    "john.doe@example.com",
-    "01632961234",
-    faxOption,
-    "Line 1",
-    "city name",
-    postalCodeOption,
-    "ZZ"
-  )
+  val subscriptionContactDetailsGenerator: Gen[ContactDetails] =
+    for {
+      faxOption        <- Gen.option("01632961234")
+      postalCodeOption <- Gen.option("SE28 1AA")
+    } yield ContactDetails(
+      "John Doe",
+      "john.doe@example.com",
+      "01632961234",
+      faxOption,
+      "Line 1",
+      "city name",
+      postalCodeOption,
+      "ZZ"
+    )
 
-  val subscriptionContactDetailsWithoutPostcodeGenerator: Gen[ContactDetails] = for {
-    faxOption <- Gen.option("07893345672")
-  } yield ContactDetails(
-    "John Doe",
-    "john.doe@example.com",
-    "01632961234",
-    faxOption,
-    "Line 1",
-    "city name",
-    Some(""),
-    "ZZ"
-  )
+  val subscriptionContactDetailsWithoutPostcodeGenerator: Gen[ContactDetails] =
+    for {
+      faxOption <- Gen.option("07893345672")
+    } yield ContactDetails(
+      "John Doe",
+      "john.doe@example.com",
+      "01632961234",
+      faxOption,
+      "Line 1",
+      "city name",
+      Some(""),
+      "ZZ"
+    )
 
-  val subscriptionInfoServiceContactInformationGenerator: Gen[ContactInformation] = for {
-    personOfContactGen      <- Gen.option(stringWithoutEmptyString)
-    sepCorrAddrIndicatorGen <- Gen.option(trueFalseGenerator)
-    streetAndNumberGen      <- Gen.option(stringWithoutEmptyString)
-    cityGen                 <- Gen.option(stringWithoutEmptyString)
-    postalCodeGen           <- Gen.option(stringWithoutEmptyString)
-    countryCodeGen          <- Gen.option(stringWithoutEmptyString)
-    telephoneNumberGen      <- Gen.option(stringWithoutEmptyString)
-    faxNumberGen            <- Gen.option(stringWithoutEmptyString)
-    emailAddressGen         <- Gen.option(stringWithoutEmptyString)
-  } yield ContactInformation(
-    personOfContact = personOfContactGen,
-    sepCorrAddrIndicator = sepCorrAddrIndicatorGen,
-    streetAndNumber = streetAndNumberGen,
-    city = cityGen,
-    postalCode = postalCodeGen,
-    countryCode = countryCodeGen,
-    telephoneNumber = telephoneNumberGen,
-    faxNumber = faxNumberGen,
-    emailAddress = emailAddressGen
-  )
+  val subscriptionInfoServiceContactInformationGenerator: Gen[ContactInformation] =
+    for {
+      personOfContactGen      <- Gen.option(stringWithoutEmptyString)
+      sepCorrAddrIndicatorGen <- Gen.option(trueFalseGenerator)
+      streetAndNumberGen      <- Gen.option(stringWithoutEmptyString)
+      cityGen                 <- Gen.option(stringWithoutEmptyString)
+      postalCodeGen           <- Gen.option(stringWithoutEmptyString)
+      countryCodeGen          <- Gen.option(stringWithoutEmptyString)
+      telephoneNumberGen      <- Gen.option(stringWithoutEmptyString)
+      faxNumberGen            <- Gen.option(stringWithoutEmptyString)
+      emailAddressGen         <- Gen.option(stringWithoutEmptyString)
+    } yield ContactInformation(
+      personOfContact = personOfContactGen,
+      sepCorrAddrIndicator = sepCorrAddrIndicatorGen,
+      streetAndNumber = streetAndNumberGen,
+      city = cityGen,
+      postalCode = postalCodeGen,
+      countryCode = countryCodeGen,
+      telephoneNumber = telephoneNumberGen,
+      faxNumber = faxNumberGen,
+      emailAddress = emailAddressGen
+    )
 
-  val subscriptionInfoServiceContactInformationWithEmptyPostcodeGenerator: Gen[ContactInformation] = for {
-    personOfContactGen      <- Gen.option(stringWithoutEmptyString)
-    sepCorrAddrIndicatorGen <- Gen.option(trueFalseGenerator)
-    streetAndNumberGen      <- Gen.option(stringWithoutEmptyString)
-    cityGen                 <- Gen.option(stringWithoutEmptyString)
-    countryCodeGen          <- Gen.option(stringWithoutEmptyString)
-    telephoneNumberGen      <- Gen.option(stringWithoutEmptyString)
-    faxNumberGen            <- Gen.option(stringWithoutEmptyString)
-    emailAddressGen         <- Gen.option(stringWithoutEmptyString)
-  } yield ContactInformation(
-    personOfContact = personOfContactGen,
-    sepCorrAddrIndicator = sepCorrAddrIndicatorGen,
-    streetAndNumber = streetAndNumberGen,
-    city = cityGen,
-    postalCode = Some(""),
-    countryCode = countryCodeGen,
-    telephoneNumber = telephoneNumberGen,
-    faxNumber = faxNumberGen,
-    emailAddress = emailAddressGen
-  )
+  val subscriptionInfoServiceContactInformationWithEmptyPostcodeGenerator: Gen[ContactInformation] =
+    for {
+      personOfContactGen      <- Gen.option(stringWithoutEmptyString)
+      sepCorrAddrIndicatorGen <- Gen.option(trueFalseGenerator)
+      streetAndNumberGen      <- Gen.option(stringWithoutEmptyString)
+      cityGen                 <- Gen.option(stringWithoutEmptyString)
+      countryCodeGen          <- Gen.option(stringWithoutEmptyString)
+      telephoneNumberGen      <- Gen.option(stringWithoutEmptyString)
+      faxNumberGen            <- Gen.option(stringWithoutEmptyString)
+      emailAddressGen         <- Gen.option(stringWithoutEmptyString)
+    } yield ContactInformation(
+      personOfContact = personOfContactGen,
+      sepCorrAddrIndicator = sepCorrAddrIndicatorGen,
+      streetAndNumber = streetAndNumberGen,
+      city = cityGen,
+      postalCode = Some(""),
+      countryCode = countryCodeGen,
+      telephoneNumber = telephoneNumberGen,
+      faxNumber = faxNumberGen,
+      emailAddress = emailAddressGen
+    )
 
-  val contactDetailsCreateViewModelGenerator: Gen[ContactDetailsModel] = for {
-    fullName             <- stringWithoutEmptyString
-    emailAddress         <- stringWithoutEmptyString
-    telephone            <- stringWithoutEmptyString
-    fax                  <- Gen.option(stringWithoutEmptyString)
-    useRegisteredAddress <- trueFalseGenerator
-    street               <- stringWithoutEmptyString.map(Some(_))
-    city                 <- stringWithoutEmptyString.map(Some(_))
-    postcode             <- Gen.option(stringWithoutEmptyString)
-    countryCode          <- stringWithoutEmptyString.map(Some(_))
-  } yield ContactDetailsModel(
-    fullName = fullName,
-    emailAddress = emailAddress,
-    telephone = telephone,
-    fax = fax,
-    useAddressFromRegistrationDetails = useRegisteredAddress,
-    street = street,
-    city = city,
-    postcode = postcode,
-    countryCode = countryCode
-  )
+  val contactDetailsCreateViewModelGenerator: Gen[ContactDetailsModel] =
+    for {
+      fullName             <- stringWithoutEmptyString
+      emailAddress         <- stringWithoutEmptyString
+      telephone            <- stringWithoutEmptyString
+      fax                  <- Gen.option(stringWithoutEmptyString)
+      useRegisteredAddress <- trueFalseGenerator
+      street               <- stringWithoutEmptyString.map(Some(_))
+      city                 <- stringWithoutEmptyString.map(Some(_))
+      postcode             <- Gen.option(stringWithoutEmptyString)
+      countryCode          <- stringWithoutEmptyString.map(Some(_))
+    } yield ContactDetailsModel(
+      fullName = fullName,
+      emailAddress = emailAddress,
+      telephone = telephone,
+      fax = fax,
+      useAddressFromRegistrationDetails = useRegisteredAddress,
+      street = street,
+      city = city,
+      postcode = postcode,
+      countryCode = countryCode
+    )
 
-  val contactDetailsCreateViewModelWithEmptyPostcodeGenerator: Gen[ContactDetailsModel] = for {
-    fullName             <- stringWithoutEmptyString
-    emailAddress         <- stringWithoutEmptyString
-    telephone            <- stringWithoutEmptyString
-    fax                  <- Gen.option(stringWithoutEmptyString)
-    useRegisteredAddress <- trueFalseGenerator
-    street               <- stringWithoutEmptyString.map(Some(_))
-    city                 <- stringWithoutEmptyString.map(Some(_))
-    countryCode          <- stringWithoutEmptyString.map(Some(_))
-  } yield ContactDetailsModel(
-    fullName = fullName,
-    emailAddress = emailAddress,
-    telephone = telephone,
-    fax = fax,
-    useAddressFromRegistrationDetails = useRegisteredAddress,
-    street = street,
-    city = city,
-    postcode = Some(""),
-    countryCode = countryCode
-  )
+  val contactDetailsCreateViewModelWithEmptyPostcodeGenerator: Gen[ContactDetailsModel] =
+    for {
+      fullName             <- stringWithoutEmptyString
+      emailAddress         <- stringWithoutEmptyString
+      telephone            <- stringWithoutEmptyString
+      fax                  <- Gen.option(stringWithoutEmptyString)
+      useRegisteredAddress <- trueFalseGenerator
+      street               <- stringWithoutEmptyString.map(Some(_))
+      city                 <- stringWithoutEmptyString.map(Some(_))
+      countryCode          <- stringWithoutEmptyString.map(Some(_))
+    } yield ContactDetailsModel(
+      fullName = fullName,
+      emailAddress = emailAddress,
+      telephone = telephone,
+      fax = fax,
+      useAddressFromRegistrationDetails = useRegisteredAddress,
+      street = street,
+      city = city,
+      postcode = Some(""),
+      countryCode = countryCode
+    )
 
-  val contactDetailsCreateViewModelMissingAddressFieldsGenerator: Gen[ContactDetailsModel] = for {
-    fullName             <- stringWithoutEmptyString
-    emailAddress         <- stringWithoutEmptyString
-    telephone            <- stringWithoutEmptyString
-    fax                  <- Gen.option(stringWithoutEmptyString)
-    useRegisteredAddress <- trueFalseGenerator
-    street               <- Gen.option(stringWithoutEmptyString)
-    city                 <- Gen.option(stringWithoutEmptyString)
-    postcode             <- Gen.option(stringWithoutEmptyString)
-    countryCode          <- if (street.isDefined && city.isDefined) Gen.const(None) else Gen.option(stringWithoutEmptyString)
-  } yield ContactDetailsModel(
-    fullName = fullName,
-    emailAddress = emailAddress,
-    telephone = telephone,
-    fax = fax,
-    useAddressFromRegistrationDetails = useRegisteredAddress,
-    street = street,
-    city = city,
-    postcode = postcode,
-    countryCode = countryCode
-  )
+  val contactDetailsCreateViewModelMissingAddressFieldsGenerator: Gen[ContactDetailsModel] =
+    for {
+      fullName             <- stringWithoutEmptyString
+      emailAddress         <- stringWithoutEmptyString
+      telephone            <- stringWithoutEmptyString
+      fax                  <- Gen.option(stringWithoutEmptyString)
+      useRegisteredAddress <- trueFalseGenerator
+      street               <- Gen.option(stringWithoutEmptyString)
+      city                 <- Gen.option(stringWithoutEmptyString)
+      postcode             <- Gen.option(stringWithoutEmptyString)
+      countryCode <- if (street.isDefined && city.isDefined) Gen.const(None) else Gen.option(stringWithoutEmptyString)
+    } yield ContactDetailsModel(
+      fullName = fullName,
+      emailAddress = emailAddress,
+      telephone = telephone,
+      fax = fax,
+      useAddressFromRegistrationDetails = useRegisteredAddress,
+      street = street,
+      city = city,
+      postcode = postcode,
+      countryCode = countryCode
+    )
 
   val contactDetailsCreateViewModelAndAddressGenerator: Gen[(ContactDetailsModel, Address)] = for {
     model   <- contactDetailsCreateViewModelGenerator

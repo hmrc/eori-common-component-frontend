@@ -33,21 +33,6 @@ class OrgTypeLookup @Inject() (requestSessionData: RequestSessionData, sessionCa
   ec: ExecutionContext
 ) extends Logging {
 
-  def etmpOrgTypeOpt(implicit request: Request[AnyContent]): Future[Option[EtmpOrganisationType]] =
-    requestSessionData.userSelectedOrganisationType match {
-      case Some(cdsOrgType) => Future.successful(Some(EtmpOrganisationType(cdsOrgType)))
-      case None =>
-        sessionCache.registrationDetails map {
-          case RegistrationDetailsOrganisation(_, _, _, _, _, _, orgType) => orgType
-          case _ =>
-            val error = "No Registration details in cache."
-            // $COVERAGE-OFF$Loggers
-            logger.warn(error)
-            // $COVERAGE-ON
-            throw DataUnavailableException(error)
-        }
-    }
-
   def etmpOrgType(implicit request: Request[AnyContent]): Future[EtmpOrganisationType] =
     requestSessionData.userSelectedOrganisationType match {
       case Some(cdsOrgType) => Future.successful(EtmpOrganisationType(cdsOrgType))
@@ -56,15 +41,15 @@ class OrgTypeLookup @Inject() (requestSessionData: RequestSessionData, sessionCa
           case RegistrationDetailsOrganisation(_, _, _, _, _, _, Some(orgType)) => orgType
           case RegistrationDetailsOrganisation(_, _, _, _, _, _, _) =>
             val error = "Unable to retrieve Org Type from the cache"
-            // $COVERAGE-OFF$Loggers
+            // $COVERAGE-OFF$
             logger.warn(error)
-            // $COVERAGE-ON
+            // $COVERAGE-ON$
             throw DataUnavailableException(error)
           case _ =>
             val error = "etmpOrgType: No Registration details in cache."
-            // $COVERAGE-OFF$Loggers
+            // $COVERAGE-OFF$
             logger.warn(error)
-            // $COVERAGE-ON
+            // $COVERAGE-ON$
             throw DataUnavailableException(error)
         }
     }

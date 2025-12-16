@@ -35,45 +35,45 @@ object ContactAddressForm {
         "line-4"      -> optional(text.verifying(validLine4)),
         "postcode"    -> postcodeMapping,
         "countryCode" -> Mappings.mandatoryString("cds.matching-error.country.invalid")(s => s.length == Length2)
-      )(ContactAddressModel.apply)(ContactAddressModel.unapply)
+      )(ContactAddressModel.apply)(contactAddressModel => Some(Tuple.fromProductTyped(contactAddressModel)))
     )
 
-  def validLine1: Constraint[String] =
-    Constraint({
+  private def validLine1: Constraint[String] =
+    Constraint {
       case s if s.trim.isEmpty => Invalid(ValidationError("cds.matching.organisation-address.line-1.error.empty"))
       case s if s.trim.length > 35 =>
         Invalid(ValidationError("cds.matching.organisation-address.line-1.error.too-long"))
       case s if !s.matches(validCharsRegex) =>
         Invalid(ValidationError("cds.matching.organisation-address.line-1.error.invalid-chars"))
       case _ => Valid
-    })
+    }
 
-  def validLine2: Constraint[String] =
-    Constraint({
+  private def validLine2: Constraint[String] =
+    Constraint {
       case s if s.trim.length > 34 =>
         Invalid(ValidationError("cds.matching.organisation-address.line-2.error.too-long"))
       case s if !s.matches(validCharsRegex) =>
         Invalid(ValidationError("cds.matching.organisation-address.line-2.error.invalid-chars"))
       case _ => Valid
-    })
+    }
 
-  def validLine3: Constraint[String] =
-    Constraint({
+  private def validLine3: Constraint[String] =
+    Constraint {
       case s if s.trim.isEmpty => Invalid(ValidationError("cds.matching.organisation-address.line-3.error.empty"))
       case s if s.trim.length > 34 =>
         Invalid(ValidationError("cds.matching.organisation-address.line-3.error.too-long"))
       case s if !s.matches(validCharsRegex) =>
         Invalid(ValidationError("cds.matching.organisation-address.line-3.error.invalid-chars"))
       case _ => Valid
-    })
+    }
 
-  def validLine4: Constraint[String] =
-    Constraint({
+  private def validLine4: Constraint[String] =
+    Constraint {
       case s if s.trim.length > 35 =>
         Invalid(ValidationError("cds.matching.organisation-address.line-4.error.too-long"))
       case s if !s.matches(validCharsRegex) =>
         Invalid(ValidationError("cds.matching.organisation-address.line-4.error.invalid-chars"))
       case _ => Valid
-    })
+    }
 
 }

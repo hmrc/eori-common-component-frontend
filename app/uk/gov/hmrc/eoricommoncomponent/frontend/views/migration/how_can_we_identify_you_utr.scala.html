@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain.IdMatchModel
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
@@ -22,7 +21,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.helper._
 
-@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, appConfig: AppConfig, govukButton: GovukButton, h1: helpers.h1, link: helpers.link,h2: helpers.h2 , p: helpers.paragraph)
+@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton, h1: helpers.h1, link: helpers.link,h2: helpers.h2 , p: helpers.paragraph)
 
 @(utrForm: Form[IdMatchModel], pageContent: Map[String , String], isInReviewMode: Boolean, submit: Call, service: Service)(implicit request: Request[_], messages: Messages)
 

@@ -42,7 +42,7 @@ class Sub02Controller @Inject() (
     extends CdsController(mcc) with EnrolmentExtractor {
 
   def migrationEnd(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithServiceAction {
-    implicit request => user: LoggedInUserWithEnrolments =>
+    implicit request => (user: LoggedInUserWithEnrolments) =>
       activatedEnrolmentForService(user, service) match {
         case Some(_) => Future.successful(Redirect(CompletedEnrolmentController.enrolSuccess(service)))
         case _ =>
@@ -61,28 +61,12 @@ class Sub02Controller @Inject() (
     for {
       sub02Outcome <- sessionCache.sub02Outcome
       _            <- sessionCache.journeyCompleted
-    } yield Ok(
-      migrationSuccessView(
-        sub02Outcome.eori,
-        sub02Outcome.fullName,
-        sub02Outcome.processedDate,
-        subscriptionTo(service),
-        service
-      )
-    )
+    } yield Ok(migrationSuccessView(sub02Outcome.processedDate, subscriptionTo(service), service))
 
   private def renderPageWithNameRow(service: Service)(implicit request: Request[_]): Future[Result] =
     for {
       sub02Outcome <- sessionCache.sub02Outcome
       _            <- sessionCache.journeyCompleted
-    } yield Ok(
-      migrationSuccessView(
-        sub02Outcome.eori,
-        sub02Outcome.fullName,
-        sub02Outcome.processedDate,
-        subscriptionTo(service),
-        service
-      )
-    )
+    } yield Ok(migrationSuccessView(sub02Outcome.processedDate, subscriptionTo(service), service))
 
 }

@@ -28,7 +28,6 @@ import util.ViewSpec
 
 class Reg06IdAlreadyLinkedSpec extends ViewSpec {
 
-  private val name              = "John Doe"
   private val email             = "email@email.email"
   private val eori              = "GB123456789012"
   private val expectedPageTitle = "The details you gave us are matched to a different EORI number"
@@ -175,9 +174,7 @@ class Reg06IdAlreadyLinkedSpec extends ViewSpec {
     customsId: Option[CustomsId] = utr,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
   ): Document =
-    Jsoup.parse(
-      contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email))
-    )
+    Jsoup.parse(contentAsString(view(eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email)))
 
   def docNino(
     isIndividual: Boolean = true,
@@ -186,9 +183,7 @@ class Reg06IdAlreadyLinkedSpec extends ViewSpec {
     customsId: Option[CustomsId] = nino,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
   ): Document =
-    Jsoup.parse(
-      contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email))
-    )
+    Jsoup.parse(contentAsString(view(eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email)))
 
   def docNoId(
     isIndividual: Boolean = false,
@@ -197,9 +192,7 @@ class Reg06IdAlreadyLinkedSpec extends ViewSpec {
     customsId: Option[CustomsId] = utr,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = None
   ): Document =
-    Jsoup.parse(
-      contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email))
-    )
+    Jsoup.parse(contentAsString(view(eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email)))
 
   def docNinoNone(
     isIndividual: Boolean = true,
@@ -208,8 +201,6 @@ class Reg06IdAlreadyLinkedSpec extends ViewSpec {
     customsId: Option[CustomsId] = None,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
   ): Document =
-    Jsoup.parse(
-      contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email))
-    )
+    Jsoup.parse(contentAsString(view(eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email)))
 
 }

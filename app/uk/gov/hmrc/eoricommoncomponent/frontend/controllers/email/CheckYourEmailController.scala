@@ -57,12 +57,12 @@ class CheckYourEmailController @Inject() (
 
   def createForm(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
     authAction.enrolledUserClearingCacheOnCompletionAction {
-      implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
+      implicit request => (userWithEnrolments: LoggedInUserWithEnrolments) =>
         save4LaterService.fetchEmailForService(service, subscribeJourney, GroupId(userWithEnrolments.groupId)) flatMap {
           _.fold {
-            // $COVERAGE-OFF$Loggers
+            // $COVERAGE-OFF$
             logger.warn("[CheckYourEmailController][createForm] -   emailStatus cache none")
-            // $COVERAGE-ON
+            // $COVERAGE-ON$
             populateView(None, isInReviewMode = false, service, subscribeJourney)
           } { emailStatus =>
             populateView(emailStatus.email, isInReviewMode = false, service, subscribeJourney: SubscribeJourney)
@@ -71,36 +71,35 @@ class CheckYourEmailController @Inject() (
     }
 
   def submit(isInReviewMode: Boolean, service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
-    authAction.enrolledUserClearingCacheOnCompletionAction {
-      implicit request => implicit userWithEnrolments: LoggedInUserWithEnrolments =>
-        confirmEmailYesNoAnswerForm()
-          .bindFromRequest()
-          .fold(
-            formWithErrors =>
-              Future(
-                BadRequest(
-                  checkYourEmailView(
-                    None,
-                    formWithErrors,
-                    isInReviewMode = isInReviewMode,
-                    service = service,
-                    subscribeJourney
-                  )
+    authAction.enrolledUserClearingCacheOnCompletionAction { implicit request => implicit userWithEnrolments =>
+      confirmEmailYesNoAnswerForm()
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            Future(
+              BadRequest(
+                checkYourEmailView(
+                  None,
+                  formWithErrors,
+                  isInReviewMode = isInReviewMode,
+                  service = service,
+                  subscribeJourney
                 )
-              ),
-            yesNoAnswer => locationByAnswer(yesNoAnswer, service, subscribeJourney)
-          )
+              )
+            ),
+          yesNoAnswer => locationByAnswer(yesNoAnswer, service, subscribeJourney)
+        )
     }
 
   def emailConfirmed(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
     authAction.enrolledUserClearingCacheOnCompletionAction {
-      implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
+      implicit request => (userWithEnrolments: LoggedInUserWithEnrolments) =>
         save4LaterService.fetchEmailForService(service, subscribeJourney, GroupId(userWithEnrolments.groupId)) flatMap {
           emailStatus =>
             emailStatus.fold {
-              // $COVERAGE-OFF$Loggers
+              // $COVERAGE-OFF$
               logger.warn("[CheckYourEmailController][emailConfirmed] -  emailStatus cache none")
-              // $COVERAGE-ON
+              // $COVERAGE-ON$
               Future.successful(Redirect(routes.SecuritySignOutController.signOut(service)))
             } { email =>
               if (email.isConfirmed.getOrElse(false))
@@ -124,7 +123,7 @@ class CheckYourEmailController @Inject() (
     Ok(emailConfirmedView(service, subscribeJourney))
 
   def acceptConfirmation(service: Service): Action[AnyContent] =
-    authAction.enrolledUserClearingCacheOnCompletionAction { _ => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserClearingCacheOnCompletionAction { _ => (_: LoggedInUserWithEnrolments) =>
       Future.successful(Redirect(WhatIsYourEoriController.createForm(service)))
     }
 
@@ -133,7 +132,7 @@ class CheckYourEmailController @Inject() (
     userWithEnrolments: LoggedInUserWithEnrolments
   ): Future[Result] = yesNoAnswer match {
     case theAnswer if theAnswer.isYes => emailJourneyService.continue(service, subscribeJourney)
-    case _                            => Future(Redirect(WhatIsYourEmailController.createForm(service, subscribeJourney)))
+    case _ => Future(Redirect(WhatIsYourEmailController.createForm(service, subscribeJourney)))
   }
 
 }

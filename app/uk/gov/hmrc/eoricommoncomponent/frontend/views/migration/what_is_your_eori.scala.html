@@ -23,13 +23,9 @@
 @import views.html.helper._
 
 
-@this(layout_di: layout, errorSummary: helpers.errorSummary, h1: helpers.h1, inputText: helpers.inputText, appConfig: AppConfig, govukButton: GovukButton, govukInput: GovukInput, govukDetails: GovukDetails)
+@this(layout_di: layout, errorSummary: helpers.errorSummary, h1: helpers.h1, inputText: helpers.inputText, appConfig: AppConfig, govukButton: GovukButton, govukDetails: GovukDetails)
 
-@(eoriNumberForm: Form[EoriNumberViewModel],
-        isInReviewMode: Boolean,
-        isRestOfWorldJourney: Boolean,
-        service: Service)(implicit request: Request[_], messages: Messages)
-
+@(eoriNumberForm: Form[EoriNumberViewModel], isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
 @getEoriLink = {
     <a class="govuk-link" href=@appConfig.eoriCommonComponentRegistrationFrontend(service.code)>@messages("cds.subscription.enter-eori-number.no-eori.link")</a>

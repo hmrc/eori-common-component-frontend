@@ -36,13 +36,13 @@ class EoriAlreadyUsedController @Inject() (
     extends CdsController(mcc) {
 
   def displayPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
+    implicit request => (_: LoggedInUserWithEnrolments) =>
       Future.successful(Ok(eoriAlreadyUsedView(service)))
   }
 
   def signInToAnotherAccount(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserAction {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         cache.remove map { _ =>
           Redirect(routes.ApplicationController.startSubscription(service)).withNewSession
         }

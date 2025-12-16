@@ -20,9 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Request
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressLookupParams, AddressResultsForm}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressResultsForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.AddressLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.address_lookup_results
 import util.ViewSpec
@@ -33,8 +31,6 @@ class AddressLookupResultsViewSpec extends ViewSpec {
 
   implicit val request: Request[Any] = withFakeCSRF(fakeAtarSubscribeRequest)
 
-  private val params = AddressLookupParams("AA11 1AA", Some("Flat 1"))
-
   private val allowedAddress =
     Seq(AddressLookup("Line 1", "City", "BB11 1BB", "GB"), AddressLookup("Line 1", "City2", "BB11 1BC", "GB"))
 
@@ -43,14 +39,14 @@ class AddressLookupResultsViewSpec extends ViewSpec {
   private val formWithError =
     AddressResultsForm.form(allowedAddress.map(_.dropDownView)).bind(Map("address" -> "invalid"))
 
-  private def doc(selectedOrganisationType: CdsOrganisationType = Company): Document =
-    Jsoup.parse(contentAsString(view(form, params, allowedAddress, false, selectedOrganisationType, atarService)))
+  private def doc(): Document =
+    Jsoup.parse(contentAsString(view(form, allowedAddress, isInReviewMode = false, atarService)))
 
   private val reviewDoc: Document =
-    Jsoup.parse(contentAsString(view(form, params, allowedAddress, true, Company, atarService)))
+    Jsoup.parse(contentAsString(view(form, allowedAddress, isInReviewMode = true, atarService)))
 
   private val docWithErrorSummary =
-    Jsoup.parse(contentAsString(view(formWithError, params, allowedAddress, false, Company, atarService)))
+    Jsoup.parse(contentAsString(view(formWithError, allowedAddress, isInReviewMode = false, atarService)))
 
   "Address Lookup Postcode page" should {
 
@@ -66,32 +62,32 @@ class AddressLookupResultsViewSpec extends ViewSpec {
 
     "display title for individual" in {
 
-      doc(SoleTrader).title() must startWith("Select your address")
+      doc().title() must startWith("Select your address")
     }
 
     "display header for individual" in {
 
-      doc(SoleTrader).body().getElementsByTag("h1").text() mustBe "Select your address"
+      doc().body().getElementsByTag("h1").text() mustBe "Select your address"
     }
 
     "display title for partnership" in {
 
-      doc(Partnership).title() must startWith("Select your address")
+      doc().title() must startWith("Select your address")
     }
 
     "display header for partnership" in {
 
-      doc(Partnership).body().getElementsByTag("h1").text() mustBe "Select your address"
+      doc().body().getElementsByTag("h1").text() mustBe "Select your address"
     }
 
     "display title for charity" in {
 
-      doc(CharityPublicBodyNotForProfit).title() must startWith("Select your address")
+      doc().title() must startWith("Select your address")
     }
 
     "display header for charity" in {
 
-      doc(CharityPublicBodyNotForProfit).body().getElementsByTag("h1").text() mustBe "Select your address"
+      doc().body().getElementsByTag("h1").text() mustBe "Select your address"
     }
 
     "display address selection list" in {

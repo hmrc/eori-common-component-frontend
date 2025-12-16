@@ -62,7 +62,7 @@ class EmailJourneyService @Inject() (
   ): Future[Result] =
     save4LaterService.fetchEmailForService(service, subscribeJourney, GroupId(user.groupId)) flatMap {
       _.fold {
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.info(s"emailStatus cache none ${user.internalId}")
         Future.successful(Redirect(emailRoutes.WhatIsYourEmailController.createForm(service, subscribeJourney)))
       } { cachedEmailStatus =>
@@ -93,19 +93,19 @@ class EmailJourneyService @Inject() (
     hc: HeaderCarrier
   ): Future[Result] =
     emailVerificationService.getVerificationStatus(email, credId).foldF(
-      (_ => Future.successful(InternalServerError(errorPage(service)))),
+      _ => Future.successful(InternalServerError(errorPage(service))),
       {
         case EmailVerificationStatus.Verified =>
           onVerifiedEmail(subscribeJourney, service, email, emailStatus, GroupId(userWithEnrolments.groupId))
         case EmailVerificationStatus.Unverified =>
-          // $COVERAGE-OFF$Loggers
+          // $COVERAGE-OFF$
           logger.info("Email address was not verified")
-          // $COVERAGE-ON
+          // $COVERAGE-ON$
           submitNewDetails(email, service, subscribeJourney, credId)
         case EmailVerificationStatus.Locked =>
-          // $COVERAGE-OFF$Loggers
+          // $COVERAGE-OFF$
           logger.warn("Email address is locked")
-          // $COVERAGE-ON
+          // $COVERAGE-ON$
           Future.successful(Redirect(emailRoutes.LockedEmailController.onPageLoad(service)))
       }
     )
@@ -128,7 +128,7 @@ class EmailJourneyService @Inject() (
           }
         } yield verifiedEmailStatus
       case _ =>
-        //if it's a Long Journey or Short journey for other services than cds we do not update email.
+        // if it's a Long Journey or Short journey for other services than cds we do not update email.
         Future.successful(Right((): Unit))
     }).flatMap {
       case Right(_) =>
@@ -141,9 +141,9 @@ class EmailJourneyService @Inject() (
           _ <- sessionCache.saveEmail(email)
         } yield Redirect(emailRoutes.CheckYourEmailController.emailConfirmed(service, subscribeJourney))
       case Left(UpdateEmailError(_)) =>
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn("Update Verified Email failed with user-retriable error. Redirecting to error page.")
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         Future.successful(Ok(emailErrorPage(service)))
       case Left(_) => throw new IllegalArgumentException("Update Verified Email failed with non-retriable error")
     }
@@ -156,9 +156,8 @@ class EmailJourneyService @Inject() (
   )(implicit request: Request[AnyContent], messages: Messages, hc: HeaderCarrier): Future[Result] =
     emailVerificationService.startVerificationJourney(credId, service, email, subscribeJourney).fold(
       _ => InternalServerError(errorPage(service)),
-      { responseWithUri: ResponseWithURI =>
+      (responseWithUri: ResponseWithURI) =>
         Redirect(s"${appConfig.emailVerificationFrontendBaseUrl}${responseWithUri.redirectUri}")
-      }
     )
 
   private def verifiedInCache(service: Service, subscribeJourney: SubscribeJourney)(implicit

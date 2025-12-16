@@ -805,7 +805,6 @@ class CheckYourDetailsSpec extends ViewSpec {
       Some(NameOrganisationMatchModel("Org name")),
       nameDobMatchModel,
       dateTime,
-      None,
       customsId,
       companyRegisteredCountry,
       addressLookupParams,

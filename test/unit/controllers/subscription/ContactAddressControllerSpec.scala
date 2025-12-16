@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Contact
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController.submit
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.UserLocationDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactAddressSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Country
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_address
@@ -52,7 +52,6 @@ class ContactAddressControllerSpec
   protected override def submitInReviewModeUrl: String =
     submit(atarService, isInReviewMode = true).url
 
-  private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockCdsFrontendDataCache       = mock[SessionCache]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val emulatedFailure                = new UnsupportedOperationException("Emulation of service call failure")
@@ -65,7 +64,6 @@ class ContactAddressControllerSpec
     mockSubscriptionDetailsService,
     mockSubscriptionBusinessService,
     mockSubscriptionFlowManager,
-    mockRequestSessionData,
     mockCdsFrontendDataCache,
     viewAddress
   )
@@ -110,7 +108,6 @@ class ContactAddressControllerSpec
   override protected def afterEach(): Unit = {
     reset(mockSubscriptionBusinessService)
     reset(mockSubscriptionFlowManager)
-    reset(mockRequestSessionData)
     reset(mockSubscriptionDetailsService)
     reset(mockCdsFrontendDataCache)
 

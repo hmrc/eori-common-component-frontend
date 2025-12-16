@@ -44,14 +44,15 @@ class CdsSubscriber @Inject() (
     val isRowF           = Future.successful(UserLocation.isRow(requestSessionData))
     val cachedCustomsIdF = subscriptionDetailsService.cachedCustomsId
 
-    val result = for {
-      isRow    <- isRowF
-      customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
-    } yield (isRow, customId) match {
-      case (true, Some(_)) => migrationEoriUK(service)  //Has NINO/UTR as identifier UK journey
-      case (true, None)    => migrationEoriROW(service) //ROW
-      case (false, _)      => migrationEoriUK(service)  //UK Journey
-    }
+    val result =
+      for {
+        isRow    <- isRowF
+        customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
+      } yield (isRow, customId) match {
+        case (true, Some(_)) => migrationEoriUK(service)  // Has NINO/UTR as identifier UK journey
+        case (true, None)    => migrationEoriROW(service) // ROW
+        case (false, _)      => migrationEoriUK(service)  // UK Journey
+      }
     result.flatMap(identity)
   }
 
@@ -128,7 +129,7 @@ class CdsSubscriber @Inject() (
         completeSubscription(
           service,
           subDetails.name,
-          subDetails.eoriNumber.map(Eori),
+          subDetails.eoriNumber.map(Eori.apply),
           email,
           regDetails.safeId,
           contactName,
@@ -172,7 +173,7 @@ class CdsSubscriber @Inject() (
         completeSubscription(
           service,
           subDetails.name,
-          subDetails.eoriNumber.map(Eori),
+          subDetails.eoriNumber.map(Eori.apply),
           email,
           safeId,
           contactName,

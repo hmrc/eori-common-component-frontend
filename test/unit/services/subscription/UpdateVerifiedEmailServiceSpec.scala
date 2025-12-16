@@ -45,7 +45,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
 }
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.{LocalDateTime, ZoneOffset}
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

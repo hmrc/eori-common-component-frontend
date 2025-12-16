@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.config
 
-import play.api.{Configuration, Logging}
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
+import play.api.{Configuration, Logging}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Done
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2

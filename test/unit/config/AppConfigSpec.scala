@@ -52,7 +52,7 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
     }
 
     "have allowlistReferrers defined" in {
-      appConfig.allowlistReferrers shouldBe Array.empty
+      appConfig.allowlistReferrers shouldBe Seq.empty[String]
     }
 
     "have emailVerificationBaseUrl defined" in {
@@ -144,11 +144,10 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
     }
 
     "register for an EORI link takes user to ECC" in {
-      services.foreach(
-        serviceCode =>
-          appConfig.eoriCommonComponentRegistrationFrontend(
-            serviceCode
-          ) shouldBe s"http://localhost:6751/customs-registration-services/$serviceCode/register"
+      services.foreach(serviceCode =>
+        appConfig.eoriCommonComponentRegistrationFrontend(
+          serviceCode
+        ) shouldBe s"http://localhost:6751/customs-registration-services/$serviceCode/register"
       )
     }
 

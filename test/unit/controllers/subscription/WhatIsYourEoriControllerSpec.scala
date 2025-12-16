@@ -63,7 +63,6 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
     groupEnrolmentExtractor,
     enrolmentStoreProxyService,
     mockCheckEoriNumberConnector,
-    mockRequestSessionData,
     mcc,
     whatIsYourEoriView
   )
@@ -78,7 +77,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
     super.beforeEach()
 
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(whatIsYourEoriView.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(whatIsYourEoriView.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCheckEoriNumberConnector.check(any())(any(), any())).thenReturn(checkEoriSuccess)
     when(mockSubscriptionDetailsService.cacheEoriNumber(any())(any())).thenReturn(Future.successful(()))
   }
@@ -127,7 +126,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
 
         status(result) shouldBe OK
 
-        verify(whatIsYourEoriView).apply(formCaptor.capture(), meq(false), any(), any())(any(), any())
+        verify(whatIsYourEoriView).apply(formCaptor.capture(), meq(false), any())(any(), any())
 
         formCaptor.getValue.data shouldBe Map("eori-number" -> eoriWithoutCountry)
       }
@@ -144,7 +143,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
 
         status(result) shouldBe OK
 
-        verify(whatIsYourEoriView).apply(formCaptor.capture(), meq(false), any(), any())(any(), any())
+        verify(whatIsYourEoriView).apply(formCaptor.capture(), meq(false), any())(any(), any())
 
         formCaptor.getValue.data shouldBe Map.empty
       }
@@ -161,7 +160,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
 
         status(result) shouldBe OK
 
-        verify(whatIsYourEoriView).apply(formCaptor.capture(), meq(true), any(), any())(any(), any())
+        verify(whatIsYourEoriView).apply(formCaptor.capture(), meq(true), any())(any(), any())
 
         formCaptor.getValue.data shouldBe Map("eori-number" -> eoriWithoutCountry)
       }
@@ -178,7 +177,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
 
         status(result) shouldBe OK
 
-        verify(whatIsYourEoriView).apply(formCaptor.capture(), meq(true), any(), any())(any(), any())
+        verify(whatIsYourEoriView).apply(formCaptor.capture(), meq(true), any())(any(), any())
 
         formCaptor.getValue.data shouldBe Map.empty
       }
@@ -191,7 +190,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
         val result = controller.submit(isInReviewMode = false, atarService)(postRequest("eori-number" -> "incorrect"))
 
         status(result) shouldBe BAD_REQUEST
-        verify(whatIsYourEoriView).apply(any(), any(), any(), any())(any(), any())
+        verify(whatIsYourEoriView).apply(any(), any(), any())(any(), any())
       }
     }
 

@@ -36,13 +36,13 @@ class EnrolmentAlreadyExistsController @Inject() (
 
   def enrolmentAlreadyExists(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserAction {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         Future.successful(Ok(registrationExistsView(service)))
     }
 
   def enrolmentAlreadyExistsForGroup(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserAction {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         Future.successful(Ok(registrationExistsForGroupView(service)))
     }
 

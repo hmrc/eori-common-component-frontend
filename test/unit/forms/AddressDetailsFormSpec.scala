@@ -36,14 +36,14 @@ class AddressDetailsFormSpec extends UnitSpec with MockitoSugar with I18nSupport
   "Address Details Form" should {
     "fail street validation" when {
       "street is empty" in {
-        val formData                    = Map("street" -> "", "city" -> "London", "postcode" -> "SW3 5DA", "countryCode" -> "GB")
+        val formData = Map("street" -> "", "city" -> "London", "postcode" -> "SW3 5DA", "countryCode" -> "GB")
         val res: Form[AddressViewModel] = AddressDetailsForm.addressDetailsCreateForm().bind(formData)
         res.errors shouldBe Seq(FormError("street", "cds.subscription.address-details.street.empty.error"))
       }
 
       "street is longer than 70 characters" in {
         val formData = Map(
-          "street"      -> "ofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjdofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjd",
+          "street" -> "ofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjdofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjd",
           "city"        -> "London",
           "postcode"    -> "SW3 5DA",
           "countryCode" -> "GB"
@@ -53,13 +53,13 @@ class AddressDetailsFormSpec extends UnitSpec with MockitoSugar with I18nSupport
       }
 
       "street contains invalid characters" in {
-        val formData                    = Map("street" -> "^[^<>]+$", "city" -> "London", "postcode" -> "SW3 5DA", "countryCode" -> "GB")
+        val formData = Map("street" -> "^[^<>]+$", "city" -> "London", "postcode" -> "SW3 5DA", "countryCode" -> "GB")
         val res: Form[AddressViewModel] = AddressDetailsForm.addressDetailsCreateForm().bind(formData)
         res.errors shouldBe Seq(FormError("street", "cds.subscription.address-details.street.error.invalid-chars"))
       }
 
       "street contains more invalid characters" in {
-        val formData                    = Map("street" -> "#1", "city" -> "London", "postcode" -> "SW3 5DA", "countryCode" -> "GB")
+        val formData = Map("street" -> "#1", "city" -> "London", "postcode" -> "SW3 5DA", "countryCode" -> "GB")
         val res: Form[AddressViewModel] = AddressDetailsForm.addressDetailsCreateForm().bind(formData)
         res.errors shouldBe Seq(FormError("street", "cds.subscription.address-details.street.error.invalid-chars"))
       }
@@ -67,7 +67,7 @@ class AddressDetailsFormSpec extends UnitSpec with MockitoSugar with I18nSupport
 
     "fail city validation" when {
       "city contains invalid characters" in {
-        val formData                    = Map("street" -> "1", "city" -> "#London", "postcode" -> "SW3 5DA", "countryCode" -> "GB")
+        val formData = Map("street" -> "1", "city" -> "#London", "postcode" -> "SW3 5DA", "countryCode" -> "GB")
         val res: Form[AddressViewModel] = AddressDetailsForm.addressDetailsCreateForm().bind(formData)
         res.errors shouldBe Seq(FormError("city", "cds.subscription.address-details.page-error.city.invalid-chars"))
       }
@@ -84,7 +84,7 @@ class AddressDetailsFormSpec extends UnitSpec with MockitoSugar with I18nSupport
 
     "fail postcode validation" when {
       "postcode is empty" in {
-        val formData                    = Map("street" -> "33 Nine Elms Ln", "city" -> "London", "postcode" -> "", "countryCode" -> "GB")
+        val formData = Map("street" -> "33 Nine Elms Ln", "city" -> "London", "postcode" -> "", "countryCode" -> "GB")
         val res: Form[AddressViewModel] = AddressDetailsForm.addressDetailsCreateForm().bind(formData)
         res.errors shouldBe Seq(FormError("postcode", "cds.subscription.contact-details.error.postcode"))
       }

@@ -63,11 +63,10 @@ object AddressLookupPostcodeViewModel {
       case _                           => None
     }
 
-    val addressLink = {
+    val addressLink =
       if (isInReviewMode)
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service)
       else uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(service)
-    }
     AddressLookupPostcodeViewModel(pageTitleKey, formHintKey, paragraphWithLink, hintTextKey, addressLink)
 
   }

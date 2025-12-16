@@ -25,7 +25,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameOrganisationForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
@@ -39,7 +38,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class NameOrgController @Inject() (
   authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
-  sessionCache: SessionCache,
   subscriptionFlowManager: SubscriptionFlowManager,
   mcc: MessagesControllerComponents,
   nameOrgView: nameOrg,
@@ -48,26 +46,23 @@ class NameOrgController @Inject() (
     extends CdsController(mcc) {
 
   def createForm(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       subscriptionBusinessService.cachedNameOrganisationViewModel flatMap { maybeCachedNameViewModel =>
         populateOkView(maybeCachedNameViewModel, isInReviewMode = false, service)
       }
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       subscriptionBusinessService.getCachedNameViewModel flatMap { nameOrgMatchModel =>
         populateOkView(Some(nameOrgMatchModel), isInReviewMode = true, service)
       }
     }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       nameOrganisationForm.bindFromRequest().fold(
-        formWithErrors =>
-          sessionCache.registrationDetails map { registrationDetails =>
-            BadRequest(nameOrgView(formWithErrors, registrationDetails, isInReviewMode, service))
-          },
+        formWithErrors => Future.successful(BadRequest(nameOrgView(formWithErrors, isInReviewMode, service))),
         formData => storeNameDetails(formData, isInReviewMode, service)
       )
     }
@@ -79,10 +74,7 @@ class NameOrgController @Inject() (
   )(implicit request: Request[AnyContent]): Future[Result] = {
     lazy val form =
       maybeNameViewModel.fold(nameOrganisationForm)(nameOrganisationForm.fill)
-
-    sessionCache.registrationDetails map { registrationDetails =>
-      Ok(nameOrgView(form, registrationDetails, isInReviewMode, service))
-    }
+    Future.successful(Ok(nameOrgView(form, isInReviewMode, service)))
   }
 
   private def storeNameDetails(formData: NameOrganisationMatchModel, inReviewMode: Boolean, service: Service)(implicit

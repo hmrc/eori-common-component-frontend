@@ -69,7 +69,9 @@ class ConditionalValidatePostcodeFormSpec extends UnitSpec {
   case class Model(countryCode: String, postcode: Option[String])
 
   lazy val form: Form[Model] = Form(
-    mapping("countryCode" -> nonEmptyText, "postcode" -> postcodeMapping)(Model.apply)(Model.unapply)
+    mapping("countryCode" -> nonEmptyText, "postcode" -> postcodeMapping)(Model.apply)(model =>
+      Some(Tuple.fromProductTyped(model))
+    )
   )
 
 }

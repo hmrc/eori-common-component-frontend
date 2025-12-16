@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import play.api.Logger
 import play.api.http.HeaderNames.AUTHORIZATION
 import play.api.libs.json._
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.mvc.Http.Status._
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -34,23 +35,23 @@ class Save4LaterConnector @Inject() (httpClient: HttpClientV2, appConfig: AppCon
   private val logger = Logger(this.getClass)
 
   private def logSuccess(method: String, url: String): Unit =
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"$method complete for call to $url")
 
-  // $COVERAGE-ON
+  // $COVERAGE-ON$
 
   private def logFailure(method: String, url: String, e: Throwable): Unit =
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.warn(s"$method request failed for call to $url: ${e.getMessage}", e)
 
-  // $COVERAGE-ON
+  // $COVERAGE-ON$
 
   def get[T](id: String, key: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] = {
     val url = url"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"GET: ${url.toString}")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
     val httpRequest = httpClient
       .get(url)
@@ -76,9 +77,9 @@ class Save4LaterConnector @Inject() (httpClient: HttpClientV2, appConfig: AppCon
   def put[T](id: String, key: String, payload: JsValue)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = url"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"PUT: $url")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
     val httpRequest = httpClient
       .put(url)
@@ -101,9 +102,9 @@ class Save4LaterConnector @Inject() (httpClient: HttpClientV2, appConfig: AppCon
   def delete[T](id: String)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = url"${appConfig.handleSubscriptionBaseUrl}/save4later/$id"
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"DELETE: $url")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
     val httpRequest = httpClient
       .delete(url)
@@ -125,9 +126,9 @@ class Save4LaterConnector @Inject() (httpClient: HttpClientV2, appConfig: AppCon
   def deleteKey[T](id: String, key: String)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = url"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"DELETE Key: $url")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
     val httpRequest = httpClient
       .delete(url)

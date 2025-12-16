@@ -104,9 +104,9 @@ object SubscriptionFlow extends Logging {
       .find(_.name == flowName)
       .fold {
         val error = s"Unknown Subscription flowname $flowName"
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.error(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw DataUnavailableException(error)
       }(identity)
 

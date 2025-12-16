@@ -24,6 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{KeyValue, TaxEnrolmentsR
 import java.time.LocalDate
 
 class TaxEnrolmentsRequestSpec extends UnitSpec {
+
   def expectedTaxEnrolmentsRequestJson(service: String): JsValue = Json.parse(s"""{
                                    |    "serviceName": "$service",
                                    |    "identifiers": [

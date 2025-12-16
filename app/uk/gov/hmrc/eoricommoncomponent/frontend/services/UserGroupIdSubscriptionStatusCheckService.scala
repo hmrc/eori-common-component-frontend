@@ -50,7 +50,7 @@ class UserGroupIdSubscriptionStatusCheckService @Inject() (
                   save4Later.deleteCachedGroupId(groupId).flatMap(_ => continue)
                 else
                   save4Later.deleteCacheIds(groupId).flatMap(_ => continue)
-              case SubscriptionProcessing => //Processing is defined as 01, 11 or 14 subscriptionStatus code
+              case SubscriptionProcessing => // Processing is defined as 01, 11 or 14 subscriptionStatus code
                 if (cacheIds.internalId == internalId)
                   userIsInProcess
                 else

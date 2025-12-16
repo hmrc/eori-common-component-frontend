@@ -70,8 +70,8 @@ class UpdateVerifiedEmailService @Inject() (
       CustomsDataStoreRequest(eori, newEmail, requestDetail.emailVerificationTimestamp.atZone(ZoneOffset.UTC).toString)
     updateVerifiedEmailConnector.updateVerifiedEmail(request).flatMap {
       case Right(res)
-          if res.getParameters.exists(
-            params => params.headOption.map(_.paramName).contains(MessagingServiceParam.formBundleIdParamName)
+          if res.getParameters.exists(params =>
+            params.headOption.map(_.paramName).contains(MessagingServiceParam.formBundleIdParamName)
           ) =>
         auditRequest(currentEmail, newEmail, eori, "changeEmailAddressConfirmed", res.getStatus)
         customsDataStoreConnector.updateCustomsDataStore(customsDataStoreRequest).map(_ => Right((): Unit))
@@ -107,18 +107,17 @@ class UpdateVerifiedEmailService @Inject() (
         detail = Map("newEmailAddress" -> newEmail, CustomsId.eori -> eoriNumber) ++ status.map("status" -> _),
         eventType = auditType
       )
-    )(
-      emailAddress =>
-        audit.sendDataEvent(
-          transactionName = "UpdateVerifiedEmailRequestSubmitted",
-          path = url,
-          detail = Map(
-            "currentEmailAddress"  -> emailAddress,
-            "newEmailAddress"      -> newEmail,
-            CustomsId.eori         -> eoriNumber
-          ) ++ status.map("status" -> _),
-          eventType = auditType
-        )
+    )(emailAddress =>
+      audit.sendDataEvent(
+        transactionName = "UpdateVerifiedEmailRequestSubmitted",
+        path = url,
+        detail = Map(
+          "currentEmailAddress" -> emailAddress,
+          "newEmailAddress"     -> newEmail,
+          CustomsId.eori        -> eoriNumber
+        ) ++ status.map("status" -> _),
+        eventType = auditType
+      )
     )
 
 }

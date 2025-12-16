@@ -54,13 +54,13 @@ class HowCanWeIdentifyYouUtrController @Inject() (
 
   def createForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         populateView(service, isInReviewMode = false)
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
-      implicit request => _: LoggedInUserWithEnrolments =>
+      implicit request => (_: LoggedInUserWithEnrolments) =>
         populateView(service, isInReviewMode = true)
     }
 
@@ -89,7 +89,7 @@ class HowCanWeIdentifyYouUtrController @Inject() (
     }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       subscriptionUtrForm
         .bindFromRequest()
         .fold(
@@ -114,16 +114,15 @@ class HowCanWeIdentifyYouUtrController @Inject() (
   ): Future[Result] =
     subscriptionDetailsHolderService
       .cacheCustomsId(Utr(formData.id))
-      .map(
-        _ =>
-          if (inReviewMode)
-            Redirect(DetermineReviewPageController.determineRoute(service))
-          else if (requestSessionData.isUKJourney)
-            Redirect(AddressLookupPostcodeController.displayPage(service))
-          else
-            Redirect(
-              subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage).nextPage.url(service)
-            )
+      .map(_ =>
+        if (inReviewMode)
+          Redirect(DetermineReviewPageController.determineRoute(service))
+        else if (requestSessionData.isUKJourney)
+          Redirect(AddressLookupPostcodeController.displayPage(service))
+        else
+          Redirect(
+            subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage).nextPage.url(service)
+          )
       )
 
   private def getPageContent()(implicit request: Request[AnyContent]): Map[String, String] =

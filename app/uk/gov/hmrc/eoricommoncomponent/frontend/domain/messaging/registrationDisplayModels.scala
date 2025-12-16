@@ -38,9 +38,9 @@ object RegistrationInfoRequest extends Logging {
       case _: SafeId => SAFE
       case _: TaxPayerId =>
         val error = "TaxPayerId is not supported by RegistrationInfo service"
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw new IllegalArgumentException(error)
     }
     RegistrationInfoRequest(idType = idType, idValue = customsId.id)

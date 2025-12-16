@@ -60,7 +60,7 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(unableToUseIdPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(unableToUseIdPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockSessionCache.cachedEoriNumber(any())).thenReturn(Future.successful(Some("GB123456789123")))
   }
 
@@ -96,7 +96,7 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
 
       status(result) shouldBe OK
 
-      verify(unableToUseIdPage).apply(any(), any())(any(), any())
+      verify(unableToUseIdPage).apply(any())(any(), any())
     }
 
     "redirect to What is Your email page " in {

@@ -50,9 +50,9 @@ class SubscriptionStatusConnector @Inject() (httpClient: HttpClientV2, appConfig
 
     val url = new URL(s"$baseUrl?${makeQueryString(request.queryParams)}")
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"Status SUB01: $url, queryParams: ${request.queryParams} and hc: $hc")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
     val httpRequest = httpClient
       .get(url)
@@ -60,15 +60,17 @@ class SubscriptionStatusConnector @Inject() (httpClient: HttpClientV2, appConfig
       .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
 
     httpRequest.execute[SubscriptionStatusResponseHolder] map { resp =>
-      // $COVERAGE-OFF$Loggers
+      // $COVERAGE-OFF$
       logger.debug(s"Status SUB01: responseCommon: ${resp.subscriptionStatusResponse.responseCommon}")
-      // $COVERAGE-ON
+      // $COVERAGE-ON$
 
       auditCall(baseUrl, request, resp)
       resp.subscriptionStatusResponse
     } recover {
       case e: Throwable =>
+        // $COVERAGE-OFF$
         logger.warn(s"Status SUB01 failed. url: $url, error: $e", e)
+        // $COVERAGE-ON$
         throw e
     }
   }

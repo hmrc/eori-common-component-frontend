@@ -39,7 +39,6 @@
         nameOrganisationDetails: Option[NameOrganisationMatchModel],
         nameDobDetails: Option[NameDobMatchModel],
         dateEstablished: Option[LocalDate],
-        idDetails: Option[IdMatchModel],
         customsId: Option[CustomsId],
         registeredCountry: Option[CompanyRegisteredCountry],
         addressLookupParams: Option[AddressLookupParams],
@@ -64,10 +63,6 @@
         case c if isEUCountryCode(c) => labelForEUCountry(c)
         case _ => code
     }
-}
-
-@faxNumberWithPrefix(fax: String) = @{
-    s"${messages("cds.review-page.fax-prefix")} $fax"
 }
 
 @formatDate(date: LocalDate) = @{
@@ -139,7 +134,7 @@
 @nino = @{
     customsId match {
         case n@Some(Nino(_)) => n
-        case u@Some(Utr(_)) => None
+        case Some(Utr(_)) => None
         case _ => if(isThirdCountrySubscription && isIndividualSubscriptionFlow) Some(Nino(messages("cds.not-entered.label"))) else None
     }
 }
@@ -166,16 +161,6 @@
 @helpers.noMarginParagraph(transformCountryCodeToLabel(ad.countryCode))
 }
 
-@contactDetailsHtml(cd: ContactDetailsModel) = {
-@helpers.noMarginParagraph(cd.fullName)
-@helpers.noMarginParagraph(cd.telephone)
-@cd.fax.map(fax => helpers.noMarginParagraph(faxNumberWithPrefix(fax)))
-@cd.street.map(helpers.noMarginParagraph(_))
-@cd.city.map(helpers.noMarginParagraph(_))
-@cd.postcode.map(helpers.noMarginParagraph(_))
-@cd.countryCode.map(code => helpers.noMarginParagraph(transformCountryCodeToLabel(code)))
-}
-
 @contactDetailHtml(cd: ContactDetailsModel) = {
 @helpers.noMarginParagraph(cd.fullName)
 @helpers.noMarginParagraph(cd.telephone)
@@ -192,10 +177,6 @@
 
 @isAddressLookup = @{
     addressLookupParams.exists(_.nonEmpty())
-}
-@displayNameOrganisationDetails = @{
-
-    isThirdCountrySubscription && !isIndividualSubscriptionFlow
 }
 
 @addressChangeLink = @{
@@ -316,13 +297,13 @@
                 }
                 },
                 addressDetails.flatMap { ad => {
-                    if(!shouldCountryLocationBeDisplayed) {
+                    if(!shouldCountryLocationBeDisplayed()) {
                         Some(row(businessDetailsLabel, Some(addressHtml(ad)), Some(addressChangeLink),"review-tbl__name-and-address"))
                     } else None
                 }
                 },
                 registeredCountry.flatMap { country => {
-                    if(shouldCountryLocationBeDisplayed) {
+                    if(shouldCountryLocationBeDisplayed()) {
                         Some(row(
                             "ecc.registered-company-country.summary",
                             Some(Html(countryLocation(country))),

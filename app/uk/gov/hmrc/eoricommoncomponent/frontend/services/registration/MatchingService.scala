@@ -71,18 +71,18 @@ class MatchingService @Inject() (
         requestSessionData.userSelectedOrganisationType
           .getOrElse {
             val error = "OrganisationType number missing"
-            // $COVERAGE-OFF$Loggers
+            // $COVERAGE-OFF$
             logger.error(error)
-            // $COVERAGE-ON
+            // $COVERAGE-ON$
             throw DataUnavailableException(error)
           }
       ).toString
       org = Organisation(subscriptionDetailsHolder.name, orgType)
       eori = subscriptionDetailsHolder.eoriNumber.getOrElse {
         val error = "EORI number missing from subscription"
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.error(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw DataUnavailableException(error)
       }
       result <- matchBusiness(Eori(eori), org, subscriptionDetailsHolder.dateEstablished, GroupId(loggedInUser.groupId))
@@ -98,16 +98,16 @@ class MatchingService @Inject() (
       subscription <- cache.subscriptionDetails
       nameDob = subscription.nameDobDetails.getOrElse {
         val error = "nameDobDetails missing from subscriptionDetails"
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.error(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw DataUnavailableException(error)
       }
       eori = subscription.eoriNumber.getOrElse {
         val error = "EORI number missing from subscriptionDetails"
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.error(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw DataUnavailableException(error)
       }
       individual = Individual(nameDob.firstName, None, nameDob.lastName, nameDob.dateOfBirth.toString)
@@ -174,9 +174,9 @@ class MatchingService @Inject() (
     CustomsIdsMap.getOrElse(
       customsId.getClass, {
         val error = s"Invalid matching id $customsId"
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn(error)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw new IllegalArgumentException(error)
       }
     )

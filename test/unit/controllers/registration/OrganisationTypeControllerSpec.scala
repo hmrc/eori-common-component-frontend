@@ -202,7 +202,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         ).thenReturn(Future.successful((page, updatedMockSession)))
 
         submitForm(Map("organisation-type" -> option)) { result =>
-          await(result) //this is needed to ensure the future is completed before the verify is called
+          await(result) // this is needed to ensure the future is completed before the verify is called
           verify(mockRequestSessionData)
             .sessionWithOrganisationTypeAdded(ArgumentMatchers.any[Session], ArgumentMatchers.any[CdsOrganisationType])
         }

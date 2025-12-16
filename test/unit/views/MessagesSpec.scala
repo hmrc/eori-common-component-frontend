@@ -62,8 +62,8 @@ class MessagesSpec extends PlaySpec with Injector {
 
     "contain a different Welsh translation for every key" in {
 
-      val sameTranslation: Set[String] = keysEn.flatMap(
-        key => if (!ignoreKey(key) && (messagesEn.apply(key) == messagesCy.apply(key))) Some(key) else None
+      val sameTranslation: Set[String] = keysEn.flatMap(key =>
+        if (!ignoreKey(key) && (messagesEn.apply(key) == messagesCy.apply(key))) Some(key) else None
       )
       sameTranslation mustBe Set.empty
     }

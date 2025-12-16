@@ -17,15 +17,16 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import play.api.Logger
-import play.api.http.HeaderNames._
+import play.api.http.HeaderNames.*
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.mvc.Http.MimeTypes
 import play.mvc.Http.Status.{NO_CONTENT, OK}
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NotifyRcmRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.NotifyRcm
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.{Inject, Singleton}
@@ -57,14 +58,14 @@ class NotifyRcmConnector @Inject() (httpClient: HttpClientV2, appConfig: AppConf
       }
     } recoverWith {
       case e: BadRequestException =>
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn(s"request failed with BAD_REQUEST status for call to $url: ${e.getMessage}", e)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         Future.failed(e)
       case NonFatal(e) =>
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.warn(s"request failed for call to $url: ${e.getMessage}", e)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         Future.failed(e)
     }
   }

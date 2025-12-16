@@ -18,7 +18,12 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
 import play.api.libs.json._
 
-abstract case class VatIdentification private[VatIdentification] (countryCode: Option[String], number: Option[String])
+case class VatIdentification private (countryCode: Option[String], number: Option[String]) {
+
+  def copy(countryCode: Option[String] = this.countryCode, number: Option[String] = this.number): VatIdentification =
+    VatIdentification(countryCode, number)
+
+}
 
 object VatIdentification {
   implicit val jsonFormat: OFormat[VatIdentification] = Json.format[VatIdentification]

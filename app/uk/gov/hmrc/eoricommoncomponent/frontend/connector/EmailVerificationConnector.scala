@@ -19,9 +19,10 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import cats.data.EitherT
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.mvc.Http.Status.{CREATED, NOT_FOUND, OK}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes => emailRoutes}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes as emailRoutes
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{
   ResponseWithURI,
@@ -106,7 +107,7 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
 
   }
 
-  //For testing email-verification in non-production environments
+  // For testing email-verification in non-production environments
   def getPasscodes(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     lazy val url: URL = url"${appConfig.emailVerificationBaseUrl}/test-only/passcodes"
 

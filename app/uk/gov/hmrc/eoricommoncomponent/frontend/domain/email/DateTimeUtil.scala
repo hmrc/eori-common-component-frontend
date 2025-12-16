@@ -45,10 +45,10 @@ object DateTimeUtil {
 
     def reads(value: JsValue): JsResult[LocalDateTime] =
       try JsSuccess(
-        ZonedDateTime.parse(value.as[String], DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(
-          ZoneId.of("Europe/London")
-        ).toLocalDateTime
-      )
+          ZonedDateTime.parse(value.as[String], DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(
+            ZoneId.of("Europe/London")
+          ).toLocalDateTime
+        )
       catch {
         case e: Exception => JsError(s"Could not parse '${value.toString()}' as an ISO date. Reason: ${e.getMessage}")
       }
@@ -60,4 +60,4 @@ object DateTimeUtil {
 
 }
 
-// $COVERAGE-ON$
+// $COVERAGE-ON$$

@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import play.api.Logger
 import play.api.http.HeaderNames.AUTHORIZATION
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration._
@@ -41,11 +42,11 @@ class RegistrationDisplayConnector @Inject() (httpClient: HttpClientV2, appConfi
     request: RegistrationDisplayRequestHolder
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[EoriHttpResponse, RegistrationDisplayResponse]] = {
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(
       s"RegistrationDisplay: $url, requestCommon: ${request.registrationDisplayRequest.requestCommon} and hc: $hc"
     )
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
     val httpRequest = httpClient
       .post(url)
@@ -53,9 +54,9 @@ class RegistrationDisplayConnector @Inject() (httpClient: HttpClientV2, appConfi
       .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
 
     httpRequest.execute[RegistrationDisplayResponseHolder] map { response =>
-      // $COVERAGE-OFF$Loggers
+      // $COVERAGE-OFF$
       logger.debug(s"[RegistrationDisplay: response: $response")
-      // $COVERAGE-ON
+      // $COVERAGE-ON$
 
       auditCall(url.toString, request, response)
       Right(response.registrationDisplayResponse)

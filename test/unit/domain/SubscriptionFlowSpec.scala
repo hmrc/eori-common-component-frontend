@@ -20,8 +20,9 @@ import base.UnitSpec
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
+import util.TestData
 
-class SubscriptionFlowSpec extends UnitSpec {
+class SubscriptionFlowSpec extends UnitSpec with TestData {
 
   "SubscriptionFlow object" should {
     "create for valid flow name" in {
@@ -62,6 +63,78 @@ class SubscriptionFlowSpec extends UnitSpec {
       )
     }
 
+  }
+
+  "SubscriptionPage url" should {
+    "be correct for ContactDetailsSubscriptionFlowPageMigrate" in {
+      ContactDetailsSubscriptionFlowPageMigrate.url(
+        atarService
+      ) shouldBe "/customs-enrolment-services/atar/subscribe/contact-details"
+    }
+
+    "be correct for ConfirmContactAddressSubscriptionFlowPage" in {
+      ConfirmContactAddressSubscriptionFlowPage.url(
+        atarService
+      ) shouldBe "/customs-enrolment-services/atar/subscribe/confirm-contact-address"
+    }
+
+    "be correct for ContactAddressSubscriptionFlowPage" in {
+      ContactAddressSubscriptionFlowPage.url(
+        atarService
+      ) shouldBe "/customs-enrolment-services/atar/subscribe/contact-address"
+    }
+
+    "be correct for UtrSubscriptionFlowPage" in {
+      UtrSubscriptionFlowPage.url(atarService) shouldBe "/customs-enrolment-services/atar/subscribe/row-utr"
+    }
+
+    "be correct for NinoSubscriptionFlowPage" in {
+      NinoSubscriptionFlowPage.url(atarService) shouldBe "/customs-enrolment-services/atar/subscribe/row-nino"
+    }
+
+    "be correct for AddressDetailsSubscriptionFlowPage" in {
+      AddressDetailsSubscriptionFlowPage.url(atarService) shouldBe "/customs-enrolment-services/atar/subscribe/address"
+    }
+
+    "be correct for NameUtrDetailsSubscriptionFlowPage" in {
+      NameUtrDetailsSubscriptionFlowPage.url(atarService) shouldBe "/customs-enrolment-services/atar/subscribe/nameid"
+    }
+
+    "be correct for NameDetailsSubscriptionFlowPage" in {
+      NameDetailsSubscriptionFlowPage.url(atarService) shouldBe "/customs-enrolment-services/atar/subscribe/name"
+    }
+
+    "be correct for NameDobDetailsSubscriptionFlowPage" in {
+      NameDobDetailsSubscriptionFlowPage.url(atarService) shouldBe "/customs-enrolment-services/atar/subscribe/namedob"
+    }
+
+    "be correct for HowCanWeIdentifyYouSubscriptionFlowPage" in {
+      HowCanWeIdentifyYouSubscriptionFlowPage.url(
+        atarService
+      ) shouldBe "/customs-enrolment-services/atar/subscribe/chooseid"
+    }
+
+    "be correct for RowDateOfEstablishmentSubscriptionFlowPage" in {
+      RowDateOfEstablishmentSubscriptionFlowPage.url(
+        atarService
+      ) shouldBe "/customs-enrolment-services/atar/subscribe/date-established"
+    }
+
+    "be correct for DateOfEstablishmentSubscriptionFlowPageMigrate" in {
+      DateOfEstablishmentSubscriptionFlowPageMigrate.url(
+        atarService
+      ) shouldBe "/customs-enrolment-services/atar/subscribe/date-established"
+    }
+
+    "be correct for ReviewDetailsPageSubscription" in {
+      ReviewDetailsPageSubscription.url(
+        atarService
+      ) shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
+    }
+
+    "be correct for UserLocationPage" in {
+      UserLocationPage.url(atarService) shouldBe "/customs-enrolment-services/atar/subscribe/matching/user-location"
+    }
   }
 
 }

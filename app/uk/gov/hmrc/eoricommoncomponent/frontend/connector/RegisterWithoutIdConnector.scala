@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import play.api.Logger
 import play.api.http.HeaderNames.AUTHORIZATION
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -40,9 +41,9 @@ class RegisterWithoutIdConnector @Inject() (httpClient: HttpClientV2, appConfig:
 
   def register(request: RegisterWithoutIDRequest)(implicit hc: HeaderCarrier): Future[RegisterWithoutIDResponse] = {
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"Register: $url, body: $request and hc: $hc")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
     val httpRequest = httpClient
       .post(url)
@@ -50,9 +51,9 @@ class RegisterWithoutIdConnector @Inject() (httpClient: HttpClientV2, appConfig:
       .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
 
     httpRequest.execute[RegisterWithoutIdResponseHolder] map { response =>
-      // $COVERAGE-OFF$Loggers
+      // $COVERAGE-OFF$
       logger.debug(s"Register: responseCommon: ${response.registerWithoutIDResponse.responseCommon}")
-      // $COVERAGE-ON
+      // $COVERAGE-ON$
 
       auditCall(url.toString, request, response)
       response.registerWithoutIDResponse

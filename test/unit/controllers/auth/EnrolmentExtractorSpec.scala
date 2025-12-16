@@ -141,7 +141,7 @@ class EnrolmentExtractorSpec extends UnitSpec {
 
       "user has enrolment with an EORI" in {
 
-        val userEnrolments                           = Set(Enrolment("HMRC-TEST-ORG").withIdentifier("EORINumber", eori.id))
+        val userEnrolments = Set(Enrolment("HMRC-TEST-ORG").withIdentifier("EORINumber", eori.id))
         val groupEnrolments: List[EnrolmentResponse] = List.empty
 
         val result = enrolmentExtractor.existingEoriForUserOrGroup(loggedInUser(userEnrolments), groupEnrolments)

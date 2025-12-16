@@ -30,14 +30,13 @@ trait EnrolmentExtractor {
   ): Option[ExistingEori] =
     loggedInUser.enrolments
       .getEnrolment(enrolmentKey)
-      .map(
-        enrolment =>
-          ExistingEori(
-            enrolment
-              .getIdentifier(identifierName)
-              .map(identifier => identifier.value),
-            enrolment.key
-          )
+      .map(enrolment =>
+        ExistingEori(
+          enrolment
+            .getIdentifier(identifierName)
+            .map(identifier => identifier.value),
+          enrolment.key
+        )
       )
 
   private def identifierForOtherEnrollments(
@@ -49,14 +48,13 @@ trait EnrolmentExtractor {
     val serviceList       = Service.supportedServicesMap.values.toList
     val serviceEnrolments = serviceList.map(_.enrolmentKey)
     loggedInUser.enrolments.enrolments.find(x => x.state == activatedState && serviceEnrolments.contains(x.key))
-      .map(
-        enrolment =>
-          ExistingEori(
-            enrolment
-              .getIdentifier(identifierName)
-              .map(identifier => identifier.value),
-            enrolment.key
-          )
+      .map(enrolment =>
+        ExistingEori(
+          enrolment
+            .getIdentifier(identifierName)
+            .map(identifier => identifier.value),
+          enrolment.key
+        )
       )
 
   }
@@ -81,8 +79,8 @@ trait EnrolmentExtractor {
     groupEnrolments: List[EnrolmentResponse]
   ): Option[ExistingEori] = {
     val userEnrolmentWithEori = loggedInUser.enrolments.enrolments.find(_.identifiers.exists(_.key == EoriIdentifier))
-    val existingEoriForUser = userEnrolmentWithEori.map(
-      enrolment => ExistingEori(enrolment.getIdentifier(EoriIdentifier).map(_.value), enrolment.key)
+    val existingEoriForUser = userEnrolmentWithEori.map(enrolment =>
+      ExistingEori(enrolment.getIdentifier(EoriIdentifier).map(_.value), enrolment.key)
     )
     existingEoriForUser.orElse(
       groupEnrolments.find(_.eori.exists(_.nonEmpty)).map(enrolment => ExistingEori(enrolment.eori, enrolment.service))

@@ -84,7 +84,7 @@ class RosmRedirectControllerSpec extends ControllerSpec with AuthActionMock {
           .enrolmentsForGroup(any())(any())
       ).thenReturn(Future.successful(Nil))
 
-      val result = sut.checkEoriNumber().apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      val result = sut.checkEoriNumber.apply(SessionBuilder.buildRequestWithSession(defaultUserId))
       status(result) shouldEqual SEE_OTHER
       redirectLocation(result).get shouldEqual "/customs-enrolment-services/cds/subscribe"
     }
@@ -101,7 +101,7 @@ class RosmRedirectControllerSpec extends ControllerSpec with AuthActionMock {
         )
       )
 
-      val result = sut.checkEoriNumber().apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      val result = sut.checkEoriNumber.apply(SessionBuilder.buildRequestWithSession(defaultUserId))
       status(result) shouldEqual OK
     }
 

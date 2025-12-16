@@ -14,17 +14,15 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, NameIdOrganisationMatchModel}
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.{JourneyStatus, Service}
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.play.language.LanguageUtils
 
-@this(layout_di: layout, appConfig: AppConfig, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, languageUtils: LanguageUtils)
+@this(layout_di: layout, feedback_di: helpers.feedback)
 
-@(orgName: String,
-    eori: String,
+@(eori: String,
     service: Service,
     isIndividual: Boolean,
     hasUtr: Boolean,
@@ -47,16 +45,6 @@
         u =>
         Some(<p id="organisation-utr" class="govuk-body">{messages("ecc.reg06.outcome.id-already-linked.info.utr", u.id ,eori)}</p>)
     }
-}
-
-
-
-@addTeamLink = {
-<a class="govuk-link" href=@appConfig.addTeamMembers target="_blank" rel="noopener noreferrer">@messages("ecc.reg06.outcome.id-already-linked.info.link", messages("cds.navigation.opens-in-new-tab"))</a>
-}
-
-@applyLink = {
-<a class="govuk-link" href="@ApplicationController.startSubscription(service).url">@messages("ecc.reg06.outcome.apply.again.link")</a>
 }
 
 @layout_di(messages("ecc.reg06.outcome.id-already-linked.title"), suppressTelephoneNumberDetection = false, displayBackLink = false, service = service) {

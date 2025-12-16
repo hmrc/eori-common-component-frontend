@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import play.api.Logger
 import play.api.http.Status
 import play.api.libs.json.{Json, Reads}
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import play.mvc.Http.Status.{NO_CONTENT, OK}
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
@@ -31,12 +32,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.EnrolmentStoreProxyEvent
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.HttpStatusCheck
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
 
+import java.net.URI
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+class EnrolmentStoreProxyConnector @Inject() (http: HttpClientV2, appConfig: AppConfig, audit: Auditable)(implicit
   ec: ExecutionContext
 ) {
 
@@ -51,11 +54,11 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
     val url =
       s"$baseUrl/$serviceContext/enrolment-store/groups/$groupId/enrolments?type=principal"
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"GetEnrolmentByGroupId: $url and hc: $hc")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
-    http.GET[HttpResponse](url) map { resp =>
+    http.get(new URI(url).toURL).execute[HttpResponse].map { resp =>
       logResponse(resp)
 
       val parsedResponse = resp.status match {
@@ -63,18 +66,18 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
         case NO_CONTENT =>
           EnrolmentStoreProxyResponse(enrolments = List.empty[EnrolmentResponse])
         case _ =>
-          // $COVERAGE-OFF$Loggers
+          // $COVERAGE-OFF$
           logger.warn(s"Enrolment Store Proxy Bad Request - status: ${resp.status} with body: ${resp.body}")
-          // $COVERAGE-ON
+          // $COVERAGE-ON$
           throw new BadRequestException(s"Enrolment Store Proxy Status : ${resp.status}")
       }
       auditCall(url, groupId, parsedResponse)
       parsedResponse
     } recover {
       case e: Throwable =>
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.error(s"enrolment-store-proxy failed. url: $url, error: $e", e)
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         throw e
     }
   }
@@ -101,15 +104,15 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
 
     val url = s"$baseUrl/$serviceContext/enrolment-store/enrolments"
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"QueryKnownFactsByIdentifiers: $url, body: $knownFactsQuery and hc: $hc")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
-    http.POST[KnownFactsQuery, HttpResponse](url, knownFactsQuery) map {
+    http.post(new URI(url).toURL).withBody(Json.toJson(knownFactsQuery)).execute[HttpResponse].map {
       response =>
-        // $COVERAGE-OFF$Loggers
+        // $COVERAGE-OFF$
         logger.debug(s"QueryKnownFactsByIdentifiers response $response")
-        // $COVERAGE-ON
+        // $COVERAGE-ON$
         response.status match {
           case Status.OK => Some(response.json.as[KnownFacts])
           case Status.NO_CONTENT | Status.NOT_FOUND =>
@@ -118,9 +121,9 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
             )
             None
           case _ =>
-            // $COVERAGE-OFF$Loggers
+            // $COVERAGE-OFF$
             logger.warn(s"ES20 known facts Query FAIL - Response status: ${response.status} with body ${response.body}")
-            // $COVERAGE-ON
+            // $COVERAGE-ON$
             throw new Exception(s"ES20 known facts Query call failed with ${response.status} status")
 
         }
@@ -132,40 +135,32 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
     val url =
       s"$baseUrl/$serviceContext/enrolment-store/enrolments/${es1Request.enrolment}/groups?type=${es1Request.queryType.value}"
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"QueryGroupsWithAllocatedEnrolment: $url and hc: $hc")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
-    http.GET[HttpResponse](url).map { response =>
+    http.get(new URI(url).toURL).execute[HttpResponse].map { response =>
       response.status match {
         case Status.OK =>
           ES1Response.format.reads(response.json).asOpt.getOrElse {
-            // $COVERAGE-OFF$Loggers
+            // $COVERAGE-OFF$
             logger.error("ES1 FAIL - Incorrect response format for ES1.")
-            // $COVERAGE-ON
+            // $COVERAGE-ON$
             throw new Exception("Incorrect format for ES1 response")
           }
         case Status.NO_CONTENT  => ES1Response(None, None)
         case Status.BAD_REQUEST =>
-          // $COVERAGE-OFF$Loggers
+          // $COVERAGE-OFF$
           logger.error(s"ES1 FAIL - Response status: 400 with body ${response.body}")
-          // $COVERAGE-ON
+          // $COVERAGE-ON$
           throw new Exception("ES1 call failed with 400 status")
         case _ =>
-          // $COVERAGE-OFF$Loggers
+          // $COVERAGE-OFF$
           logger.warn(s"ES1 FAIL - Response status: ${response.status} with body ${response.body}")
-          // $COVERAGE-ON
+          // $COVERAGE-ON$
           throw new Exception(s"ES1 call failed with ${response.status} status")
       }
     }
   }
-
-  def auditEs1Call(url: String, response: ES1Response)(implicit hc: HeaderCarrier): Unit =
-    audit.sendExtendedDataEvent(
-      transactionName = "ecc-es1-call",
-      path = url,
-      details = Json.toJson(response),
-      eventType = "ecc-es1"
-    )
 
 }

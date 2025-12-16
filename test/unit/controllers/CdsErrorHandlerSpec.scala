@@ -19,16 +19,17 @@ package unit.controllers
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{LOCATION, _}
-import uk.gov.hmrc.eoricommoncomponent.frontend.CdsErrorHandler
+import play.api.test.Helpers.{LOCATION, *}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsErrorHandler
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionTimeOutException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.{Constants, InvalidUrlValueException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{error_template, notFound}
 import util.ControllerSpec
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class CdsErrorHandlerSpec(implicit val ec: ExecutionContext) extends ControllerSpec with ScalaFutures {
+class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
   val configuration: Configuration = mock[Configuration]
 
   private val errorTemplateView = instanceOf[error_template]

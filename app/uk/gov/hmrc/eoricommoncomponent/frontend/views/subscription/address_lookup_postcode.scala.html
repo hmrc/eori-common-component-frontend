@@ -22,8 +22,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.helper._
 
-@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton, fieldset : helpers.fieldset, h1: helpers.h1, p: helpers.paragraph)
-
+@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton, h1: helpers.h1, p: helpers.paragraph)
 
 @(addressPostcodeForm: Form[AddressLookupParams], isInReviewMode: Boolean, viewModel: AddressLookupPostcodeViewModel, service: Service)(implicit request: Request[_], messages: Messages)
 

@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import play.api.Logger
 import play.api.http.HeaderNames.AUTHORIZATION
 import play.api.libs.json.Json
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
@@ -29,8 +30,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{Registration, RegistrationResult, RegistrationSubmitted}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.{Inject, Singleton}
@@ -48,9 +49,9 @@ class RegisterWithEoriAndIdConnector @Inject() (httpClient: HttpClientV2, appCon
     request: RegisterWithEoriAndIdRequest
   )(implicit hc: HeaderCarrier, originatingService: Service): Future[RegisterWithEoriAndIdResponse] = {
 
-    // $COVERAGE-OFF$Loggers
+    // $COVERAGE-OFF$
     logger.debug(s"REG06 Register: $url, requestCommon: ${request.requestCommon} and hc: $hc")
-    // $COVERAGE-ON
+    // $COVERAGE-ON$
 
     val httpRequest = httpClient
       .post(url)
@@ -58,9 +59,9 @@ class RegisterWithEoriAndIdConnector @Inject() (httpClient: HttpClientV2, appCon
       .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
 
     httpRequest.execute[RegisterWithEoriAndIdResponseHolder] map { resp =>
-      // $COVERAGE-OFF$Loggers
+      // $COVERAGE-OFF$
       logger.debug(s"REG06 Register: responseCommon: ${resp.registerWithEORIAndIDResponse.responseCommon}")
-      // $COVERAGE-ON
+      // $COVERAGE-ON$
 
       auditCall(url.toString, request, resp)
       resp.registerWithEORIAndIDResponse.withAdditionalInfo(request.requestDetail.registerModeID)

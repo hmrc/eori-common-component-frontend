@@ -22,8 +22,10 @@ import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.checkEori.CheckEoriResponse
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 
+import java.net.URI
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
@@ -34,17 +36,18 @@ import scala.util.control.NonFatal
 
 }
 
-class CheckEoriNumberConnectorImpl @Inject() (http: HttpClient, appConfig: AppConfig) extends CheckEoriNumberConnector {
+class CheckEoriNumberConnectorImpl @Inject() (http: HttpClientV2, appConfig: AppConfig)
+    extends CheckEoriNumberConnector {
   private val logger = Logger(this.getClass)
 
   def check(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Boolean]] =
-    http.GET[List[CheckEoriResponse]](url = s"${appConfig.checkEoriNumberUrl}/check-eori/$eori")
+    http.get(new URI(s"${appConfig.checkEoriNumberUrl}/check-eori/$eori").toURL).execute[List[CheckEoriResponse]]
       .map(response => response.headOption.map(_.valid))
       .recoverWith {
         case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND =>
           Future.successful(Some(false))
         case NonFatal(e) =>
-          //log all upstream errors at error level and keep going
+          // log all upstream errors at error level and keep going
           logger.error(s"Upstream error from check-eori-number service for EORI $eori.", e)
           Future.successful(Some(true))
       }

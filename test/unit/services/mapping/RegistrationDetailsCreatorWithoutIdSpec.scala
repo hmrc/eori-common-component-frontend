@@ -36,21 +36,22 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
 
   private val organisationWithoutIdTestCases
     : Gen[((RegisterWithoutIDResponse, String, SixLineAddressMatchModel), RegistrationDetailsOrganisation)] = {
-    val organisationAddressGen = for {
-      addressLine1 <- Gen.alphaStr
-      addressLine2 <- Gen.alphaStr.asOption
-      addressLine3 <- Gen.alphaStr
-      addressLine4 <- Gen.alphaStr.asOption
-      postcode     <- Gen.alphaStr.asOption
-      country      <- Gen.alphaStr
-    } yield SixLineAddressMatchModel(
-      lineOne = addressLine1,
-      lineTwo = addressLine2,
-      lineThree = addressLine3,
-      lineFour = addressLine4,
-      postcode = postcode,
-      country = country
-    )
+    val organisationAddressGen =
+      for {
+        addressLine1 <- Gen.alphaStr
+        addressLine2 <- Gen.alphaStr.asOption
+        addressLine3 <- Gen.alphaStr
+        addressLine4 <- Gen.alphaStr.asOption
+        postcode     <- Gen.alphaStr.asOption
+        country      <- Gen.alphaStr
+      } yield SixLineAddressMatchModel(
+        lineOne = addressLine1,
+        lineTwo = addressLine2,
+        lineThree = addressLine3,
+        lineFour = addressLine4,
+        postcode = postcode,
+        country = country
+      )
 
     val organisationNameGen = for {
       name <- Gen.alphaStr
@@ -82,33 +83,35 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
   private val individualWithoutIdTestCases: Gen[
     ((RegisterWithoutIDResponse, IndividualNameAndDateOfBirth, SixLineAddressMatchModel), RegistrationDetailsIndividual)
   ] = {
-    val individualNameAndDateOfBirthGen = for {
-      firstName   <- Gen.alphaStr
-      middleName  <- Gen.alphaStr.asOption
-      lastName    <- Gen.alphaStr
-      dateOfBirth <- dateOfBirthGenerator
-    } yield IndividualNameAndDateOfBirth(
-      firstName = firstName,
-      middleName = middleName,
-      lastName = lastName,
-      dateOfBirth = dateOfBirth
-    )
+    val individualNameAndDateOfBirthGen =
+      for {
+        firstName   <- Gen.alphaStr
+        middleName  <- Gen.alphaStr.asOption
+        lastName    <- Gen.alphaStr
+        dateOfBirth <- dateOfBirthGenerator
+      } yield IndividualNameAndDateOfBirth(
+        firstName = firstName,
+        middleName = middleName,
+        lastName = lastName,
+        dateOfBirth = dateOfBirth
+      )
 
-    val individualSoleTraderAddressGen = for {
-      addressLine1 <- Gen.alphaStr
-      addressLine2 <- Gen.alphaStr.asOption
-      addressLine3 <- Gen.alphaStr
-      addressLine4 <- Gen.alphaStr.asOption
-      postcode     <- Gen.alphaStr.asOption
-      country      <- Gen.alphaStr
-    } yield SixLineAddressMatchModel(
-      lineOne = addressLine1,
-      lineTwo = addressLine2,
-      lineThree = addressLine3,
-      lineFour = addressLine4,
-      postcode = postcode,
-      country = country
-    )
+    val individualSoleTraderAddressGen =
+      for {
+        addressLine1 <- Gen.alphaStr
+        addressLine2 <- Gen.alphaStr.asOption
+        addressLine3 <- Gen.alphaStr
+        addressLine4 <- Gen.alphaStr.asOption
+        postcode     <- Gen.alphaStr.asOption
+        country      <- Gen.alphaStr
+      } yield SixLineAddressMatchModel(
+        lineOne = addressLine1,
+        lineTwo = addressLine2,
+        lineThree = addressLine3,
+        lineFour = addressLine4,
+        postcode = postcode,
+        country = country
+      )
 
     for {
       response                        <- registerWithoutIDResponseGen
