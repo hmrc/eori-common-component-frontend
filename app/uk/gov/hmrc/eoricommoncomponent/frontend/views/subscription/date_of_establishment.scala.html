@@ -44,7 +44,6 @@
 
         @errorSummary(DateConverter.updateDateOfEstablishmentErrors(dateForm.errors),
         focusOverrides = Map("date-of-establishment" -> "date-of-establishment.day"))
-        @h1(messages(headerAndTitle), Some("date-of-establishment-title"))
 
 
 
@@ -54,7 +53,7 @@
 
             @inputDate(
                 updateFormErrors,
-                None,
+                legendContent = Some(messages(headerAndTitle)),
                 hintText = Some(Html(messages("cds.date-established.hint"))),
                 id = "date-of-establishment",
                 legendClasses = Some("date-of-establishment-field"))
