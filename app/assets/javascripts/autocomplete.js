@@ -16,6 +16,7 @@ var parentForm = upTo(originalSelect, 'form');
 
 function polyfillAutocomplete(){
     var combo = parentForm.querySelector('[role="combobox"]');
+    var listbox = parentForm.querySelector('[role="listbox"]');
 
     // =====================================================
     // Update autocomplete once loaded with fallback's aria attributes
@@ -25,6 +26,19 @@ function polyfillAutocomplete(){
         if(parentForm){
             if(combo){
                 combo.setAttribute('aria-describedby', originalSelect.getAttribute('aria-describedby') + ' ' + combo.getAttribute('aria-describedby'));
+            }
+        }
+    }
+
+    if(originalSelect && listbox){
+        var selectId = originalSelect.getAttribute('id');
+        if(selectId){
+            
+            var labelId = selectId.replace('-select', '') + '-label';
+            var labelElement = document.getElementById(labelId);
+            
+            if(labelElement){
+                listbox.setAttribute('aria-labelledby', labelId);
             }
         }
     }
