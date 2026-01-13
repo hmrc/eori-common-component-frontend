@@ -18,7 +18,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(govukSelect: GovukSelect)
+@this(govukSelect: GovukSelect, govukLabel: GovukLabel)
 
 @(
         form: Form[_],
@@ -34,6 +34,14 @@
         attributes: Map[String, String] = Map.empty
 )(implicit messages: Messages)
 
+
+@govukLabel(Label(
+    forAttr = Some(s"$id-select"),
+    content = Text(messages(label, headingMessageArgs:_*)),
+    classes = labelClasses.getOrElse("govuk-visually-hidden")
+))    
+
+
 @govukSelect(Select(
     id = id,
     name = name,
@@ -41,7 +49,8 @@
     label = Label(
         content = Text(messages(label, headingMessageArgs:_*)),
         isPageHeading = isPageHeading,
-        classes = labelClasses.getOrElse(if(isPageHeading) "govuk-label--xl" else "")
+        classes = labelClasses.getOrElse(if(isPageHeading) "govuk-label--xl" else ""),
+        attributes = Map("id" -> s"${id}-label") 
     ),
     hint = hint.map(hintHtml => Hint(
         content = HtmlContent(hintHtml)
