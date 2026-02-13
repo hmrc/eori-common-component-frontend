@@ -49,6 +49,7 @@ lazy val microservice = (project in file("."))
     playSettings,
     scoverageSettings,
     twirlSettings,
+    excludeDependencies += ExclusionRule("org.lz4", "lz4-java"),
     TwirlKeys.templateImports += "uk.gov.hmrc.eoricommoncomponent.frontend.models._"
   )
 
