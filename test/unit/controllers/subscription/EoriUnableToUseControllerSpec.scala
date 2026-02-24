@@ -22,6 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.EoriUnableToUseController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.ExistingEori
@@ -44,6 +45,7 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
   private val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
   private val eoriUnableToUsePage             = mock[eori_unable_to_use]
   private val mockEnrolmentStoreProxy         = mock[EnrolmentStoreProxyService]
+  private val appConfig                       = instanceOf[AppConfig]
 
   private val controller =
     new EoriUnableToUseController(
@@ -51,7 +53,8 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
       mockSubscriptionBusinessService,
       mockEnrolmentStoreProxy,
       mcc,
-      eoriUnableToUsePage
+      eoriUnableToUsePage,
+      appConfig
     )(global)
 
   override protected def beforeEach(): Unit = {

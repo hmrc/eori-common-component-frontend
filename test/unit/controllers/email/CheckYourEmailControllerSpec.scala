@@ -28,6 +28,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes => emailRoutes, CheckYourEmailController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.GroupId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
@@ -66,12 +67,14 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
   private val checkYourEmailView = instanceOf[check_your_email]
   private val emailConfirmedView = instanceOf[email_confirmed]
+  private val appConfig          = instanceOf[AppConfig]
 
   private val controller = new CheckYourEmailController(
     mockAuthAction,
     mockSave4LaterService,
     mcc,
     checkYourEmailView,
+    appConfig,
     emailConfirmedView,
     mockEmailJourneyService
   )
