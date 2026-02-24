@@ -45,7 +45,7 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
   private val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
   private val eoriUnableToUsePage             = mock[eori_unable_to_use]
   private val mockEnrolmentStoreProxy         = mock[EnrolmentStoreProxyService]
-  private val appConfig                       = instanceOf[AppConfig]
+  private val mockAppConfig                   = mock[AppConfig]
 
   private val controller =
     new EoriUnableToUseController(
@@ -54,7 +54,7 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
       mockEnrolmentStoreProxy,
       mcc,
       eoriUnableToUsePage,
-      appConfig
+      mockAppConfig
     )(global)
 
   override protected def beforeEach(): Unit = {
@@ -62,12 +62,14 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
 
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     when(eoriUnableToUsePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockAppConfig.euEoriEnabled).thenReturn(false)
   }
 
   override protected def afterEach(): Unit = {
     reset(mockAuthConnector)
     reset(mockSubscriptionBusinessService)
     reset(eoriUnableToUsePage)
+    reset(mockAppConfig)
 
     super.afterEach()
   }
@@ -156,6 +158,43 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
         verifyNoMoreInteractions(eoriUnableToUsePage)
+      }
+
+      "feature flag is turned on and on cds service" in {
+        when(mockAppConfig.euEoriEnabled).thenReturn(true)
+        when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(
+          Future.successful(Some("GB123456789123"))
+        )
+
+        val result =
+          controller.submit(cdsService)(FakeRequest("POST", "").withFormUrlEncodedBody("answer" -> "change"))
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/cds/subscribe/matching/what-is-your-eori-gb"
+        verifyNoMoreInteractions(eoriUnableToUsePage)
+      }
+
+      "enrolment in use method returns empty and feature flag on cds" in {
+        when(mockAppConfig.euEoriEnabled).thenReturn(true)
+        when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(
+          Future.successful(Some("GB123456789123"))
+        )
+        when(mockEnrolmentStoreProxy.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
+
+        val result = controller.displayPage(cdsService)(FakeRequest("GET", ""))
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/cds/subscribe/matching/what-is-your-eori-gb"
+      }
+
+      "eori is not available for display page and feature flag on cds" in {
+        when(mockAppConfig.euEoriEnabled).thenReturn(true)
+        when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
+
+        val result = controller.displayPage(cdsService)(FakeRequest("GET", ""))
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/cds/subscribe/matching/what-is-your-eori-gb"
       }
     }
 
