@@ -1420,3 +1420,13 @@ cds.eori-already-exists.ask.HMRC = ofyn i CThEF ar-lein,
 cds.eori-already-exists.p3 = Os bydd y broblem hon yn parhau, gallwch
 cds.eori-already-exists.p4 = neu ffonio’r Llinell Gymorth ar 0300 200 1900.
 sign-in-to-another-account = Mewngofnodi i gyfrif arall
+
+# First 2 letters of EORI number
+cds.subscription.first-2-letters-eori.heading = What are the first two letters of your EORI number?
+cds.subscription.first-2-letters-eori.page-error = Dewiswch y 2 lythyren gyntaf o’ch rhif EORI
+cds.subscription.first-2-letters-eori.radio.gb = GB
+cds.subscription.first-2-letters-eori.radio.eu = Another 2 letters, like DE, ES or FR
+cds.subscription.first-2-letters-eori.radio.hint.text = An EORI number is 2 letters followed by up to 15 characters, like GB123456123456, ESX1234567X or NL12345678.
+cds.subscription.first-2-letters-eori.detail.para1 = You need an EORI number to use this online service.
+cds.subscription.first-2-letters-eori.detail.para2 = If your organisation is based in UK, you should <a href="https://www.tax.service.gov.uk/customs-registration-services/cds/register" class="govuk-link" target="_blank" rel="noopener noreferrer">apply for both a subscription and an EORI number starting with GB</a>.
+cds.subscription.first-2-letters-eori.detail.para3 = If your organisation is based in a country in the EU, you should apply for an EORI number in that country.

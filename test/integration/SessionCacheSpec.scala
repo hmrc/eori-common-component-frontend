@@ -23,10 +23,11 @@ import play.api.libs.json.Json
 import play.api.libs.json.Json.toJson
 import play.api.mvc.{Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubmissionCompleteData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion.GB
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, DataUnavailableException, SessionCache}
@@ -35,7 +36,7 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.mongo.CurrentTimestampSupport
 import uk.gov.hmrc.mongo.cache.DataKey
 import uk.gov.hmrc.mongo.test.MongoSupport
-import util.builders.RegistrationDetailsBuilder._
+import util.builders.RegistrationDetailsBuilder.*
 
 import java.time.{LocalDate, LocalDateTime}
 import java.util.UUID
@@ -582,6 +583,41 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
     }
 
+    "Save first two letters eori region" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))
+
+      await(sessionCache.getFirst2LettersEori) mustEqual None
+      await(sessionCache.saveFirst2LettersEori(GB))
+      await(sessionCache.getFirst2LettersEori) mustEqual Some(GB)
+    }
+
+    "Fetch first two letters eori region" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))
+
+      await(sessionCache.saveFirst2LettersEori(GB)(request))
+
+      val cache = await(sessionCache.cacheRepo.findById(request))
+        .getOrElse(throw new IllegalStateException("Cache returned None"))
+
+      val expectedJson = toJson(CachedData(first2LettersEori = Some(GB)))
+
+      cache.data mustBe expectedJson
+      await(sessionCache.fetchFirst2LettersEori(request)) mustBe GB
+    }
+
+    "Get first two letters eori region" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))
+
+      await(sessionCache.saveFirst2LettersEori(GB)(request))
+
+      val cache = await(sessionCache.cacheRepo.findById(request))
+        .getOrElse(throw new IllegalStateException("Cache returned None"))
+
+      val expectedJson = toJson(CachedData(first2LettersEori = Some(GB)))
+
+      cache.data mustBe expectedJson
+      await(sessionCache.getFirst2LettersEori(request)) mustBe Some(GB)
+    }
   }
 
 }

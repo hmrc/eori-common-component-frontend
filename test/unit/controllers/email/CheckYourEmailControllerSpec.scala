@@ -17,16 +17,17 @@
 package unit.controllers.email
 
 import common.pages.emailvericationprocess.CheckYourEmailPage
-import org.mockito.ArgumentMatchers._
+import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.mvc.Results.Ok
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes => emailRoutes, CheckYourEmailController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes as emailRoutes, CheckYourEmailController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.GroupId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
@@ -63,6 +64,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private val mockSessionCache               = mock[SessionCache]
   private val mockUpdateVerifiedEmailService = mock[UpdateVerifiedEmailService]
   private val mockEmailJourneyService        = mock[EmailJourneyService]
+  private val mockAppConfig                  = mock[AppConfig]
 
   private val checkYourEmailView = instanceOf[check_your_email]
   private val emailConfirmedView = instanceOf[email_confirmed]
@@ -73,7 +75,8 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     mcc,
     checkYourEmailView,
     emailConfirmedView,
-    mockEmailJourneyService
+    mockEmailJourneyService,
+    mockAppConfig
   )
 
   val email                    = "test@example.com"

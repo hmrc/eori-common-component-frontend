@@ -20,11 +20,12 @@ import play.api.Logging
 import play.api.libs.json.{Json, OFormat, Reads, Writes}
 import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubmissionCompleteData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData._
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData.*
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.mongo.cache.{DataKey, SessionCacheRepository}
 import uk.gov.hmrc.mongo.{MongoComponent, TimestampSupport}
@@ -48,7 +49,8 @@ sealed case class CachedData(
   addressLookupParams: Option[AddressLookupParams] = None,
   submissionCompleteDetails: Option[SubmissionCompleteData] = None,
   completed: Option[Boolean] = None,
-  userLocation: Option[UserLocationDetails] = None
+  userLocation: Option[UserLocationDetails] = None,
+  first2LettersEori: Option[EoriRegion] = None
 )
 
 object CachedData {
@@ -68,6 +70,7 @@ object CachedData {
   val eoriKey                              = "eori"
   val addressLookupParamsKey               = "addressLookupParams"
   val completed                            = "completed"
+  val first2LettersEori                    = "first2LettersEori"
   implicit val format: OFormat[CachedData] = Json.format[CachedData]
 }
 
@@ -276,6 +279,16 @@ class SessionCache @Inject() (
         case _ => Future.successful(false)
       }
     }
+
+  def saveFirst2LettersEori(eoriRegion: EoriRegion)(implicit request: Request[_]): Future[EoriRegion] =
+    putData(first2LettersEori, eoriRegion)
+
+  def fetchFirst2LettersEori(implicit request: Request[_]): Future[EoriRegion] =
+    getData[EoriRegion](first2LettersEori)
+      .map(_.getOrElse(throwException(first2LettersEori)))
+
+  def getFirst2LettersEori(implicit request: Request[_]): Future[Option[EoriRegion]] =
+    getData[EoriRegion](first2LettersEori)
 
   private def throwException(name: String)(implicit request: Request[_]): Nothing =
     throw DataUnavailableException(s"$name is not cached in data for the sessionId: $sessionId")
