@@ -64,17 +64,17 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private val mockSessionCache               = mock[SessionCache]
   private val mockUpdateVerifiedEmailService = mock[UpdateVerifiedEmailService]
   private val mockEmailJourneyService        = mock[EmailJourneyService]
+  private val mockAppConfig                  = mock[AppConfig]
 
   private val checkYourEmailView = instanceOf[check_your_email]
   private val emailConfirmedView = instanceOf[email_confirmed]
-  private val appConfig          = instanceOf[AppConfig]
 
   private val controller = new CheckYourEmailController(
     mockAuthAction,
     mockSave4LaterService,
     mcc,
     checkYourEmailView,
-    appConfig,
+    mockAppConfig,
     emailConfirmedView,
     mockEmailJourneyService
   )
@@ -87,15 +87,18 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   val data: Map[String, JsValue] = Map(internalId -> jsonValue)
   val unit: Unit                 = ()
 
-  override def beforeEach(): Unit =
+  override def beforeEach(): Unit = {
     when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
       .thenReturn(Future.successful(Some(emailStatus)))
+    when(mockAppConfig.euEoriEnabled).thenReturn(false)
+  }
 
   override def afterEach(): Unit = {
     Mockito.reset(mockSave4LaterService)
     Mockito.reset(mockEmailVerificationService)
     Mockito.reset(mockUpdateVerifiedEmailService)
     Mockito.reset(mockSessionCache)
+    Mockito.reset(mockAppConfig)
   }
 
   "Displaying the Check Your Email Page" should {
@@ -189,6 +192,32 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
           CheckYourEmailPage.fieldLevelErrorYesNoAnswer
         ) shouldBe s"Error: $problemWithSelectionError"
       }
+    }
+  }
+
+  "acceptConfirmation" should {
+
+    "redirect to WhatIsYourEoriGBController when euEoriEnabled is true and service is cds" in {
+      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+
+      val result = controller.acceptConfirmation(cdsService)(
+        SessionBuilder.buildRequestWithSession(defaultUserId)
+      )
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result).get shouldBe "/customs-enrolment-services/cds/subscribe/matching/what-is-your-eori-gb"
+    }
+
+    "redirect to WhatIsYourEoriController when euEoriEnabled is false" in {
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+
+      val result = controller.acceptConfirmation(atarService)(
+        SessionBuilder.buildRequestWithSession(defaultUserId)
+      )
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
     }
   }
 
