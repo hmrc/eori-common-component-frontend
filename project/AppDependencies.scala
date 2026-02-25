@@ -14,7 +14,7 @@ object AppDependencies {
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-30"                    % mongoDbVersion,
     "uk.gov.hmrc"       %% "play-frontend-hmrc-play-30"            % "12.31.0",
     "uk.gov.hmrc"       %% "internal-auth-client-play-30"          % "4.3.0",
-    "ch.qos.logback"     % "logback-core"                          % "1.5.32",
+    "ch.qos.logback"     % "logback-core"                          % "1.5.21",
     "at.yawk.lz4"        %  "lz4-java"                             % "1.10.3",
   )
 
