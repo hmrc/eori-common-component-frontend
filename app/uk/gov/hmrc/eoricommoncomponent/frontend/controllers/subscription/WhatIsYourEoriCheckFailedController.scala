@@ -23,6 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori_check_failed
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -32,14 +33,20 @@ class WhatIsYourEoriCheckFailedController @Inject() (
   authAction: AuthAction,
   mcc: MessagesControllerComponents,
   subscriptionDetailsHolderService: SubscriptionDetailsService,
-  whatIsYourEoriCheckFailedPage: what_is_your_eori_check_failed
+  whatIsYourEoriCheckFailedPage: what_is_your_eori_check_failed,
+  appConfig: AppConfig
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
 
   def displayPage(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => _ =>
       subscriptionDetailsHolderService.cachedEoriNumber.map { eori =>
-        Ok(whatIsYourEoriCheckFailedPage(eori.getOrElse(throw DataUnavailableException("Eori is not cached")), service))
+        val isEuEoriEnabled = appConfig.euEoriEnabled && service.code == Service.cds.code
+        Ok(whatIsYourEoriCheckFailedPage(
+          eori.getOrElse(throw DataUnavailableException("Eori is not cached")),
+          service,
+          isEuEoriEnabled
+        ))
       }
     }
 
