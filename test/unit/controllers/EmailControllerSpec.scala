@@ -23,12 +23,13 @@ import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.Configuration
 import play.api.mvc.{AnyContent, Request, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ResponseError
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{EmailVerificationStatus, ResponseWithURI}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
@@ -80,6 +81,9 @@ class EmailControllerSpec
     new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterService)
 
   private val emailStatus = EmailStatus(Some("test@example.com"))
+
+  override protected def baseConfig: Configuration =
+    super.baseConfig ++ Configuration.from(Map("features.eu-eori-enabled" -> true))
 
   trait TestFixture {
 
@@ -287,6 +291,20 @@ class EmailControllerSpec
       callEndpointDefaulting(controller)(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith("/atar/subscribe/autoenrolment/email-confirmed")
+      }
+    }
+
+    "redirect when email verified and service is cds & EU EORI feature is enabled" in new TestFixture {
+      val newEmailStatus: EmailStatus = emailStatus.copy(isVerified = true)
+      when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any())).thenReturn(
+        Future.successful(Some(newEmailStatus))
+      )
+      when(mockSessionCache.saveEmail(any())(any())).thenReturn(Future.successful(true))
+      callEndpointDefaulting(controller)(journey = subscribeJourneyLong, service = cdsService) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith(
+          "/customs-enrolment-services/cds/subscribe/longjourney/first-2-letters-eori-number"
+        )
       }
     }
 

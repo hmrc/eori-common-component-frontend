@@ -180,6 +180,19 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       }
     }
 
+    "redirect to 'What are the first 2 letters of your EORI number?'" in {
+      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+
+      val result: Future[Result] =
+        controller.acceptConfirmation(cdsService)(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      status(result) shouldBe SEE_OTHER
+      header(LOCATION, result).value should endWith(
+        "/customs-enrolment-services/cds/subscribe/longjourney/first-2-letters-eori-number"
+      )
+    }
+
     "display an error message when no option is selected" in {
       submitForm(Map(), service = atarService, journey = subscribeJourneyShort) { result =>
         status(result) shouldBe BAD_REQUEST

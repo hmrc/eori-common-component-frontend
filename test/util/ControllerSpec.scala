@@ -79,7 +79,9 @@ trait ControllerSpec
 
   val env: Environment = Environment.simple()
 
-  val config: Configuration = Configuration.load(env)
+  protected def baseConfig: Configuration = Configuration.load(env)
+
+  lazy val config: Configuration = baseConfig
 
   private val serviceConfig = new ServicesConfig(config)
 
