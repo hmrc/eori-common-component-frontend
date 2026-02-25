@@ -1,6 +1,6 @@
 # EORI Common Component Frontend
 
-Frontend application for the the ECC (EORI Common Component) Subscription service. This service handles EORI Subscription journey.
+Frontend application for the ECC (EORI Common Component) Subscription service. This service handles EORI Subscription journey.
 
 Other related ECC services:
 - Backend service: [EORI Common Component](https://github.com/hmrc/eori-common-component)

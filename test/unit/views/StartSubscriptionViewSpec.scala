@@ -16,11 +16,66 @@
 
 package unit.views
 
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
 import play.api.mvc.Request
+import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
 import util.ViewSpec
 
 class StartSubscriptionViewSpec extends ViewSpec {
 
+  private val view                   = instanceOf[start_subscribe]
   implicit val request: Request[Any] = withFakeCSRF(fakeAtarSubscribeRequest)
+
+  "start_subscribe view" should {
+    "display the correct page when EuEori is enabled" in {
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        true,
+        "what-you-will-need-cds"
+      ) mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        true,
+        "what-you-will-need-uk"
+      ) mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        true,
+        "what-you-will-need-non-uk"
+      ) mustBe defined
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, true, "approval-message-cds") mustBe defined
+    }
+    "display the correct page when EuEori is not enabled" in {
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "gb-eori") mustBe defined
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "what-you-will-need") mustBe defined
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "organisation") mustBe defined
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "organisation-text") mustBe defined
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "individual") mustBe defined
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "individual-text") mustBe defined
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "approval-message") mustBe defined
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "average-time") mustBe defined
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "find-utr-link") mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        false,
+        "find-utr-link-individual"
+      ) mustBe defined
+    }
+  }
+
+  private def elementOfStartSubscriptionView(
+    service: Service,
+    heading: String,
+    isEuEoriEnabled: Boolean,
+    element: String
+  ): Option[Element] =
+    Option(Jsoup.parse(contentAsString(view(service, heading, isEuEoriEnabled))).getElementById(element))
 
 }
