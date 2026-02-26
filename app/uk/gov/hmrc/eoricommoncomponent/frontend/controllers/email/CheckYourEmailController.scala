@@ -17,16 +17,17 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email
 
 import play.api.Logger
-import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriGBController
+import play.api.mvc.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.First2LettersEoriController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, CdsController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments, YesNo}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.confirmEmailYesNoAnswerForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.cdsCode
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailJourneyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed}
@@ -40,9 +41,9 @@ class CheckYourEmailController @Inject() (
   save4LaterService: Save4LaterService,
   mcc: MessagesControllerComponents,
   checkYourEmailView: check_your_email,
-  appConfig: AppConfig,
   emailConfirmedView: email_confirmed,
-  emailJourneyService: EmailJourneyService
+  emailJourneyService: EmailJourneyService,
+  appConfig: AppConfig
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -127,10 +128,11 @@ class CheckYourEmailController @Inject() (
 
   def acceptConfirmation(service: Service): Action[AnyContent] =
     authAction.enrolledUserClearingCacheOnCompletionAction { _ => (_: LoggedInUserWithEnrolments) =>
-      if (appConfig.euEoriEnabled && service.code == "cds")
-        Future.successful(Redirect(WhatIsYourEoriGBController.createForm(service)))
-      else
-        Future.successful(Redirect(WhatIsYourEoriController.createForm(service)))
+      (appConfig.euEoriEnabled && service.code == cdsCode) match {
+        case true =>
+          Future.successful(Redirect(First2LettersEoriController.form(service)))
+        case false => Future.successful(Redirect(WhatIsYourEoriController.createForm(service)))
+      }
     }
 
   private def locationByAnswer(yesNoAnswer: YesNo, service: Service, subscribeJourney: SubscribeJourney)(implicit

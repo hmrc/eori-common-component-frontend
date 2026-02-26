@@ -34,7 +34,9 @@ case class Service(
 
 object Service {
 
-  val cds: Service = Service("cds", "HMRC-CUS-ORG", "", None, "", "", None)
+  val cdsCode = "cds"
+
+  val cds: Service = Service(cdsCode, "HMRC-CUS-ORG", "", None, "", "", None)
 
   val supportedServicesMap: Map[String, Service] = new ServiceConfig(
     Configuration(ConfigFactory.load())

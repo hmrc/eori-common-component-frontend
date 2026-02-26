@@ -1,0 +1,88 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.eoriPrefixForm
+@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.helper._
+
+@this(layout_di: layout, errorSummary: helpers.errorSummary, h1: helpers.h1, govukButton: GovukButton, govukDetails: GovukDetails, inputRadioGroup: helpers.inputRadioGroup)
+
+@(eoriPrefixForm: Form[EoriRegion], firstTwoLetters: Option[EoriRegion], isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
+
+@detailsContent = {
+    <p class="govuk-body">@messages("cds.subscription.first-2-letters-eori.detail.para1")</p>
+
+    <p class="govuk-body">@Html(messages("cds.subscription.first-2-letters-eori.detail.para2"))</p>
+
+    <p class="govuk-body">@messages("cds.subscription.first-2-letters-eori.detail.para3")</p>
+}
+
+@values = @{
+    Seq("GB" -> messages("cds.subscription.first-2-letters-eori.radio.gb"), "EU" -> messages("cds.subscription.first-2-letters-eori.radio.eu"))
+}
+
+@options = @{
+    values.map { case (value, label) =>
+        RadioItem(
+            content = Text(label),
+            value = Some(value),
+            id = Some(s"eori-prefix-$value"),
+            checked = firstTwoLetters.exists(r => r.toString.toLowerCase == value)
+        )
+    }
+}
+
+@layout_di(messages("cds.subscription.first-2-letters-eori.heading"), form = Some(eoriPrefixForm), service = service) {
+
+    @errorSummary(eoriPrefixForm.errors)
+
+    @helpers.form(First2LettersEoriController.submit(service), "eoriPrefixForm") {
+        @CSRF.formField
+
+        @h1(messages("cds.subscription.first-2-letters-eori.heading"))
+
+        @govukDetails(
+            Details(
+                summary = Text(messages("cds.subscription.enter-eori-number.no-eori.summary")),
+                content = HtmlContent(detailsContent)
+            )
+        )
+
+        @inputRadioGroup(
+            eoriPrefixForm("region"),
+            legend = messages("cds.subscription.first-2-letters-eori.heading"),
+            items = options,
+            legendAsHeading = false,
+            hint = Some(Hint(content = HtmlContent(messages("cds.subscription.first-2-letters-eori.radio.hint.text")), classes = "govuk-body-s")),
+            classes = "govuk-fieldset__legend--l govuk-visually-hidden"
+        )
+
+        @govukButton(
+            Button(
+                content = Text(ViewHelper.continueButtonText(isInReviewMode)),
+                id = Some("continue-button")
+            )
+        )
+
+        @helpers.helpAndSupport()
+    }
+
+}

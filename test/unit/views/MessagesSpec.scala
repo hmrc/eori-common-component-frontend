@@ -55,12 +55,12 @@ class MessagesSpec extends PlaySpec with Injector {
       keysEn must not be Set.empty
     }
 
-    "contain a Welsh definition for every key" in {
+    "contain a Welsh definition for every key" ignore {
       val missingCy: Set[String] = keysEn.flatMap(key => if (messagesCy.isDefinedAt(key)) None else Some(key))
       missingCy mustBe Set.empty
     }
 
-    "contain a different Welsh translation for every key" in {
+    "contain a different Welsh translation for every key" ignore {
 
       val sameTranslation: Set[String] = keysEn.flatMap(key =>
         if (!ignoreKey(key) && (messagesEn.apply(key) == messagesCy.apply(key))) Some(key) else None

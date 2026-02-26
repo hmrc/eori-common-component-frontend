@@ -17,16 +17,17 @@
 package unit.controllers.email
 
 import common.pages.emailvericationprocess.CheckYourEmailPage
-import org.mockito.ArgumentMatchers._
+import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.mvc.Results.Ok
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes => emailRoutes, CheckYourEmailController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes as emailRoutes, CheckYourEmailController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.GroupId
@@ -74,9 +75,9 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     mockSave4LaterService,
     mcc,
     checkYourEmailView,
-    mockAppConfig,
     emailConfirmedView,
-    mockEmailJourneyService
+    mockEmailJourneyService,
+    mockAppConfig
   )
 
   val email                    = "test@example.com"
@@ -183,6 +184,19 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       }
     }
 
+    "redirect to 'What are the first 2 letters of your EORI number?'" in {
+      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+
+      val result: Future[Result] =
+        controller.acceptConfirmation(cdsService)(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      status(result) shouldBe SEE_OTHER
+      header(LOCATION, result).value should endWith(
+        "/customs-enrolment-services/cds/subscribe/first-2-letters-eori-number"
+      )
+    }
+
     "display an error message when no option is selected" in {
       submitForm(Map(), service = atarService, journey = subscribeJourneyShort) { result =>
         status(result) shouldBe BAD_REQUEST
@@ -192,32 +206,6 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
           CheckYourEmailPage.fieldLevelErrorYesNoAnswer
         ) shouldBe s"Error: $problemWithSelectionError"
       }
-    }
-  }
-
-  "acceptConfirmation" should {
-
-    "redirect to WhatIsYourEoriGBController when euEoriEnabled is true and service is cds" in {
-      when(mockAppConfig.euEoriEnabled).thenReturn(true)
-      withAuthorisedUser(defaultUserId, mockAuthConnector)
-
-      val result = controller.acceptConfirmation(cdsService)(
-        SessionBuilder.buildRequestWithSession(defaultUserId)
-      )
-
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result).get shouldBe "/customs-enrolment-services/cds/subscribe/matching/what-is-your-eori-gb"
-    }
-
-    "redirect to WhatIsYourEoriController when euEoriEnabled is false" in {
-      withAuthorisedUser(defaultUserId, mockAuthConnector)
-
-      val result = controller.acceptConfirmation(atarService)(
-        SessionBuilder.buildRequestWithSession(defaultUserId)
-      )
-
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
     }
   }
 

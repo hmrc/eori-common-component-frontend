@@ -18,13 +18,15 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.email
 
 import play.api.Logging
 import play.api.i18n.Messages
-import play.api.mvc.Results._
-import play.api.mvc._
+import play.api.mvc.Results.*
+import play.api.mvc.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes => emailRoutes}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes as emailRoutes
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.First2LettersEoriController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.cdsCode
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{EmailVerificationStatus, ResponseWithURI}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{ExistingEoriService, Save4LaterService}
@@ -168,10 +170,11 @@ class EmailJourneyService @Inject() (
     subscribeJourney match {
       case SubscribeJourney(AutoEnrolment) => existingEoriService.onEnrol(service)
       case SubscribeJourney(LongJourney) =>
-        if (appConfig.euEoriEnabled && service.code == "cds")
-          Future.successful(Redirect(routes.WhatIsYourEoriGBController.createForm(service)))
-        else
-          Future.successful(Redirect(routes.WhatIsYourEoriController.createForm(service)))
+        (appConfig.euEoriEnabled && service.code == cdsCode) match {
+          case true =>
+            Future.successful(Redirect(First2LettersEoriController.form(service)))
+          case false => Future.successful(Redirect(routes.WhatIsYourEoriController.createForm(service)))
+        }
     }
 
 }
