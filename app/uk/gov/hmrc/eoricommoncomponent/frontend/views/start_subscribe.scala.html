@@ -23,7 +23,7 @@
 
 @this(layout_di: layout, appConfig: AppConfig, govukButton: GovukButton)
 
-@(service: Service, headingAndTitleMessage: String)(implicit messages: Messages, request: Request[_])
+@(service: Service, headingAndTitleMessage: String, isEuEoriEnabled: Boolean)(implicit messages: Messages, request: Request[_])
 
 @getEoriLink = {
 <a class="govuk-link" href=@appConfig.eoriCommonComponentRegistrationFrontend(service.code)>@messages("ecc.subscription.information.para2.link")</a>
@@ -44,50 +44,65 @@
     <div class="start_page">
         <h1 class="govuk-heading-l">@messages(headingAndTitleMessage)</h1>
 
-        <p id="information-only-once" class="govuk-body">@messages("ecc.subscription.information.only.once")
+        <p id="information-only-once" class="govuk-body">@messages("ecc.subscription.information.only.once") </p>
             <ul class="govuk-body">
             <li>@messages("ecc.subscription.information.only.once.bullet1")</li>
             <li>@messages("ecc.subscription.information.only.once.bullet2")</li>
             </ul>
 
-        <p class="govuk-body">@messages("ecc.subscription.information.only.once.para1")</p>
-        <p class="govuk-body"> @dynamicContent </p>
+        @if(isEuEoriEnabled) {
+            <p class="govuk-body">@messages("ecc.subscription.information.only.once.para1.CDS")</p>
+            <p class="govuk-body"> @dynamicContent </p>
 
-        <h2 class="govuk-heading-m" id="what-you-will-need">@messages("ecc.subscription.information.para1.heading")</h2>
+            <h2 class="govuk-heading-m" id="what-you-will-need-cds">@messages("ecc.subscription.information.para1.heading")</h2>
+            <p id="you-need-to-tell-us" class="govuk-body">@messages("ecc.subscription.information.para2.CDS")</p>
+            <ul class="govuk-list govuk-list--bullet ">
+                <li>@messages("ecc.subscription.information.section.organisation.list.first.CDS")</li>
+                <li>@messages("ecc.subscription.information.section.organisation.list.second.CDS")</li>
+                <li>@messages("ecc.subscription.information.section.organisation.list.third.CDS")</li>
+            </ul>
+            <p id="what-you-will-need-uk" class="govuk-body">@messages("ecc.subscription.information.section.uk.CDS")</p>
+            <ul class="govuk-list govuk-list--bullet ">
+                <li>@messages("ecc.subscription.information.section.uk.list.first.CDS")</li>
+                <li>@messages("ecc.subscription.information.section.uk.list.second.CDS")</li>
+            </ul>
+            <p id="what-you-will-need-non-uk" class="govuk-body">@messages("ecc.subscription.information.section.non-uk.CDS")</p>
 
-        <h3 class="govuk-heading-s" id="gb-eori">@messages("ecc.subscription.information.para2.heading")</h3>
+            <h2 class="govuk-heading-m govuk-!-margin-top-2" id="when-you-can-use-your-subscription">When you can use your subscription</h2>
+            <p id="approval-message-cds" class=" govuk-body">@messages("ecc.subscription.information.section.approval-message")</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("ecc.subscription.information.section.approval.list.first")</li>
+                <li>@messages("ecc.subscription.information.section.approval.list.second.CDS")</li>
+            </ul>
+        } else {
+            <p class="govuk-body">@messages("ecc.subscription.information.only.once.para1")</p>
+            <p class="govuk-body"> @dynamicContent </p>
 
-         @detailsContent
-
-
-        <h3 class="govuk-heading-s" id="organisation">@messages("ecc.subscription.information.section.organisation.subheading")</h3>
-        <p id="organisation-text" class="govuk-body">@messages("ecc.subscription.information.section.organisation.list.heading")
-        <ul class="govuk-list govuk-list--bullet ">
-            <li>@messages("ecc.subscription.information.section.organisation.list.first")</li>
-            <li>@messages("ecc.subscription.information.section.organisation.list.third")</li>
-        </ul>
-
-        <p id="find-utr-link" class="govuk-body">@Html(messages("ecc.subscription.information.section.organisation.utr.link"))</p>
-
-
-
-        <h3 class="govuk-heading-s govuk-!-margin-top-2" id="individual">@messages("ecc.subscription.information.section.individual.subheading")</h3>
-        <p id="individual-text" class=" govuk-body">@messages("ecc.subscription.information.section.individual.para")</p>
-
-        <ul class="govuk-list govuk-list--bullet ">
-            <li>@messages("ecc.subscription.information.section.individual.nino")</li>
-            <li>@messages("ecc.subscription.information.section.individual.utr")</li>
-        </ul>
-        <p id="find-utr-link-individual" class="govuk-body">@Html(messages("ecc.subscription.information.section.organisation.utr.link"))</p>
-
-        <h2 class="govuk-heading-m govuk-!-margin-top-2" id="how-long">@messages("ecc.subscription.information.section.how-long")</h2>
-        <p id="average-time" class=" govuk-body">@messages("ecc.subscription.information.section.average-time")</p>
-        <p id="approval-message" class=" govuk-body">@messages("ecc.subscription.information.section.approval-message")</p>
-
-        <ul class="govuk-list govuk-list--bullet ">
-            <li>@messages("ecc.subscription.information.section.approval.list.first")</li>
-            <li>@messages("ecc.subscription.information.section.approval.list.second")</li>
-        </ul>
+            <h2 class="govuk-heading-m" id="what-you-will-need">@messages("ecc.subscription.information.para1.heading")</h2>
+            <h3 class="govuk-heading-s" id="gb-eori">@messages("ecc.subscription.information.para2.heading")</h3>
+            @detailsContent
+            <h3 class="govuk-heading-s" id="organisation">@messages("ecc.subscription.information.section.organisation.subheading")</h3>
+            <p id="organisation-text" class="govuk-body">@messages("ecc.subscription.information.section.organisation.list.heading") </p>
+            <ul class="govuk-list govuk-list--bullet ">
+                <li>@messages("ecc.subscription.information.section.organisation.list.first")</li>
+                <li>@messages("ecc.subscription.information.section.organisation.list.third")</li>
+            </ul>
+            <p id="find-utr-link" class="govuk-body">@Html(messages("ecc.subscription.information.section.organisation.utr.link"))</p>
+            <h3 class="govuk-heading-s govuk-!-margin-top-2" id="individual">@messages("ecc.subscription.information.section.individual.subheading")</h3>
+            <p id="individual-text" class=" govuk-body">@messages("ecc.subscription.information.section.individual.para")</p>
+            <ul class="govuk-list govuk-list--bullet ">
+                <li>@messages("ecc.subscription.information.section.individual.nino")</li>
+                <li>@messages("ecc.subscription.information.section.individual.utr")</li>
+            </ul>
+            <p id="find-utr-link-individual" class="govuk-body">@Html(messages("ecc.subscription.information.section.organisation.utr.link"))</p>
+            <h2 class="govuk-heading-m govuk-!-margin-top-2" id="how-long">@messages("ecc.subscription.information.section.how-long")</h2>
+            <p id="average-time" class=" govuk-body">@messages("ecc.subscription.information.section.average-time")</p>
+            <p id="approval-message" class=" govuk-body">@messages("ecc.subscription.information.section.approval-message")</p>
+            <ul class="govuk-list govuk-list--bullet ">
+                <li>@messages("ecc.subscription.information.section.approval.list.first")</li>
+                <li>@messages("ecc.subscription.information.section.approval.list.second")</li>
+            </ul>
+        }
 
         @govukButton(Button(
             href = Some(EmailController.form(service, subscribeJourney = SubscribeJourney(LongJourney)).url),
