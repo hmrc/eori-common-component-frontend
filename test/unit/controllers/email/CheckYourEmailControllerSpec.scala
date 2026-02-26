@@ -75,7 +75,6 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     mockSave4LaterService,
     mcc,
     checkYourEmailView,
-    mockAppConfig,
     emailConfirmedView,
     mockEmailJourneyService,
     mockAppConfig
@@ -207,32 +206,6 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
           CheckYourEmailPage.fieldLevelErrorYesNoAnswer
         ) shouldBe s"Error: $problemWithSelectionError"
       }
-    }
-  }
-
-  "acceptConfirmation" should {
-
-    "redirect to WhatIsYourEoriGBController when euEoriEnabled is true and service is cds" in {
-      when(mockAppConfig.euEoriEnabled).thenReturn(true)
-      withAuthorisedUser(defaultUserId, mockAuthConnector)
-
-      val result = controller.acceptConfirmation(cdsService)(
-        SessionBuilder.buildRequestWithSession(defaultUserId)
-      )
-
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result).get shouldBe "/customs-enrolment-services/cds/subscribe/matching/what-is-your-eori-gb"
-    }
-
-    "redirect to WhatIsYourEoriController when euEoriEnabled is false" in {
-      withAuthorisedUser(defaultUserId, mockAuthConnector)
-
-      val result = controller.acceptConfirmation(atarService)(
-        SessionBuilder.buildRequestWithSession(defaultUserId)
-      )
-
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
     }
   }
 

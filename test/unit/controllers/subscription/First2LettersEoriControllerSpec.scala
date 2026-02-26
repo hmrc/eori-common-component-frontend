@@ -93,7 +93,9 @@ class First2LettersEoriControllerSpec extends ControllerSpec with AuthActionMock
 
       // Then
       status(result) shouldBe SEE_OTHER
-      header(LOCATION, result).value should endWith("eori")
+      header(LOCATION, result).value should endWith(
+        "/customs-enrolment-services/cds/subscribe/matching/what-is-your-eori-gb"
+      )
     }
 
     "Redirect to check eori number page when EU is selected" in {

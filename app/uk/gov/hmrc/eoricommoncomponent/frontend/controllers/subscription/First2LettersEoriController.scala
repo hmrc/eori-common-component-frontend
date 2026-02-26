@@ -60,7 +60,7 @@ class First2LettersEoriController @Inject() (
           ))),
         region =>
           sessionCache.saveFirst2LettersEori(region).map {
-            case GB => Redirect("https://www.gov.uk/eori")
+            case GB => Redirect(routes.WhatIsYourEoriGBController.createForm(service))
             case EU => Redirect("https://www.gov.uk/check-eori-number")
           }
       )
