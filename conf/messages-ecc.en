@@ -116,6 +116,7 @@ ecc.subscription.information.para1.heading=What you will need
 
 ecc.subscription.information.para2.heading=An EORI number starting with GB
 ecc.subscription.information.para2=If you do not have one you can {0}
+ecc.subscription.information.para2.CDS=You need to tell us:
 ecc.subscription.information.para2.link=apply for both a subscription and an EORI number
 
 ecc.subscription.information.section.organisation.subheading=If you apply as a limited company, partnership or other organisation
@@ -124,15 +125,25 @@ ecc.subscription.information.section.organisation.list.heading=To verify your id
 ecc.subscription.information.section.organisation.list.first=registered name and address
 
 ecc.subscription.information.section.organisation.list.third=Corporation Tax Unique Taxpayer Reference (UTR), if you pay Corporation Tax in the UK
+ecc.subscription.information.section.organisation.list.first.CDS=your registered name and address
+ecc.subscription.information.section.organisation.list.second.CDS=your EORI number
+ecc.subscription.information.section.organisation.list.third.CDS=an email address we can use to contact you
+
+ecc.subscription.information.section.uk.CDS=If you are based in the UK, we will ask you for:
+ecc.subscription.information.section.uk.list.first.CDS=your Unique Taxpayer Reference (UTR), if you or your organisation are registered for Self Assessment or Corporation Tax
+ecc.subscription.information.section.uk.list.second.CDS= your National Insurance number, if you apply as a sole trader or individual
+ecc.subscription.information.section.non-uk.CDS=If you are based outside the UK, we may also ask you to tell us when your EORI number was issued.
+
 ecc.subscription.information.section.organisation.utr.link=<a href="https://www.gov.uk/find-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">Find your UTR (opens in new tab)</a>
 
 
 ecc.subscription.information.section.individual.subheading=If you apply as a sole trader or individual
 ecc.subscription.information.section.how-long=How long it takes
 ecc.subscription.information.section.average-time=Applications take an average of 6 minutes to complete.
-ecc.subscription.information.section.approval-message=If we approve your application the subscription will be ready to use within either:
+ecc.subscription.information.section.approval-message=If we approve your application, the subscription will be ready to use within either:
 ecc.subscription.information.section.approval.list.first=2 hours
 ecc.subscription.information.section.approval.list.second=3 to 5 working days, if we need to make more checks
+ecc.subscription.information.section.approval.list.second.CDS=5 working days, if we need to make more checks
 ecc.subscription.information.section.individual.para=To verify your identity you will need to provide one of the following:
 ecc.subscription.information.section.individual.nino=National Insurance number, if you have worked in the UK
 ecc.subscription.information.section.individual.utr=Self Assessment Unique Taxpayer Reference (UTR), if you registered for Self Assessment
@@ -142,6 +153,7 @@ ecc.subscription.information.email.confirm=We’ll process your application and 
 ecc.subscription.information.only.once.bullet1=you need to enter some personal details
 ecc.subscription.information.only.once.bullet2=HMRC will do a security check to verify your details
 ecc.subscription.information.only.once.para1 = You only need to do this once.
+ecc.subscription.information.only.once.para1.CDS = You only need to do this once. It usually takes about 6 minutes to fill in this application.
 
 ecc.subscription.information.only.once.para1.atar= Once you have subscribed you can apply for an: <ul class="govuk-body"><li>Advance Tariff Ruling</li><li>Advance Valuation Ruling</li></ul>
 ecc.subscription.information.only.once.para1.cds = Once you have subscribed you will have access to the Customs Declaration Service.
