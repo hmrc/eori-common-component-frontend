@@ -44,6 +44,9 @@ object DateConverter {
 
   def updateDateOfEstablishmentErrors(errors: Seq[FormError]): Seq[FormError] =
     updateYearErrors(errors, earliestYearDateOfEstablishment)
+    
+  def updateWhenEoriIssuedErrors(errors: Seq[FormError]): Seq[FormError] =
+    updateYearErrors(errors, earliestYearDateOfEstablishment)
 
   private def updateYearErrors(errors: Seq[FormError], minYear: Int): Seq[FormError] = errors.map(err =>
     if (err.messages.contains("date.year.error")) err.copy(args = Seq(minYear.toString, Year.now.getValue.toString))

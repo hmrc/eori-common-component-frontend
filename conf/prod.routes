@@ -193,5 +193,10 @@ POST         /customs-enrolment-services/:service/subscription-errors/eori-alrea
 GET         /customs-enrolment-services/:service/subscribe/first-2-letters-eori-number                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.First2LettersEoriController.form(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/first-2-letters-eori-number                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.First2LettersEoriController.submit(service:Service,isInReviewMode:Boolean=false)
 
+GET         /customs-enrolment-services/:service/subscribe/when-eori-issued                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhenEoriIssuedController.createForm(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/when-eori-issued                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhenEoriIssuedController.submit(isInReviewMode: Boolean = false, service: Service)
+GET         /customs-enrolment-services/:service/subscribe/when-eori-issued/review                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhenEoriIssuedController.reviewForm(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/when-eori-issued/review                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhenEoriIssuedController.submit(isInReviewMode: Boolean = true, service: Service)
+
 ->          /                                                                                          health.Routes
     

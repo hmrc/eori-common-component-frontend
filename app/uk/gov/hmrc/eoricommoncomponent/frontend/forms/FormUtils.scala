@@ -18,8 +18,8 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms
 
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import play.api.data.validation._
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.LocalDateFormatter
+import play.api.data.validation.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.{LocalDateFormatter, MonthYearFormatter}
 
 import java.time.LocalDate
 
@@ -48,6 +48,10 @@ object FormUtils {
 
   def localDateUserInput(emptyKey: String, invalidKey: String, args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(emptyKey, invalidKey, args))
+
+  // Formatter for month+year-only inputs. Binds to a LocalDate with day set to 1.
+  def localMonthYearUserInput(emptyKey: String, invalidKey: String, args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
+    of(new MonthYearFormatter(emptyKey, invalidKey, args))
 
   def oneOf[T](validValues: Set[T]): T => Boolean = validValues.contains
 

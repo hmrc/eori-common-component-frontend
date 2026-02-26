@@ -191,6 +191,11 @@ vat.error.empty-date=Nodwch eich dyddiad dod i rym ar gyfer TAW
 vat.error.future-date=Mae’n rhaid i’r dyddiad dod i rym ar gyfer TAW fod yn y gorffennol
 vat.error.invalid-date=Mae’n rhaid i’r dyddiad dod i rym ar gyfer TAW fod yn ddyddiad go iawn
 
+wei.error.empty-date=Enter the month and year this EORI number was issued
+wei.error.future-date=Mae’n rhaid i’r mis a’r flwyddyn y cyhoeddwyd y rhif EORI hwn fod y mis hwn neu yn y gorffennol
+wei.error.invalid-date=Nodwch fis a blwyddyn go iawn
+wei.error.minMax=Nodwch fis a blwyddyn go iawn
+
 cds.feedback.continue=Rhagor am {0}
 
 cds.subscription.sign-in-with-different-details.para1=Mae {0} eisoes wedi cofrestru ar gyfer {1} gyda Phorth y Llywodraeth gwahanol.
