@@ -21,6 +21,8 @@ import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriGBController
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, CdsController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments, YesNo}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.confirmEmailYesNoAnswerForm
@@ -38,6 +40,7 @@ class CheckYourEmailController @Inject() (
   save4LaterService: Save4LaterService,
   mcc: MessagesControllerComponents,
   checkYourEmailView: check_your_email,
+  appConfig: AppConfig,
   emailConfirmedView: email_confirmed,
   emailJourneyService: EmailJourneyService
 )(implicit ec: ExecutionContext)
@@ -124,7 +127,10 @@ class CheckYourEmailController @Inject() (
 
   def acceptConfirmation(service: Service): Action[AnyContent] =
     authAction.enrolledUserClearingCacheOnCompletionAction { _ => (_: LoggedInUserWithEnrolments) =>
-      Future.successful(Redirect(WhatIsYourEoriController.createForm(service)))
+      if (appConfig.euEoriEnabled && service.code == "cds")
+        Future.successful(Redirect(WhatIsYourEoriGBController.createForm(service)))
+      else
+        Future.successful(Redirect(WhatIsYourEoriController.createForm(service)))
     }
 
   private def locationByAnswer(yesNoAnswer: YesNo, service: Service, subscribeJourney: SubscribeJourney)(implicit

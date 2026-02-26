@@ -29,6 +29,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ResponseError
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{EmailVerificationStatus, ResponseWithURI}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
@@ -71,6 +72,7 @@ class EmailControllerSpec
   private val mockSubscriptionStatusService                              = mock[SubscriptionStatusService]
   private val mockUpdateVerifiedEmailService: UpdateVerifiedEmailService = mock[UpdateVerifiedEmailService]
   private val mockExistingEoriService                                    = mock[ExistingEoriService]
+  private val mockAppConfig                                              = mock[AppConfig]
   private val enrolmentPendingAgainstGroupIdView = instanceOf[enrolment_pending_against_group_id]
   private val enrolmentPendingForUserView        = instanceOf[enrolment_pending_for_user]
   private val errorEmailView                     = instanceOf[email_error_template]
@@ -90,7 +92,7 @@ class EmailControllerSpec
       mockUpdateVerifiedEmailService,
       errorEmailView,
       errorView,
-      appConfig,
+      mockAppConfig,
       mockExistingEoriService
     )
 
@@ -345,6 +347,32 @@ class EmailControllerSpec
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title() should startWith(messages("cds.enrolment.pending.title.user.processingService"))
+      }
+    }
+
+    "redirect to WhatIsYourEoriGBController when email verified in cache, euEoriEnabled true and cds service (Long Journey)" in new TestFixture {
+      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+      when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
+        .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
+
+      callEndpointDefaulting(controller)(journey = subscribeJourneyLong, service = cdsService) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith(
+          "/customs-enrolment-services/cds/subscribe/matching/what-is-your-eori-gb"
+        )
+      }
+    }
+
+    "redirect to WhatIsYourEoriController when email verified in cache and euEoriEnabled false (Long Journey)" in new TestFixture {
+      when(mockAppConfig.euEoriEnabled).thenReturn(false)
+      when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
+        .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
+
+      callEndpointDefaulting(controller)(journey = subscribeJourneyLong, service = atarService) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith(
+          "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
+        )
       }
     }
   }

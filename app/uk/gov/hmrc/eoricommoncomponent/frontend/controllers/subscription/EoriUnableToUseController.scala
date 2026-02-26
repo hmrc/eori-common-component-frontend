@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{ExistingEori, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.EoriUnableToUse
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
@@ -36,9 +37,16 @@ class EoriUnableToUseController @Inject() (
   subscriptionBusinessService: SubscriptionBusinessService,
   enrolmentStoreProxyService: EnrolmentStoreProxyService,
   mcc: MessagesControllerComponents,
-  eoriUnableToUsePage: eori_unable_to_use
+  eoriUnableToUsePage: eori_unable_to_use,
+  appConfig: AppConfig
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
+
+  private def eoriInputRedirect(service: Service) =
+    if (appConfig.euEoriEnabled && service.code == "cds")
+      Redirect(routes.WhatIsYourEoriGBController.createForm(service))
+    else
+      Redirect(routes.WhatIsYourEoriController.createForm(service))
 
   def displayPage(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
@@ -47,21 +55,10 @@ class EoriUnableToUseController @Inject() (
           enrolmentStoreProxyService.isEnrolmentInUse(service, ExistingEori(eori, service.enrolmentKey)).map {
             existingEori =>
               if (existingEori.isDefined) Ok(eoriUnableToUsePage(service, eori, EoriUnableToUse.form()))
-              else
-                Redirect(
-                  uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(
-                    service
-                  )
-                )
+              else eoriInputRedirect(service)
           }
         case _ =>
-          Future.successful(
-            Redirect(
-              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(
-                service
-              )
-            )
-          )
+          Future.successful(eoriInputRedirect(service))
       }
     }
 
@@ -72,15 +69,11 @@ class EoriUnableToUseController @Inject() (
           subscriptionBusinessService.cachedEoriNumber.map {
             case Some(eori) => BadRequest(eoriUnableToUsePage(service, eori, formWithErrors))
             case _ =>
-              Redirect(
-                uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(
-                  service
-                )
-              )
+              eoriInputRedirect(service)
           },
         answer =>
           if (answer.isAnswerChangeEori())
-            Future.successful(Redirect(routes.WhatIsYourEoriController.createForm(service)))
+            Future.successful(eoriInputRedirect(service))
           else Future.successful(Redirect(routes.EoriUnableToUseSignoutController.displayPage(service)))
       )
     }

@@ -168,7 +168,10 @@ class EmailJourneyService @Inject() (
     subscribeJourney match {
       case SubscribeJourney(AutoEnrolment) => existingEoriService.onEnrol(service)
       case SubscribeJourney(LongJourney) =>
-        Future.successful(Redirect(routes.WhatIsYourEoriController.createForm(service)))
+        if (appConfig.euEoriEnabled && service.code == "cds")
+          Future.successful(Redirect(routes.WhatIsYourEoriGBController.createForm(service)))
+        else
+          Future.successful(Redirect(routes.WhatIsYourEoriController.createForm(service)))
     }
 
 }

@@ -29,7 +29,7 @@
         feedback_di: helpers.feedback
 )
 
-@(eori: String, service: Service)(implicit request: Request[_], messages: Messages)
+@(eori: String, service: Service, isEuEoriEnabled:Boolean)(implicit request: Request[_], messages: Messages)
 
 @layout_di(messages("ecc.subscription.eori-number-invalid"), service = service) {
     <div class="govuk-body">
@@ -45,7 +45,10 @@
 
              @link(
                 text = messages("ecc.subscription.eori-number-invalid-para-with-link-try-again"),
-                href = routes.WhatIsYourEoriController.createForm(service).url,
+                href =  String(
+                if(isEuEoriEnabled) routes.WhatIsYourEoriGBController.createForm(service).url
+                else routes.WhatIsYourEoriController.createForm(service).url
+                ),
                 preText = Some(messages("ecc.subscription.eori-number-invalid-para-with-link")),
 
             )
@@ -57,7 +60,10 @@
 
         @govukButton(Button(
             content = Text(messages("ecc.subscription.eori-number-invalid-try-again")),
-            href =  Some(routes.WhatIsYourEoriController.createForm(service).url),
+            href =  Some(
+                if(isEuEoriEnabled) routes.WhatIsYourEoriGBController.createForm(service).url
+                else routes.WhatIsYourEoriController.createForm(service).url
+            ),
             id = Some("continue-button")
         ))
 
