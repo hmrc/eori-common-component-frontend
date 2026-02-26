@@ -25,7 +25,7 @@
 
 @this(layout_di: layout, errorSummary: helpers.errorSummary, h1: helpers.h1, govukButton: GovukButton, govukDetails: GovukDetails, inputRadioGroup: helpers.inputRadioGroup)
 
-@(eoriPrefixForm: Form[EoriRegion], firstTwoLetters: Option[EoriRegion], isInReviewMode: Boolean, service: Service, subscribeJourney: SubscribeJourney)(implicit request: Request[_], messages: Messages)
+@(eoriPrefixForm: Form[EoriRegion], firstTwoLetters: Option[EoriRegion], isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
 @detailsContent = {
     <p class="govuk-body">@messages("cds.subscription.first-2-letters-eori.detail.para1")</p>
@@ -54,7 +54,7 @@
 
     @errorSummary(eoriPrefixForm.errors)
 
-    @helpers.form(First2LettersEoriController.submit(service, subscribeJourney), "eoriPrefixForm") {
+    @helpers.form(First2LettersEoriController.submit(service), "eoriPrefixForm") {
         @CSRF.formField
 
         @h1(messages("cds.subscription.first-2-letters-eori.heading"))

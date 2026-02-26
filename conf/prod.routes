@@ -184,8 +184,8 @@ GET         /customs/subscribe-for-cds/are-you-based-in-uk                      
 GET         /customs-enrolment-services/:service/subscription-errors/eori-already-used                 uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriAlreadyUsedController.displayPage(service: Service)
 POST         /customs-enrolment-services/:service/subscription-errors/eori-already-used                uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriAlreadyUsedController.signInToAnotherAccount(service: Service)
 
-GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/first-2-letters-eori-number                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.First2LettersEoriController.form(service: Service, subscribeJourney: SubscribeJourney)
-POST        /customs-enrolment-services/:service/subscribe/:subscribeJourney/first-2-letters-eori-number                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.First2LettersEoriController.submit(service:Service,isInReviewMode:Boolean=false,subscribeJourney: SubscribeJourney)
+GET         /customs-enrolment-services/:service/subscribe/first-2-letters-eori-number                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.First2LettersEoriController.form(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/first-2-letters-eori-number                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.First2LettersEoriController.submit(service:Service,isInReviewMode:Boolean=false)
 
 ->          /                                                                                          health.Routes
     

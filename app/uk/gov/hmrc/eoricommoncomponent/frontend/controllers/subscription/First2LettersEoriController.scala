@@ -41,14 +41,14 @@ class First2LettersEoriController @Inject() (
 
   val form: Form[EoriRegion] = EoriPrefixForm.eoriPrefixForm
 
-  def form(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
+  def form(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       sessionCache.getFirst2LettersEori.map { optEoriRegion =>
-        Ok(first2LettersEoriView(form, optEoriRegion, false, service, subscribeJourney: SubscribeJourney))
+        Ok(first2LettersEoriView(form, optEoriRegion, false, service))
       }
     }
 
-  def submit(service: Service, isInReviewMode: Boolean, subscribeJourney: SubscribeJourney): Action[AnyContent] =
+  def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -56,8 +56,7 @@ class First2LettersEoriController @Inject() (
             formWithErrors,
             None,
             isInReviewMode,
-            service,
-            subscribeJourney
+            service
           ))),
         region =>
           sessionCache.saveFirst2LettersEori(region).map {

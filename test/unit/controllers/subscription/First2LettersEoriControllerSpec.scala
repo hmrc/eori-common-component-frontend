@@ -24,7 +24,6 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.First2LettersEoriController
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion.{EU, GB}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{LongJourney, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.first_2_letters_eori_number
 import unit.controllers.CdsPage
@@ -63,7 +62,7 @@ class First2LettersEoriControllerSpec extends ControllerSpec with AuthActionMock
       // Given When
       when(mockSessionCache.getFirst2LettersEori(any())).thenReturn(Future.successful(None))
 
-      val result: Future[Result] = controller.submit(cdsService, false, SubscribeJourney(LongJourney))(
+      val result: Future[Result] = controller.submit(cdsService, false)(
         SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, Map("region" -> ""))
       )
 
@@ -77,9 +76,7 @@ class First2LettersEoriControllerSpec extends ControllerSpec with AuthActionMock
       // Given When
       when(mockSessionCache.getFirst2LettersEori(any())).thenReturn(Future.successful(None))
 
-      val result = controller.form(cdsService, SubscribeJourney(LongJourney))(
-        SessionBuilder.buildRequestWithSession(defaultUserId)
-      )
+      val result = controller.form(cdsService)(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       // Then
       status(result) shouldBe OK
@@ -90,7 +87,7 @@ class First2LettersEoriControllerSpec extends ControllerSpec with AuthActionMock
       // Given When
       when(mockSessionCache.saveFirst2LettersEori(any())(any())).thenReturn(Future.successful(GB))
 
-      val result = controller.submit(cdsService, false, SubscribeJourney(LongJourney))(
+      val result = controller.submit(cdsService, false)(
         SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, Map("region" -> "GB"))
       )
 
@@ -104,7 +101,7 @@ class First2LettersEoriControllerSpec extends ControllerSpec with AuthActionMock
       when(mockSessionCache.saveFirst2LettersEori(any())(any())).thenReturn(Future.successful(EU))
 
       val result =
-        controller.submit(cdsService, false, SubscribeJourney(LongJourney))(
+        controller.submit(cdsService, false)(
           SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, Map("region" -> "EU"))
         )
 

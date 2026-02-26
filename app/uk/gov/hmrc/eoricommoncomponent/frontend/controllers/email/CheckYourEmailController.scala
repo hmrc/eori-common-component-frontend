@@ -130,7 +130,7 @@ class CheckYourEmailController @Inject() (
     authAction.enrolledUserClearingCacheOnCompletionAction { _ => (_: LoggedInUserWithEnrolments) =>
       (appConfig.euEoriEnabled && service.code == cdsCode) match {
         case true =>
-          Future.successful(Redirect(First2LettersEoriController.form(service, SubscribeJourney(LongJourney))))
+          Future.successful(Redirect(First2LettersEoriController.form(service))) 
         case false => Future.successful(Redirect(WhatIsYourEoriController.createForm(service)))
       }
     }

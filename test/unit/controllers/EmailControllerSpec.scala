@@ -303,7 +303,7 @@ class EmailControllerSpec
       callEndpointDefaulting(controller)(journey = subscribeJourneyLong, service = cdsService) { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith(
-          "/customs-enrolment-services/cds/subscribe/longjourney/first-2-letters-eori-number"
+          "/customs-enrolment-services/cds/subscribe/first-2-letters-eori-number"
         )
       }
     }

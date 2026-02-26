@@ -35,7 +35,7 @@ class FirstTwoLettersEoriNumberViewSpec extends ViewSpec {
 
   private val form: Form[EoriPrefixForm.EoriRegion] = EoriPrefixForm.eoriPrefixForm
 
-  val result        = view(form, Some(EoriRegion.GB), false, cdsService, subscribeJourneyLong)
+  val result        = view(form, Some(EoriRegion.GB), false, cdsService)
   val doc: Document = Jsoup.parse(contentAsString(result))
 
   "What are the first 2 letters of you EORI number page" should {

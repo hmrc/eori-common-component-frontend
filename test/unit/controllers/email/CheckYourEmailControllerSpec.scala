@@ -189,7 +189,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
       status(result) shouldBe SEE_OTHER
       header(LOCATION, result).value should endWith(
-        "/customs-enrolment-services/cds/subscribe/longjourney/first-2-letters-eori-number"
+        "/customs-enrolment-services/cds/subscribe/first-2-letters-eori-number"
       )
     }
 
