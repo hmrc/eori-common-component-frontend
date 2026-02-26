@@ -39,6 +39,15 @@ object SubscriptionForm {
         .verifying(maxDate(today, "doe.error.future-date", DateConverter.earliestYearDateOfEstablishment.toString))
     )
 
+  val WhenEoriIssuedForm: Form[LocalDate] =
+    Form(
+      "when-eori-issued" -> localMonthYearUserInput(
+        emptyKey = "wei.error.empty-date",
+        invalidKey = "wei.error.invalid-date"
+      ).verifying(minDate(minimumDate, "wei.error.minMax", DateConverter.earliestYearDateOfEstablishment.toString))
+        .verifying(maxDate(today, "wei.error.future-date", DateConverter.earliestYearDateOfEstablishment.toString))
+    )
+
   def validEoriWithOrWithoutGB: Constraint[String] =
     Constraint {
       case e if formatInput(e).isEmpty =>
