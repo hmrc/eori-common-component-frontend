@@ -22,6 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   DataUnavailableException,
   RequestSessionData,
@@ -55,7 +56,7 @@ case class SubscriptionFlowConfig(
 }
 
 @Singleton
-class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData, cdsFrontendDataCache: SessionCache)(
+class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData, cdsFrontendDataCache: SessionCache,  appConfig: AppConfig)(
   implicit ec: ExecutionContext
 ) {
 

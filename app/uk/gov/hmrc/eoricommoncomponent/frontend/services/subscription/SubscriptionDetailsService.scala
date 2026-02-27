@@ -35,6 +35,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddContactAddressForm
 
 @Singleton
 class SubscriptionDetailsService @Inject() (
@@ -67,6 +68,9 @@ class SubscriptionDetailsService @Inject() (
     contactDetails(contactDetailsModel, isInReviewMode) flatMap { contactDetails =>
       saveSubscriptionDetails(sd => sd.copy(contactDetails = Some(contactDetails)))
     }
+  
+  def cacheAddContactAddressDetails(addressDetailsYesorNo: YesNo)(implicit request: Request[_]): Future[Unit] =
+    saveSubscriptionDetails(sd => sd.copy(addContactAddressDetails = Some(addressDetailsYesorNo)))
 
   def cacheAddressDetails(address: AddressViewModel)(implicit request: Request[_]): Future[Unit] = {
     def noneForEmptyPostcode(a: AddressViewModel) = a.copy(postcode = a.postcode.filter(_.nonEmpty))
@@ -86,6 +90,8 @@ class SubscriptionDetailsService @Inject() (
 
     saveSubscriptionDetails(sd => sd.copy(euEoriRegisteredAddress = Some(noneForEmptyPostcode(address))))
   }
+  def clearContactAddress()(implicit request: Request[_]): Future[Unit] =
+    saveSubscriptionDetails(sd => sd.copy(contactAddress = None))
 
   def cacheNameIdDetails(
     nameIdOrganisationMatchModel: NameIdOrganisationMatchModel

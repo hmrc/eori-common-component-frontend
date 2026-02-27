@@ -20,6 +20,7 @@ import play.api.Logging
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 object SubscriptionFlows {
 
@@ -46,6 +47,7 @@ object SubscriptionFlows {
       NinoSubscriptionFlowPage,
       AddressDetailsSubscriptionFlowPage,
       ContactDetailsSubscriptionFlowPageMigrate,
+      AddContactAddressSubscriptionFlowPage, 
       ContactAddressSubscriptionFlowPage,
       ConfirmContactAddressSubscriptionFlowPage
     )
@@ -58,6 +60,7 @@ object SubscriptionFlows {
       AddressDetailsSubscriptionFlowPage,
       RowDateOfEstablishmentSubscriptionFlowPage,
       ContactDetailsSubscriptionFlowPageMigrate,
+      AddContactAddressSubscriptionFlowPage,
       ContactAddressSubscriptionFlowPage,
       ConfirmContactAddressSubscriptionFlowPage
     )
@@ -245,6 +248,15 @@ case object UserLocationPage extends SubscriptionPage {
   override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
       .form(service)
+      .url
+
+}
+
+case object AddContactAddressSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AddContactAddressController
+      .form(false, service)
       .url
 
 }

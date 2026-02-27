@@ -31,6 +31,7 @@
         isIndividualSubscriptionFlow: Boolean,
         organisationType: Option[CdsOrganisationType],
         contactDetails: Option[ContactDetailsModel],
+        addContactAddressDetails: Option[YesNo],
         addressDetails: Option[AddressViewModel],
         eoriNumber: Option[String],
         existingEori: Option[ExistingEori],
@@ -328,6 +329,14 @@
 
                     } else None
                 }
+                },
+                addContactAddressDetails.flatMap { addAddress =>
+                    Some(row(
+                        "cds.subscription.add-contact-address.page.title",
+                        Some(Html(if(addAddress.isYes) messages("cds.yes") else messages("cds.no"))),
+                        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AddContactAddressController.form(true, service)),
+                            "review-tbl__contact-address"
+                    ))
                 },
                 contactAddress.flatMap { cd => {
                     if(isThirdCountrySubscription && isUtrAndNinoEmpty) {
