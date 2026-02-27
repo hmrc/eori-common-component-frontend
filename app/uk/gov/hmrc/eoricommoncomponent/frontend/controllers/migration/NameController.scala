@@ -36,7 +36,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NameDobSoleTraderController @Inject() (
+class NameController @Inject()(
   authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
   requestSessionData: RequestSessionData,

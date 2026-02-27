@@ -90,10 +90,10 @@ POST        /customs-enrolment-services/:service/subscribe/name                 
 GET         /customs-enrolment-services/:service/subscribe/name/review                                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameOrgController.reviewForm(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/name/review                                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameOrgController.submit(isInReviewMode:Boolean = true, service: Service)
 
-GET         /customs-enrolment-services/:service/subscribe/namedob                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController.createForm(service: Service)
-POST        /customs-enrolment-services/:service/subscribe/namedob                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController.submit(isInReviewMode:Boolean = false, service: Service)
-GET         /customs-enrolment-services/:service/subscribe/namedob/review                              @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController.reviewForm(service: Service)
-POST        /customs-enrolment-services/:service/subscribe/namedob/review                              @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController.submit(isInReviewMode:Boolean = true, service: Service)
+GET         /customs-enrolment-services/:service/subscribe/name                                        @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController.createForm(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/name                                        @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController.submit(isInReviewMode:Boolean = false, service: Service)
+GET         /customs-enrolment-services/:service/subscribe/name/review                                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController.reviewForm(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/name/review                                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController.submit(isInReviewMode:Boolean = true, service: Service)
 
 GET         /customs-enrolment-services/:service/subscribe/chooseid                                    @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouController.createForm(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/chooseid                                    @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouController.submit(service: Service, isInReviewMode: Boolean = false)

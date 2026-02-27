@@ -23,7 +23,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Request
 import play.api.test.Helpers._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameDobDetailsSubscriptionFlowPage
@@ -56,7 +56,7 @@ class AllowlistVerificationWithFeatureOffSpec extends SubscriptionFlowSpec with 
   private val mockCdsFrontendDataCache = mock[SessionCache]
   private val enterYourDetails         = instanceOf[enter_your_details]
 
-  private val controller = new NameDobSoleTraderController(
+  private val controller = new NameController(
     mockAuthAction,
     mockSubscriptionBusinessService,
     mockRequestSessionData,
