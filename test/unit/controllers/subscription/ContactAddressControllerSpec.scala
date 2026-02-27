@@ -101,6 +101,7 @@ class ContactAddressControllerSpec
 
     when(mockSubscriptionBusinessService.contactAddress(any[Request[_]])).thenReturn(Future.successful(None))
     when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]])).thenReturn(Future.successful(None))
+    when(mockCdsFrontendDataCache.getFirst2LettersEori(any[Request[_]])).thenReturn(Future.successful(None))
     registerSaveDetailsMockSuccess()
     setupMockSubscriptionFlowManager(ContactAddressSubscriptionFlowPage)
   }

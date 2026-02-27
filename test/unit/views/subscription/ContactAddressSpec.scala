@@ -20,6 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion.{EU, GB}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactAddressForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_address
@@ -38,10 +39,16 @@ class ContactAddressSpec extends ViewSpec {
   private val formWithError = form.bind(Map("line-1" -> "", "line-3" -> "", "countryCode" -> ""))
 
   private val doc: Document =
-    Jsoup.parse(contentAsString(view(form, countries, picker, isInReviewMode = false, atarService)))
+    Jsoup.parse(contentAsString(view(form, countries, picker, None, isInReviewMode = false, atarService)))
 
   private val docWithErrorSummary: Document =
-    Jsoup.parse(contentAsString(view(formWithError, countries, picker, isInReviewMode = false, atarService)))
+    Jsoup.parse(contentAsString(view(formWithError, countries, picker, None, isInReviewMode = false, atarService)))
+
+  private val docWithEUEoriPrefix: Document =
+    Jsoup.parse(contentAsString(view(formWithError, countries, picker, Some(EU), isInReviewMode = false, atarService)))
+
+  private val docWithGBEoriPrefix: Document =
+    Jsoup.parse(contentAsString(view(formWithError, countries, picker, Some(GB), isInReviewMode = false, atarService)))
 
   "Contact address view" should {
 
@@ -87,5 +94,9 @@ class ContactAddressSpec extends ViewSpec {
       errorList.get(2).text() mustBe messages("cds.matching-error.country.invalid")
     }
 
+    "display different postcode label for EU EORI Prefix" in {
+      docWithEUEoriPrefix.body().getElementsByClass("postcode").text() mustBe "Postal code (optional)"
+      docWithGBEoriPrefix.body().getElementsByClass("postcode").text() mustBe "Postcode (optional)"
+    }
   }
 }

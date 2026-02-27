@@ -76,9 +76,18 @@ class ContactAddressController @Inject() (
     form: Form[ContactAddressModel],
     status: Status
   )(implicit request: Request[AnyContent]): Future[Result] =
-    sessionCache.userLocation.map { userLocation =>
-      val (countriesToInclude, countriesInCountryPicker) = Countries.getCountryParameters(userLocation.location)
-      status(contactAddressView(form, countriesToInclude, countriesInCountryPicker, isInReviewMode, service))
+    sessionCache.userLocation.flatMap { userLocation =>
+      sessionCache.getFirst2LettersEori.map { optEoriRegion =>
+        val (countriesToInclude, countriesInCountryPicker) = Countries.getCountryParameters(userLocation.location)
+        status(contactAddressView(
+          form,
+          countriesToInclude,
+          countriesInCountryPicker,
+          optEoriRegion,
+          isInReviewMode,
+          service
+        ))
+      }
     }
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
