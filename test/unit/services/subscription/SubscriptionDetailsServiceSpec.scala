@@ -69,7 +69,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     ContactAddressModel("Line 1", Some("Line 2"), "Town", Some("Region"), Some("SE28 1AA"), "GB")
 
   private val euEoriRegisteredAddressDetails =
-    EuEoriRegisteredAddressModel("Line 1", "Town", Some("FR29 1AA"), "GB")
+    EuEoriRegisteredAddressModel("Line 1", "Town", Some("FR29 1AA"), "FR")
 
   private val nameId        = NameIdOrganisationMatchModel(name = "orgname", id = "ID")
   private val customsIdUTR  = Utr("utrxxxxx")

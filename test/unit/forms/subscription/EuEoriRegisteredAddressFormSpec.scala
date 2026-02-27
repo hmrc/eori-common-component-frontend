@@ -31,7 +31,7 @@ class EuEoriRegisteredAddressFormSpec extends UnitSpec {
         "line-1"      -> "33 Nine Elms Ln",
         "line-3"      -> "Battersea",
         "postcode"    -> "SW11 7US",
-        "countryCode" -> "GB"
+        "countryCode" -> "FR"
       )
       val res: Form[EuEoriRegisteredAddressModel] = form.bind(formData)
       res.errors shouldBe empty
@@ -43,7 +43,7 @@ class EuEoriRegisteredAddressFormSpec extends UnitSpec {
           "line-1"      -> "",
           "line-3"      -> "Battersea",
           "postcode"    -> "SW11 7US",
-          "countryCode" -> "GB"
+          "countryCode" -> "FR"
         )
         val res: Form[EuEoriRegisteredAddressModel] = form.bind(formData)
         res.errors shouldBe Seq(FormError("line-1", "eu.eori.registered.address.line-1.error.empty"))
@@ -54,7 +54,7 @@ class EuEoriRegisteredAddressFormSpec extends UnitSpec {
           "line-1" -> "ofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjdofdwbagfpdisjafbddshfgdlsjgfdsaiuwpafdbsldgfsfjd",
           "line-3"      -> "London",
           "postcode"    -> "SW3 5DA",
-          "countryCode" -> "GB"
+          "countryCode" -> "FR"
         )
         val res: Form[EuEoriRegisteredAddressModel] = form.bind(formData)
         res.errors shouldBe Seq(FormError("line-1", "eu.eori.registered.address.line-1.error.too-long"))
@@ -65,7 +65,7 @@ class EuEoriRegisteredAddressFormSpec extends UnitSpec {
           "line-1"      -> "#1",
           "line-3"      -> "London",
           "postcode"    -> "SW3 5DA",
-          "countryCode" -> "GB"
+          "countryCode" -> "FR"
         )
         val res: Form[EuEoriRegisteredAddressModel] = form.bind(formData)
         res.errors shouldBe Seq(FormError("line-1", "eu.eori.registered.address.line-1.error.invalid-chars"))
@@ -77,7 +77,7 @@ class EuEoriRegisteredAddressFormSpec extends UnitSpec {
           "line-2"      -> "Nine Elms",
           "line-3"      -> "",
           "postcode"    -> "SW11 7US",
-          "countryCode" -> "GB"
+          "countryCode" -> "FR"
         )
         val res: Form[EuEoriRegisteredAddressModel] = form.bind(formData)
         res.errors shouldBe Seq(FormError("line-3", "eu.eori.registered.address.line-3.error.empty"))
@@ -89,7 +89,7 @@ class EuEoriRegisteredAddressFormSpec extends UnitSpec {
           "line-3"      -> "#Battersea",
           "line-4"      -> "London",
           "postcode"    -> "SW11 7US",
-          "countryCode" -> "GB"
+          "countryCode" -> "FR"
         )
         val res: Form[EuEoriRegisteredAddressModel] = form.bind(formData)
         res.errors shouldBe Seq(FormError("line-3", "eu.eori.registered.address.line-3.error.invalid-chars"))
@@ -111,7 +111,7 @@ class EuEoriRegisteredAddressFormSpec extends UnitSpec {
           "line-1"      -> "33 Nine Elms Ln",
           "line-3"      -> "Battersea",
           "postcode"    -> "SW11 7US",
-          "countryCode" -> "GBR"
+          "countryCode" -> "FRR"
         )
         val res: Form[EuEoriRegisteredAddressModel] = form.bind(formData)
         res.errors shouldBe Seq(FormError("countryCode", "eu.eori.registered.address.country.error.empty"))
@@ -122,7 +122,7 @@ class EuEoriRegisteredAddressFormSpec extends UnitSpec {
           "line-1"      -> "33 Nine Elms Ln",
           "line-3"      -> "Battersea",
           "postcode"    -> "0123456789ABCdefghijklmnopqrst -&.'",
-          "countryCode" -> "GB"
+          "countryCode" -> "FR"
         )
         val res: Form[EuEoriRegisteredAddressModel] = form.bind(formData)
         res.errors shouldBe empty
@@ -133,7 +133,7 @@ class EuEoriRegisteredAddressFormSpec extends UnitSpec {
           "line-1"      -> "33 Nine Elms Ln",
           "line-3"      -> "Battersea",
           "postcode"    -> "???",
-          "countryCode" -> "GB"
+          "countryCode" -> "FR"
         )
         val res: Form[EuEoriRegisteredAddressModel] = form.bind(formData)
         res.errors shouldBe Seq(FormError("postcode", "eu.eori.registered.address.postcode.error.invalid-chars"))
@@ -144,7 +144,7 @@ class EuEoriRegisteredAddressFormSpec extends UnitSpec {
           "line-1"      -> "33 Nine Elms Ln",
           "line-3"      -> "Battersea",
           "postcode"    -> "0123456789abcdefghijklmnopqrstuvwxyz",
-          "countryCode" -> "GB"
+          "countryCode" -> "FR"
         )
         val res: Form[EuEoriRegisteredAddressModel] = form.bind(formData)
         res.errors shouldBe Seq(FormError("postcode", "eu.eori.registered.address.postcode.error.too-long"))
