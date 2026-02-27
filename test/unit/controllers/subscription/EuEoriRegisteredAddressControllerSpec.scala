@@ -81,7 +81,7 @@ class EuEoriRegisteredAddressControllerSpec
     "line-3"      -> "addressLine3",
     "line-4"      -> "addressLine4",
     "postcode"    -> "SE28 1AA",
-    "countryCode" -> "GB"
+    "countryCode" -> "FR"
   )
 
   val mandatoryFields: Map[String, String] =
@@ -320,7 +320,7 @@ class EuEoriRegisteredAddressControllerSpec
     }
 
     "not allow spaces to satisfy minimum length requirements" in {
-      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("FR"))))
       submitForm(Map("line-1" -> 7.spaces, "line-3" -> 10.spaces)) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
@@ -341,7 +341,7 @@ class EuEoriRegisteredAddressControllerSpec
     }
 
     "not allow special characters" in {
-      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("FR"))))
       submitForm(Map("line-1" -> "#1", "line-2" -> "#2", "line-3" -> "#3", "line-4" -> "#4")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
@@ -359,7 +359,7 @@ class EuEoriRegisteredAddressControllerSpec
     }
 
     "be restricted to 35 character for street validation only" in {
-      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("FR"))))
       val streetLine = stringOfLengthXGen(71)
       submitForm(addressFields ++ Map("line-1" -> streetLine.sample.get)) { result =>
         status(result) shouldBe BAD_REQUEST
@@ -371,7 +371,7 @@ class EuEoriRegisteredAddressControllerSpec
     }
 
     "be restricted to 35 character for city validation only" in {
-      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("GB"))))
+      when(mockCdsFrontendDataCache.userLocation(any())).thenReturn(Future.successful(UserLocationDetails(Some("FR"))))
       val city = stringOfLengthXGen(35)
       submitForm(addressFields ++ Map("line-3" -> city.sample.get)) { result =>
         status(result) shouldBe BAD_REQUEST

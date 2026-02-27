@@ -75,7 +75,7 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
   )
 
   val mayBeEuEoriRegisteredAddressModel: Option[EuEoriRegisteredAddressModel] = Some(
-    EuEoriRegisteredAddressModel("Line 1", "Line 3", Some("SE28 1AA"), "GB")
+    EuEoriRegisteredAddressModel("Line 1", "Line 3", Some("SE28 1AA"), "FR")
   )
 
   val nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = Some(
