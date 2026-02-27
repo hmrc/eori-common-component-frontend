@@ -240,13 +240,13 @@
                 },
                 nameDobDetails.flatMap { nd => {
                     if(isIndividualSubscriptionFlow) {
-                        Some(row("subscription.check-your-details.full-name.label", Some(Html(s"${nd.firstName} ${nd.lastName}")), Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service)),"review-tbl__full-name"))
+                        Some(row("subscription.check-your-details.full-name.label", Some(Html(s"${nd.firstName} ${nd.lastName}")), Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameController.reviewForm(service)),"review-tbl__full-name"))
                     } else None
                 }
                 },
                 nameDobDetails.flatMap { nd => {
                     if(isIndividualSubscriptionFlow) {
-                        Some(row("subscription.check-your-details.date-of-birth.label", Some(Html(formatDate(nd.dateOfBirth))), Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service)),"review-tbl__date-of-birth"))
+                        Some(row("subscription.check-your-details.date-of-birth.label", Some(Html(formatDate(nd.dateOfBirth))), Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameController.reviewForm(service)),"review-tbl__date-of-birth"))
                     } else None
                 }
                 },

@@ -50,12 +50,12 @@ class NameControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
   protected override val formId: String                                       = NameDobSoleTraderPage.formId
 
   protected override val submitInCreateModeUrl: String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameController
       .submit(isInReviewMode = false, atarService)
       .url
 
   protected override val submitInReviewModeUrl: String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameController
       .submit(isInReviewMode = true, atarService)
       .url
 
