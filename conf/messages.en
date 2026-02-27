@@ -529,6 +529,17 @@ ecc.subscription.information.titleAndHeading.gbss=Subscribe to the Safety and Se
 ecc.subscription.information.titleAndHeading.ctc=Subscribe to the New Computerised Transit System (NCTS)
 ecc.subscription.information.titleAndHeading.cds=Subscribe to the Customs Declaration Service
 
+#What is your EORI EU
+ecc.subscription.enter-eu-eori-number.page.title=What is your EORI number?
+ecc.subscription.enter-eu-eori-number.heading=What is your EORI number?
+ecc.subscription.enter-eu-eori-number.hint=Your EORI number is 2 letters followed by upto 15 characters, like FR12345678901, ESX1234567X or NL12345678.
+
+ecc.eu-eori-error.isEmpty=Enter your EORI number
+ecc.eu-eori-error.not-gb-xi=EORI number must not start with GB or XI
+ecc.eu-eori-error.wrong-length=EORI number must be between 3 and 17 characters
+ecc.eu-eori-error.invalid-characters=EORI number must only include letters a to z and numbers
+ecc.eu-eori-error.no-two-letter-start=Enter an EORI number in the correct format
+
 #Get An EORI Journey
 #journey-type
 cds.registration.journey-type.heading=What would you like to do?

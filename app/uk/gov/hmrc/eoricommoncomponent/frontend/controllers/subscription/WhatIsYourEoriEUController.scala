@@ -21,47 +21,45 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion.{EU, GB}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.first_2_letters_eori_number
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori_eu
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class First2LettersEoriController @Inject() (
+class WhatIsYourEoriEUController @Inject() (
   authAction: AuthAction,
   mcc: MessagesControllerComponents,
-  sessionCache: SessionCache,
-  first2LettersEoriView: first_2_letters_eori_number
+  subscriptionDetailsHolderService: SubscriptionDetailsService,
+  whatIsYourEoriEuView: what_is_your_eori_eu
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  val form: Form[EoriRegion] = EoriPrefixForm.eoriPrefixForm
+  val form: Form[EoriNumberViewModel] = SubscriptionForm.eoriNumberEuForm
 
   def form(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
-      sessionCache.getFirst2LettersEori.map { optEoriRegion =>
-        Ok(first2LettersEoriView(form, optEoriRegion, false, service))
+      subscriptionDetailsHolderService.cachedEoriNumber.map { eori =>
+        val cachedEori = EoriNumberViewModel(eori.getOrElse(""))
+        Ok(whatIsYourEoriEuView(form.fill(cachedEori), false, service))
       }
     }
 
-  def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
+  def submit(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(first2LettersEoriView(
+          Future.successful(BadRequest(whatIsYourEoriEuView(
             formWithErrors,
-            None,
-            isInReviewMode,
+            false,
             service
           ))),
-        region =>
-          sessionCache.saveFirst2LettersEori(region).map {
-            case GB => Redirect(routes.WhatIsYourEoriGBController.createForm(service))
-            case EU => Redirect(routes.WhatIsYourEoriEUController.form(service))
+        formData =>
+          subscriptionDetailsHolderService.cacheEoriNumber(formData.eoriNumber).map { _ =>
+            Redirect("https://www.gov.uk/check-eori-number")
           }
       )
     }

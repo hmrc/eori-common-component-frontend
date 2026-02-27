@@ -44,6 +44,9 @@ POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your
 GET         /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori-gb/review         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriGBController.reviewForm(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori-gb/review         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriGBController.submit(isInReviewMode: Boolean = true, service: Service)
 
+GET         /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori-eu                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriEUController.form(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori-eu                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriEUController.submit(service: Service)
+
 GET         /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori/unable-to-use-id      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.EoriUnableToUseController.displayPage(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori/unable-to-use-id      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.EoriUnableToUseController.submit(service: Service)
 

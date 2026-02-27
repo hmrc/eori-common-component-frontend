@@ -109,7 +109,7 @@ class First2LettersEoriControllerSpec extends ControllerSpec with AuthActionMock
 
       // Then
       status(result) shouldBe SEE_OTHER
-      header(LOCATION, result).value should endWith("check-eori-number")
+      header(LOCATION, result).value should endWith("what-is-your-eori-eu")
     }
   }
 
