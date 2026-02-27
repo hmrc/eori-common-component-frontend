@@ -49,7 +49,7 @@
 
         @h1(messages("cds.matching.individual.header"))
 
-        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.submit(isInReviewMode, service), "subscriptionNameDobForm") {
+        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameController.submit(isInReviewMode, service), "subscriptionNameDobForm") {
         @CSRF.formField
 
         @p(messages("cds.matching.individual.hint"))

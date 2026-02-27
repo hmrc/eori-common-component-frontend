@@ -18,13 +18,15 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms
 
 import play.api.Logging
 import play.api.data.Form
-import play.api.data.Forms._
-import play.api.data.validation._
+import play.api.data.Forms.*
+import play.api.data.validation.*
 import play.api.i18n.Messages
 import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.*
+
 import java.time.LocalDate
 
 object MatchingForms extends Logging {
@@ -216,6 +218,13 @@ object MatchingForms extends Logging {
         maxDate(today, "dob.error.future-date", DateConverter.earliestYearDateOfBirth.toString)
       )
     )(NameDobMatchModel.apply)(nameDobMatchModel => Some(Tuple.fromProductTyped(nameDobMatchModel)))
+  )
+  
+  val enterNameForm: Form[NameModel] = Form(
+    mapping(
+      "given-name" -> text.verifying(validGivenName),
+      "family-name" -> text.verifying(validFamilyName)
+    )(NameModel.apply)(nameModel => Some(Tuple.fromProductTyped(nameModel)))
   )
 
   private def validFirstName: Constraint[String] =

@@ -16,27 +16,26 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 
-import play.api.mvc._
+import play.api.mvc.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameDobDetailsSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.{enterNameDobForm, enterNameDobFormRow}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.{enterNameDobForm, enterNameDobFormRow, enterNameForm}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  SubscriptionBusinessService,
-  SubscriptionDetailsService
-}
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration._
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NameDobSoleTraderController @Inject() (
+class NameController @Inject()(
   authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
   requestSessionData: RequestSessionData,
@@ -44,7 +43,9 @@ class NameDobSoleTraderController @Inject() (
   subscriptionFlowManager: SubscriptionFlowManager,
   mcc: MessagesControllerComponents,
   enterYourDetails: enter_your_details,
-  subscriptionDetailsHolderService: SubscriptionDetailsService
+  subscriptionDetailsHolderService: SubscriptionDetailsService,
+  appConfig: AppConfig,
+  nameForm: what_is_your_name
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -66,21 +67,33 @@ class NameDobSoleTraderController @Inject() (
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
-      val form = if (UserLocation.isRow(requestSessionData)) enterNameDobFormRow else enterNameDobForm
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          cdsFrontendDataCache.registrationDetails map { _ =>
-            BadRequest(
-              enterYourDetails(
-                formWithErrors,
-                isInReviewMode,
-                service,
-                requestSessionData.selectedUserLocationWithIslands
-              )
+      if (appConfig.euEoriEnabled) {
+        cdsFrontendDataCache.getFirst2LettersEori.map { optEoriPrefix =>
+          if (optEoriPrefix.contains(EoriRegion.EU)) {
+            val form = enterNameForm
+            form.bindFromRequest().fold(
+              formWithErrors => BadRequest(what_is_your_name(formWithErrors, isInReviewMode, service)),
+              formData => ??? // TODO redirect to address page
             )
-          },
-        formData => storeNameDobDetails(formData, isInReviewMode, service)
-      )
+          }
+        }
+      } else {
+        val form = if (UserLocation.isRow(requestSessionData)) enterNameDobFormRow else enterNameDobForm
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            cdsFrontendDataCache.registrationDetails map { _ =>
+              BadRequest(
+                enterYourDetails(
+                  formWithErrors,
+                  isInReviewMode,
+                  service,
+                  requestSessionData.selectedUserLocationWithIslands
+                )
+              )
+            },
+          formData => storeNameDobDetails(formData, isInReviewMode, service)
+        )
+      }
     }
 
   private def populateOkView(nameDobViewModel: Option[NameDobMatchModel], isInReviewMode: Boolean, service: Service)(
