@@ -104,7 +104,7 @@ class GetNinoSubscriptionController @Inject() (
       if (isInReviewMode && !isItRowJourney())
         Redirect(DetermineReviewPageController.determineRoute(service))
       else
-        Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))
+        Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage, service).nextPage.url(service))
     )
 
   private def isItRowJourney()(implicit request: Request[AnyContent]): Boolean =

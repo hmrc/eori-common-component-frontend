@@ -85,7 +85,7 @@ class AddressService @Inject() (
             else
               Redirect(
                 subscriptionFlowManager
-                  .stepInformation(AddressDetailsSubscriptionFlowPage)
+                  .stepInformation(AddressDetailsSubscriptionFlowPage, service)
                   .nextPage
                   .url(service)
               )

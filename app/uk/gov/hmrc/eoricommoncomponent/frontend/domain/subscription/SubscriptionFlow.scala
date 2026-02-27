@@ -20,7 +20,6 @@ import play.api.Logging
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
-import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 object SubscriptionFlows {
 
@@ -40,38 +39,45 @@ object SubscriptionFlows {
     )
   )
 
-  private val rowIndividualFlowConfig = createFlowConfig(
+  private def rowIndividualFlowConfig(addContactAddress: Boolean) = createFlowConfig(
     List(
-      NameDobDetailsSubscriptionFlowPage,
-      UtrSubscriptionFlowPage,
-      NinoSubscriptionFlowPage,
-      AddressDetailsSubscriptionFlowPage,
-      ContactDetailsSubscriptionFlowPageMigrate,
-      AddContactAddressSubscriptionFlowPage, 
-      ContactAddressSubscriptionFlowPage,
-      ConfirmContactAddressSubscriptionFlowPage
-    )
+      Some(NameDobDetailsSubscriptionFlowPage),
+      Some(UtrSubscriptionFlowPage),
+      Some(NinoSubscriptionFlowPage),
+      Some(AddressDetailsSubscriptionFlowPage),
+      Some(ContactDetailsSubscriptionFlowPageMigrate),
+      Option.when(addContactAddress)(AddContactAddressSubscriptionFlowPage),
+      Some(ContactAddressSubscriptionFlowPage),
+      Some(ConfirmContactAddressSubscriptionFlowPage)
+    ).flatten
   )
 
-  private val rowOrganisationFlowConfig = createFlowConfig(
+  private def rowOrganisationFlowConfig(addContactAddress: Boolean) = createFlowConfig(
     List(
-      NameDetailsSubscriptionFlowPage,
-      UtrSubscriptionFlowPage,
-      AddressDetailsSubscriptionFlowPage,
-      RowDateOfEstablishmentSubscriptionFlowPage,
-      ContactDetailsSubscriptionFlowPageMigrate,
-      AddContactAddressSubscriptionFlowPage,
-      ContactAddressSubscriptionFlowPage,
-      ConfirmContactAddressSubscriptionFlowPage
-    )
+      Some(NameDetailsSubscriptionFlowPage),
+      Some(UtrSubscriptionFlowPage),
+      Some(AddressDetailsSubscriptionFlowPage),
+      Some(RowDateOfEstablishmentSubscriptionFlowPage),
+      Some(ContactDetailsSubscriptionFlowPageMigrate),
+      Option.when(addContactAddress)(AddContactAddressSubscriptionFlowPage),
+      Some(ContactAddressSubscriptionFlowPage),
+      Some(ConfirmContactAddressSubscriptionFlowPage)
+    ).flatten
   )
+
+  def flowConfig(flow: SubscriptionFlow, addContactAddress: Boolean = false): SubscriptionFlowConfig =
+    flow match {
+      case RowOrganisationFlow => rowOrganisationFlowConfig(addContactAddress)
+      case RowIndividualFlow   => rowIndividualFlowConfig(addContactAddress)
+      case otherFlows           => flows(otherFlows)
+    }
 
   val flows: Map[SubscriptionFlow, SubscriptionFlowConfig] = Map(
     OrganisationFlow    -> corporateRegExistingEoriFlowConfig,
     SoleTraderFlow      -> soleTraderRegExistingEoriFlowConfig,
     IndividualFlow      -> soleTraderRegExistingEoriFlowConfig,
-    RowOrganisationFlow -> rowOrganisationFlowConfig,
-    RowIndividualFlow   -> rowIndividualFlowConfig
+    RowOrganisationFlow -> rowOrganisationFlowConfig(false),
+    RowIndividualFlow   -> rowIndividualFlowConfig(false)
   )
 
   private def createFlowConfig(flowStepList: List[SubscriptionPage]): SubscriptionFlowConfig =

@@ -39,6 +39,8 @@ case class SubscriptionFlowConfig(
   pageAfterLastFlowPage: SubscriptionPage
 ) {
 
+  
+
   private def lastPageInTheFlow(currentPos: Int): Boolean = currentPos == pagesInOrder.size - ONE
 
   def determinePageBeforeSubscriptionFlow(uriBeforeSubscriptionFlow: Option[String]): SubscriptionPage =
@@ -62,12 +64,14 @@ class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData,
 
   private val logger = Logger(this.getClass)
 
+  private def includeContactAddress(service: Service): Boolean = 
+    appConfig.euEoriEnabled && service.code == Service.cds.code
+
   def currentSubscriptionFlow(implicit request: Request[AnyContent]): SubscriptionFlow =
     requestSessionData.userSubscriptionFlow
 
-  def stepInformation(currentPage: SubscriptionPage)(implicit request: Request[AnyContent]): SubscriptionFlowInfo =
-    SubscriptionFlows(currentSubscriptionFlow)
-      .stepInformation(currentPage)
+  def stepInformation(currentPage: SubscriptionPage, service: Service)(implicit request: Request[AnyContent]): SubscriptionFlowInfo =
+    SubscriptionFlows.flowConfig(currentSubscriptionFlow, includeContactAddress(service)).stepInformation(currentPage)
 
   def startSubscriptionFlow(
     previousPage: Option[SubscriptionPage] = None,
@@ -77,13 +81,14 @@ class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData,
     val maybePreviousPageUrl = previousPage.map(page => page.url(service))
     cdsFrontendDataCache.registrationDetails map { registrationDetails =>
       val flow = selectFlow(registrationDetails, cdsOrganisationType)
+      val flowConfig = SubscriptionFlows.flowConfig(flow, includeContactAddress(service))
 
       logger.info(s"select Subscription flow: ${flow.name}")
       (
-        SubscriptionFlows(flow).pagesInOrder.head,
+        flowConfig.pagesInOrder.head,
         requestSessionData.storeUserSubscriptionFlow(
           flow,
-          SubscriptionFlows(flow).determinePageBeforeSubscriptionFlow(maybePreviousPageUrl).url(service)
+          flowConfig.determinePageBeforeSubscriptionFlow(maybePreviousPageUrl).url(service)
         )
       )
     }

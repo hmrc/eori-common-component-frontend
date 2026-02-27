@@ -94,7 +94,7 @@ class NameOrgController @Inject() (
         Future.successful(
           Redirect(
             subscriptionFlowManager
-              .stepInformation(NameDetailsSubscriptionFlowPage)
+              .stepInformation(NameDetailsSubscriptionFlowPage, service)
               .nextPage
               .url(service)
           )

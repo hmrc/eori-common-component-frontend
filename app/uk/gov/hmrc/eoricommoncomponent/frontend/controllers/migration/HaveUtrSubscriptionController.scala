@@ -102,7 +102,7 @@ class HaveUtrSubscriptionController @Inject() (
             if (requestSessionData.userSubscriptionFlow == RowOrganisationFlow)
               Redirect(CompanyRegisteredCountryController.displayPage(service))
             else
-              Redirect(subscriptionFlowManager.stepInformation(UtrSubscriptionFlowPage).nextPage.url(service))
+              Redirect(subscriptionFlowManager.stepInformation(UtrSubscriptionFlowPage, service).nextPage.url(service))
         }
       case _ => throw new IllegalStateException("No Data from the form")
     }

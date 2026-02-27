@@ -102,7 +102,7 @@ class DateOfEstablishmentController @Inject() (
               Redirect(routes.AddressLookupPostcodeController.displayPage(service))
             else {
               val page = subscriptionFlowManager
-                .stepInformation(getSubscriptionPage(UserLocation.isRow(requestSessionData)))
+                .stepInformation(getSubscriptionPage(UserLocation.isRow(requestSessionData)), service)
                 .nextPage
               Redirect(
                 page

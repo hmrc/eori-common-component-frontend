@@ -105,7 +105,7 @@ class ContactAddressController @Inject() (
               else
                 Redirect(
                   subscriptionFlowManager
-                    .stepInformation(ContactAddressSubscriptionFlowPage)
+                    .stepInformation(ContactAddressSubscriptionFlowPage, service)
                     .nextPage
                     .url(service)
                 )

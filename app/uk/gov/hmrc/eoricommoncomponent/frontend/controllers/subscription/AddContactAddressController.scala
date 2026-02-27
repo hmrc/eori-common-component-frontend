@@ -63,7 +63,7 @@ class AddContactAddressController @Inject() (
             if(addContactAddress.isYes){
               Future.successful(Redirect(
                 subscriptionFlowManager
-                  .stepInformation(AddContactAddressSubscriptionFlowPage)
+                  .stepInformation(AddContactAddressSubscriptionFlowPage, service)
                   .nextPage
                   .url(service)
               ))
