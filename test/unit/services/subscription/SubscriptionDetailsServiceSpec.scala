@@ -31,7 +31,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.Contac
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressViewModel,
   CompanyRegisteredCountry,
-  ContactAddressModel
+  ContactAddressModel,
+  EuEoriRegisteredAddressModel
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{ContactDetailsAdaptor, RegistrationDetailsCreator}
@@ -66,6 +67,9 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
   private val contactAddressDetails =
     ContactAddressModel("Line 1", Some("Line 2"), "Town", Some("Region"), Some("SE28 1AA"), "GB")
+
+  private val euEoriRegisteredAddressDetails =
+    EuEoriRegisteredAddressModel("Line 1", "Town", Some("FR29 1AA"), "FR")
 
   private val nameId        = NameIdOrganisationMatchModel(name = "orgname", id = "ID")
   private val customsIdUTR  = Utr("utrxxxxx")
@@ -502,7 +506,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
     }
 
-    "should not save emptry strings in postcode field" in {
+    "should not save empty strings in postcode field" in {
 
       await(
         subscriptionDetailsHolderService.cacheContactAddressDetails(contactAddressDetails.copy(postcode = Some("")))
@@ -512,6 +516,32 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(request))
       val holder: SubscriptionDetails = requestCaptor.getValue
       holder.contactAddress shouldBe Some(contactAddressDetails.copy(postcode = None))
+    }
+  }
+
+  "Calling cacheEuEoriRegisteredAddressDetails" should {
+    "save Contact Address Details in frontend cache" in {
+
+      await(subscriptionDetailsHolderService.cacheEuEoriRegisteredAddressDetails(euEoriRegisteredAddressDetails))
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(request))
+      val holder: SubscriptionDetails = requestCaptor.getValue
+      holder.euEoriRegisteredAddress shouldBe Some(euEoriRegisteredAddressDetails)
+    }
+
+    "should not save empty strings in postcode field" in {
+
+      await(
+        subscriptionDetailsHolderService.cacheEuEoriRegisteredAddressDetails(
+          euEoriRegisteredAddressDetails.copy(postcode = Some(""))
+        )
+      )
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(request))
+      val holder: SubscriptionDetails = requestCaptor.getValue
+      holder.euEoriRegisteredAddress shouldBe Some(euEoriRegisteredAddressDetails.copy(postcode = None))
     }
   }
 

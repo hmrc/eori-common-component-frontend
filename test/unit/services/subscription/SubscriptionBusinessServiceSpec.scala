@@ -27,7 +27,11 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactAddressModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressViewModel,
+  ContactAddressModel,
+  EuEoriRegisteredAddressModel
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{ContactDetailsAdaptor, RegistrationDetailsCreator}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
@@ -63,11 +67,15 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
   val maybeEoriId: Option[String] = Some(eoriId)
 
   val mayBeCachedAddressViewModel: Option[AddressViewModel] = Some(
-    AddressViewModel("Address Line 1", "city", Some("postcode"), "GB")
+    AddressViewModel("Address Line 1", "city", Some("postcode"), "FR")
   )
 
   val mayBeCachedContactAddressModel: Option[ContactAddressModel] = Some(
-    ContactAddressModel("Line 1", Some("Line 2"), "Town", Some("Region"), Some("SE28 1AA"), "GB")
+    ContactAddressModel("Line 1", Some("Line 2"), "Town", Some("Region"), Some("SE28 1AA"), "FR")
+  )
+
+  val mayBeEuEoriRegisteredAddressModel: Option[EuEoriRegisteredAddressModel] = Some(
+    EuEoriRegisteredAddressModel("Line 1", "Line 3", Some("SE28 1AA"), "FR")
   )
 
   val nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = Some(
@@ -299,6 +307,21 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(Future.successful(mockSubscriptionDetailsHolder))
       when(mockSubscriptionDetailsHolder.contactAddress).thenReturn(None)
       await(subscriptionBusinessService.contactAddress) shouldBe None
+    }
+  }
+
+  "Calling euEoriRegisteredAddress" should {
+    "retrieve any previously cached Eu Eori Registered Address Details from the cdsFrontendCache" in {
+      when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(Future.successful(mockSubscriptionDetailsHolder))
+      when(mockSubscriptionDetailsHolder.euEoriRegisteredAddress).thenReturn(mayBeEuEoriRegisteredAddressModel)
+      await(subscriptionBusinessService.euEoriRegisteredAddress) shouldBe mayBeEuEoriRegisteredAddressModel
+      verify(mockCdsFrontendDataCache).subscriptionDetails
+    }
+
+    "throw exception when cache eu eori registered address details is not saved in cdsFrontendCache" in {
+      when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(Future.successful(mockSubscriptionDetailsHolder))
+      when(mockSubscriptionDetailsHolder.euEoriRegisteredAddress).thenReturn(None)
+      await(subscriptionBusinessService.euEoriRegisteredAddress) shouldBe None
     }
   }
 }
