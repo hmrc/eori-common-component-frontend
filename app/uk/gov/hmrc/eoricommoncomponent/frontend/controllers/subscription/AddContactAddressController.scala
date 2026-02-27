@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import play.api.data.Form
-import play.api.mvc.* 
+import play.api.mvc.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, YesNo}
@@ -26,7 +26,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.add_contact_address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddContactAddressSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.{CheckYourDetailsController => CheckYourDetailsRoutes}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.{
+  CheckYourDetailsController => CheckYourDetailsRoutes
+}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,28 +41,26 @@ class AddContactAddressController @Inject() (
   subscriptionDetailsService: SubscriptionDetailsService,
   subscriptionFlowManager: SubscriptionFlowManager,
   addContactAddressView: add_contact_address
-  )(implicit ec: ExecutionContext) 
-  extends CdsController(mcc) {
-
+)(implicit ec: ExecutionContext)
+    extends CdsController(mcc) {
 
   def form(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service){ implicit request => (_: LoggedInUserWithEnrolments) =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       sessionCache.getAddContactAddress.map { addContactAddress =>
         // If cache contains an answer, populate the form with it, otherwise use an unpopulated form
         Ok(addContactAddressView(confirmAddContactAddressYesNoAnswerForm(), addContactAddress, isInReviewMode, service))
       }
-  }
+    }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service){ implicit request => (_: LoggedInUserWithEnrolments) =>
-        confirmAddContactAddressYesNoAnswerForm().bindFromRequest().fold(
-        formWithErrors => {
-          Future(BadRequest(addContactAddressView(formWithErrors, None, isInReviewMode, service)))
-        },
+    authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
+      confirmAddContactAddressYesNoAnswerForm().bindFromRequest().fold(
+        formWithErrors =>
+          Future(BadRequest(addContactAddressView(formWithErrors, None, isInReviewMode, service))),
         // If yes take to add contact details page, if no take to check your details page
-        addContactAddress => {
+        addContactAddress =>
           subscriptionDetailsService.cacheAddContactAddressDetails(addContactAddress).flatMap { _ =>
-            if(addContactAddress.isYes){
+            if (addContactAddress.isYes) {
               Future.successful(Redirect(
                 subscriptionFlowManager
                   .stepInformation(AddContactAddressSubscriptionFlowPage, service)
@@ -74,8 +74,7 @@ class AddContactAddressController @Inject() (
               }
             }
           }
-        }
       )
-  }
-}
+    }
 
+}

@@ -68,7 +68,7 @@ class SubscriptionDetailsService @Inject() (
     contactDetails(contactDetailsModel, isInReviewMode) flatMap { contactDetails =>
       saveSubscriptionDetails(sd => sd.copy(contactDetails = Some(contactDetails)))
     }
-  
+
   def cacheAddContactAddressDetails(addressDetailsYesorNo: YesNo)(implicit request: Request[_]): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(addContactAddressDetails = Some(addressDetailsYesorNo)))
 

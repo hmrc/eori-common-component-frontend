@@ -121,7 +121,9 @@ class HowCanWeIdentifyYouUtrController @Inject() (
           Redirect(AddressLookupPostcodeController.displayPage(service))
         else
           Redirect(
-            subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage, service).nextPage.url(service)
+            subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage, service).nextPage.url(
+              service
+            )
           )
       )
 

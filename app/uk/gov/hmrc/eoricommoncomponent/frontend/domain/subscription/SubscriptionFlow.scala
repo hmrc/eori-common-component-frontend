@@ -69,7 +69,7 @@ object SubscriptionFlows {
     flow match {
       case RowOrganisationFlow => rowOrganisationFlowConfig(addContactAddress)
       case RowIndividualFlow   => rowIndividualFlowConfig(addContactAddress)
-      case otherFlows           => flows(otherFlows)
+      case otherFlows          => flows(otherFlows)
     }
 
   val flows: Map[SubscriptionFlow, SubscriptionFlowConfig] = Map(

@@ -36,7 +36,7 @@ object AddContactAddressForm {
     mapping(
       YesNo.yesNoAnswer -> optional(
         text.verifying(
-            //Change actual error message later
+          // Change actual error message later
           messages("cds.subscription.add-contact-address.page-error.yes-no-answer"),
           oneOf(validYesNoAnswerOptions)
         )
@@ -45,4 +45,5 @@ object AddContactAddressForm {
         .transform[Boolean](str => str.get.toBoolean, bool => Option(String.valueOf(bool)))
     )(YesNo.apply)(yesNo => Some(yesNo.isYes))
   )
+
 }

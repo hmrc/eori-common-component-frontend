@@ -48,6 +48,7 @@ import util.builders.AuthBuilder.withAuthorisedUser
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterEach {
 
@@ -455,7 +456,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
           .thenReturn(Future.successful(AddressLookupSuccess(Seq(addressLookup))))
         when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.Company))
         when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any())).thenReturn(Future.successful((): Unit))
-        when(mockSubscriptionFlowManager.stepInformation(any())(any())).thenReturn(
+        when(mockSubscriptionFlowManager.stepInformation(any(), any[Service])(any())).thenReturn(
           SubscriptionFlowInfo(0, 0, ReviewDetailsPageSubscription)
         )
 

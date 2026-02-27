@@ -1264,6 +1264,11 @@ cds.error.helpSupport=Help a chymorth
 cds.error.contact.part1=Ffôn: 0300 200 3705
 cds.error.contact.part2=Ar agor 08:00 i 18:00 o ddydd Llun i ddydd Gwener (ar gau ar wyliau banc).
 
+cds.subscription.add-contact-address.page.title=Do you want to add a contact address?(WAITING FOR WELSH TRANSLATION)
+cds.subscription.add-contact-address.yes=Yes(WAITING FOR WELSH TRANSLATION)
+cds.subscription.add-contact-address.no=No(WAITING FOR WELSH TRANSLATION)
+cds.subscription.add-contact-address.page-error.yes-no-answer=Dewiswch ‘Iawn’ os ydych am ychwanegu cyfeiriad cyswllt
+
 #Email error page
 cds.email.error.title=Ni allwn eich tanysgrifio i’r Gwasanaeth Datganiadau Tollau
 cds.email.error.message.part1=Mae ein system yn dal i brosesu eich manylion. Bydd hyn yn cymryd awr fel arfer, ond gall gymryd yn hirach.

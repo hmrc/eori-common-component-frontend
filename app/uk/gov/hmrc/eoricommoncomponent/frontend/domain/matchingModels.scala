@@ -170,12 +170,12 @@ object NameOrganisationMatchModel {
 
 case class YesNo(isYes: Boolean) {
   def isNo: Boolean = !isYes
-  
+
 }
 
 object YesNo {
-  val yesNoAnswer = "yes-no-answer"
-  val answerTrue  = "yes-no-answer-true"
+  val yesNoAnswer                     = "yes-no-answer"
+  val answerTrue                      = "yes-no-answer-true"
   implicit val format: OFormat[YesNo] = Json.format[YesNo]
 }
 

@@ -35,6 +35,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   RequestSessionData,
   SessionCache
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import util.ControllerSpec
 
 import scala.concurrent.ExecutionContext.global
@@ -45,9 +46,10 @@ class SubscriptionFlowManagerSpec
 
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
+  private val mockAppConfig            = mock[AppConfig]
 
   val controller =
-    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache)(global)
+    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache, mockAppConfig)(global)
 
   private val mockOrgRegistrationDetails        = mock[RegistrationDetailsOrganisation]
   private val mockIndividualRegistrationDetails = mock[RegistrationDetailsIndividual]
@@ -115,7 +117,7 @@ class SubscriptionFlowManagerSpec
         expectedNextPage: SubscriptionPage
       ) =>
         when(mockRequestSessionData.userSubscriptionFlow(mockRequest)).thenReturn(flow)
-        val actual = controller.stepInformation(currentPage)(mockRequest)
+        val actual = controller.stepInformation(currentPage, atarService)(mockRequest)
 
         s"${flow.name} flow: current step is $expectedStepNumber when currentPage is $currentPage" in {
           actual.stepNumber shouldBe expectedStepNumber
@@ -225,9 +227,10 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
 
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
+  private val mockAppConfig            = mock[AppConfig]
 
   val controller =
-    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache)(global)
+    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache, mockAppConfig)(global)
 
   private val mockSession = mock[Session]
 
@@ -241,6 +244,8 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       .thenReturn(mockSession)
     when(mockCdsFrontendDataCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[Request[_]]))
       .thenReturn(Future.successful(true))
+    when(mockAppConfig.euEoriEnabled)
+      .thenReturn(false)
   }
 
   "First Page" should {

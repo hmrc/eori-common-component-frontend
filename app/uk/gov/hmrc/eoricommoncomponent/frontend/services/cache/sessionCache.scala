@@ -274,7 +274,7 @@ class SessionCache @Inject() (
 
   def clearAddressLookupParams(implicit request: Request[_]): Future[Unit] =
     putData(addressLookupParamsKey, Json.toJson(AddressLookupParams("", None))).map(_ => ())
-  
+
   def getAddContactAddress(implicit request: Request[_]): Future[Option[YesNo]] =
     getData[YesNo](addContactAddressKey)
 

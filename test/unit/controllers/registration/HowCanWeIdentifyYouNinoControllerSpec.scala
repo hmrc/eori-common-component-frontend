@@ -45,6 +45,7 @@ import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
@@ -78,7 +79,10 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
       .thenReturn(Future.successful(None))
 
     when(
-      mockSubscriptionFlowManager.stepInformation(ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage))(
+      mockSubscriptionFlowManager.stepInformation(
+        ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage),
+        any[Service]
+      )(
         any[Request[AnyContent]]
       )
     ).thenReturn(SubscriptionFlowInfo(3, 5, AddressDetailsSubscriptionFlowPage))

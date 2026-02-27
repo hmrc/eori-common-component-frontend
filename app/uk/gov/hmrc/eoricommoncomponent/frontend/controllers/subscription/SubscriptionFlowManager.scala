@@ -39,8 +39,6 @@ case class SubscriptionFlowConfig(
   pageAfterLastFlowPage: SubscriptionPage
 ) {
 
-  
-
   private def lastPageInTheFlow(currentPos: Int): Boolean = currentPos == pagesInOrder.size - ONE
 
   def determinePageBeforeSubscriptionFlow(uriBeforeSubscriptionFlow: Option[String]): SubscriptionPage =
@@ -58,19 +56,25 @@ case class SubscriptionFlowConfig(
 }
 
 @Singleton
-class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData, cdsFrontendDataCache: SessionCache,  appConfig: AppConfig)(
+class SubscriptionFlowManager @Inject() (
+  requestSessionData: RequestSessionData,
+  cdsFrontendDataCache: SessionCache,
+  appConfig: AppConfig
+)(
   implicit ec: ExecutionContext
 ) {
 
   private val logger = Logger(this.getClass)
 
-  private def includeContactAddress(service: Service): Boolean = 
+  private def includeContactAddress(service: Service): Boolean =
     appConfig.euEoriEnabled && service.code == Service.cds.code
 
   def currentSubscriptionFlow(implicit request: Request[AnyContent]): SubscriptionFlow =
     requestSessionData.userSubscriptionFlow
 
-  def stepInformation(currentPage: SubscriptionPage, service: Service)(implicit request: Request[AnyContent]): SubscriptionFlowInfo =
+  def stepInformation(currentPage: SubscriptionPage, service: Service)(implicit
+    request: Request[AnyContent]
+  ): SubscriptionFlowInfo =
     SubscriptionFlows.flowConfig(currentSubscriptionFlow, includeContactAddress(service)).stepInformation(currentPage)
 
   def startSubscriptionFlow(
@@ -80,7 +84,7 @@ class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData,
   )(implicit request: Request[AnyContent]): Future[(SubscriptionPage, Session)] = {
     val maybePreviousPageUrl = previousPage.map(page => page.url(service))
     cdsFrontendDataCache.registrationDetails map { registrationDetails =>
-      val flow = selectFlow(registrationDetails, cdsOrganisationType)
+      val flow       = selectFlow(registrationDetails, cdsOrganisationType)
       val flowConfig = SubscriptionFlows.flowConfig(flow, includeContactAddress(service))
 
       logger.info(s"select Subscription flow: ${flow.name}")

@@ -45,6 +45,7 @@ import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
@@ -172,7 +173,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     )
 
   private def mockSubscriptionFlowNextPage() = {
-    when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
+    when(mockSubscriptionFlowManager.stepInformation(any(), any[Service])(any[Request[AnyContent]]))
       .thenReturn(mockSubscriptionFlowInfo)
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
     when(mockSubscriptionPage.url(atarService)).thenReturn(EnterYourBusinessAddress.url)
