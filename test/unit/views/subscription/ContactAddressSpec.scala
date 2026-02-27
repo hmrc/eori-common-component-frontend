@@ -39,16 +39,51 @@ class ContactAddressSpec extends ViewSpec {
   private val formWithError = form.bind(Map("line-1" -> "", "line-3" -> "", "countryCode" -> ""))
 
   private val doc: Document =
-    Jsoup.parse(contentAsString(view(form, countries, picker, None, isInReviewMode = false, atarService)))
+    Jsoup.parse(contentAsString(view(form, countries, picker, None, false, isInReviewMode = false, atarService)))
 
   private val docWithErrorSummary: Document =
-    Jsoup.parse(contentAsString(view(formWithError, countries, picker, None, isInReviewMode = false, atarService)))
+    Jsoup.parse(contentAsString(view(
+      formWithError,
+      countries,
+      picker,
+      None,
+      false,
+      isInReviewMode = false,
+      atarService
+    )))
 
-  private val docWithEUEoriPrefix: Document =
-    Jsoup.parse(contentAsString(view(formWithError, countries, picker, Some(EU), isInReviewMode = false, atarService)))
+  private val docWithEUEoriPrefixAndFeatureEnabled: Document =
+    Jsoup.parse(contentAsString(view(
+      formWithError,
+      countries,
+      picker,
+      Some(EU),
+      true,
+      isInReviewMode = false,
+      atarService
+    )))
 
-  private val docWithGBEoriPrefix: Document =
-    Jsoup.parse(contentAsString(view(formWithError, countries, picker, Some(GB), isInReviewMode = false, atarService)))
+  private val docWithGBEoriPrefixAndFeatureEnabled: Document =
+    Jsoup.parse(contentAsString(view(
+      formWithError,
+      countries,
+      picker,
+      Some(GB),
+      true,
+      isInReviewMode = false,
+      atarService
+    )))
+
+  private val docWithEUEoriPrefixAndFeatureDisabled: Document =
+    Jsoup.parse(contentAsString(view(
+      formWithError,
+      countries,
+      picker,
+      Some(EU),
+      false,
+      isInReviewMode = false,
+      atarService
+    )))
 
   "Contact address view" should {
 
@@ -95,8 +130,12 @@ class ContactAddressSpec extends ViewSpec {
     }
 
     "display different postcode label for EU EORI Prefix" in {
-      docWithEUEoriPrefix.body().getElementsByClass("postcode").text() mustBe "Postal code (optional)"
-      docWithGBEoriPrefix.body().getElementsByClass("postcode").text() mustBe "Postcode (optional)"
+      docWithEUEoriPrefixAndFeatureEnabled.body().getElementsByClass("postcode").text() mustBe "Postal code (optional)"
+      docWithGBEoriPrefixAndFeatureEnabled.body().getElementsByClass("postcode").text() mustBe "Postcode (optional)"
+    }
+
+    "display current postcode label when EU EORI feature disabled" in {
+      docWithEUEoriPrefixAndFeatureDisabled.body().getElementsByClass("postcode").text() mustBe "Postcode (optional)"
     }
   }
 }

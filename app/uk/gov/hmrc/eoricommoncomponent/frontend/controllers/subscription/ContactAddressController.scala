@@ -17,7 +17,8 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import play.api.data.Form
-import play.api.mvc._
+import play.api.mvc.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
@@ -45,7 +46,8 @@ class ContactAddressController @Inject() (
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionFlowManager: SubscriptionFlowManager,
   sessionCache: SessionCache,
-  contactAddressView: contact_address
+  contactAddressView: contact_address,
+  appConfig: AppConfig
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -84,6 +86,7 @@ class ContactAddressController @Inject() (
           countriesToInclude,
           countriesInCountryPicker,
           optEoriRegion,
+          appConfig.euEoriEnabled,
           isInReviewMode,
           service
         ))
