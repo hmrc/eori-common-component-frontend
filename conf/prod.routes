@@ -154,6 +154,12 @@ GET         /customs-enrolment-services/:service/subscribe/row-country/review   
 POST        /customs-enrolment-services/:service/subscribe/row-country                                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CompanyRegisteredCountryController.submit(service: Service, isInReviewMode: Boolean = false)
 POST        /customs-enrolment-services/:service/subscribe/row-country/review                          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CompanyRegisteredCountryController.submit(service: Service, isInReviewMode: Boolean = true)
 
+
+GET         /customs-enrolment-services/:service/subscribe/eu-eori-registered-address                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.EuEoriRegisteredAddressController.displayPage(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/eu-eori-registered-address                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.EuEoriRegisteredAddressController.submit(service: Service, isInReviewMode: Boolean = false)
+GET         /customs-enrolment-services/:service/subscribe/eu-eori-registered-address/review           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.EuEoriRegisteredAddressController.reviewPage(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/eu-eori-registered-address/review           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.EuEoriRegisteredAddressController.submit(service: Service, isInReviewMode: Boolean = true)
+
 GET         /customs-enrolment-services/:service/subscribe/address-postcode                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.AddressLookupPostcodeController.displayPage(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/address-postcode                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.AddressLookupPostcodeController.submit(service: Service, isInReviewMode: Boolean = false)
 GET         /customs-enrolment-services/:service/subscribe/address-postcode/review                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.AddressLookupPostcodeController.reviewPage(service: Service)
