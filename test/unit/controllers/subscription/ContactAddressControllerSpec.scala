@@ -18,12 +18,13 @@ package unit.controllers.subscription
 
 import common.pages.subscription.{AddressPage, ContactAddressPage}
 import common.support.testdata.subscription.BusinessDatesOrganisationTypeTables
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Request, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactAddressController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController.submit
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.UserLocationDetails
@@ -33,7 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Country
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_address
 import unit.controllers.CdsPage
-import util.StringThings._
+import util.StringThings.*
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
 
@@ -55,6 +56,7 @@ class ContactAddressControllerSpec
   private val mockCdsFrontendDataCache       = mock[SessionCache]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val emulatedFailure                = new UnsupportedOperationException("Emulation of service call failure")
+  private val mockAppConfig                  = mock[AppConfig]
 
   private val viewAddress = instanceOf[contact_address]
 
@@ -65,7 +67,8 @@ class ContactAddressControllerSpec
     mockSubscriptionBusinessService,
     mockSubscriptionFlowManager,
     mockCdsFrontendDataCache,
-    viewAddress
+    viewAddress,
+    mockAppConfig
   )
 
   def stringOfLengthXGen(minLength: Int): Gen[String] =
@@ -100,7 +103,9 @@ class ContactAddressControllerSpec
     super.beforeEach()
 
     when(mockSubscriptionBusinessService.contactAddress(any[Request[_]])).thenReturn(Future.successful(None))
+    when(mockAppConfig.euEoriEnabled).thenReturn(false)
     when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]])).thenReturn(Future.successful(None))
+    when(mockCdsFrontendDataCache.getFirst2LettersEori(any[Request[_]])).thenReturn(Future.successful(None))
     registerSaveDetailsMockSuccess()
     setupMockSubscriptionFlowManager(ContactAddressSubscriptionFlowPage)
   }

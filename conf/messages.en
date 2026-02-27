@@ -1511,6 +1511,7 @@ contact-address.line-2=Address line 2 (optional)
 contact-address.line-3=Town or city
 contact-address.line-4=Region or state (optional)
 contact-address.postcode-optional=Postcode (optional)
+contact-address.postal-code-optional=Postal code (optional)
 contact-address.country=Country
 
 confirm-contact-details.page.title=Is this your contact address?
