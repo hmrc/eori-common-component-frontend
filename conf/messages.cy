@@ -1430,3 +1430,14 @@ cds.subscription.first-2-letters-eori.radio.hint.text = An EORI number is 2 lett
 cds.subscription.first-2-letters-eori.detail.para1 = You need an EORI number to use this online service.
 cds.subscription.first-2-letters-eori.detail.para2 = If your organisation is based in UK, you should <a href="https://www.tax.service.gov.uk/customs-registration-services/cds/register" class="govuk-link" target="_blank" rel="noopener noreferrer">apply for both a subscription and an EORI number starting with GB</a>.
 cds.subscription.first-2-letters-eori.detail.para3 = If your organisation is based in a country in the EU, you should apply for an EORI number in that country.
+
+#What is your EORI EU
+ecc.subscription.enter-eu-eori-number.page.title=What is your EORI number?
+ecc.subscription.enter-eu-eori-number.heading=What is your EORI number?
+ecc.subscription.enter-eu-eori-number.hint=Your EORI number is 2 letters followed by upto 15 characters, like FR12345678901, ESX1234567X or NL12345678.
+
+ecc.eu-eori-error.isEmpty=Enter your EORI number
+ecc.eu-eori-error.not-gb-xi=EORI number must not start with GB or XI
+ecc.eu-eori-error.wrong-length=EORI number must be between 3 and 17 characters
+ecc.eu-eori-error.invalid-characters=EORI number must only include letters a to z and numbers
+ecc.eu-eori-error.no-two-letter-start=Enter an EORI number in the correct format
