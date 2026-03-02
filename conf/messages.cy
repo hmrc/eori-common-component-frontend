@@ -1432,12 +1432,12 @@ cds.subscription.first-2-letters-eori.detail.para2 = If your organisation is bas
 cds.subscription.first-2-letters-eori.detail.para3 = If your organisation is based in a country in the EU, you should apply for an EORI number in that country.
 
 #What is your EORI EU
-ecc.subscription.enter-eu-eori-number.page.title=What is your EORI number?
-ecc.subscription.enter-eu-eori-number.heading=What is your EORI number?
-ecc.subscription.enter-eu-eori-number.hint=Your EORI number is 2 letters followed by upto 15 characters, like FR12345678901, ESX1234567X or NL12345678.
+ecc.subscription.enter-eu-eori-number.page.title=Beth yw’ch rhif EORI?
+ecc.subscription.enter-eu-eori-number.heading=Beth yw’ch rhif EORI?
+ecc.subscription.enter-eu-eori-number.hint=Mae’ch rhif EORI yn 2 lythyren ac yna hyd at 15 cymeriad, fel FR12345678901, ESX1234567X neu NL12345678.
 
-ecc.eu-eori-error.isEmpty=Enter your EORI number
-ecc.eu-eori-error.not-gb-xi=EORI number must not start with GB or XI
-ecc.eu-eori-error.wrong-length=EORI number must be between 3 and 17 characters
-ecc.eu-eori-error.invalid-characters=EORI number must only include letters a to z and numbers
-ecc.eu-eori-error.no-two-letter-start=Enter an EORI number in the correct format
+ecc.eu-eori-error.isEmpty=Nodwch eich rhif EORI
+ecc.eu-eori-error.not-gb-xi=Ni ddylai rhif EORI ddechrau gyda GB neu XI
+ecc.eu-eori-error.wrong-length=Mae’n rhaid i’r rhif EORI fod rhwng 3 a 17 cymeriad
+ecc.eu-eori-error.invalid-characters=Mae’n rhaid i’r rif EORI gynnwys y llythrennau a i z a’r rhifau yn unig
+ecc.eu-eori-error.no-two-letter-start=Nodwch rif EORI yn y fformat cywir
