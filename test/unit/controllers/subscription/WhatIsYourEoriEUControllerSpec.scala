@@ -39,7 +39,7 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
   private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val mockWhatIsYourEoriEUPage       = instanceOf[what_is_your_eori_eu]
-  private val pageLevelErrorSummaryListXPath  = "//ul[@class='govuk-list govuk-error-summary__list']"
+  private val pageLevelErrorSummaryListXPath = "//ul[@class='govuk-list govuk-error-summary__list']"
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -115,7 +115,6 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
         .getElementsText(pageLevelErrorSummaryListXPath) shouldBe "EORI number must not start with GB or XI"
     }
 
-
     "Display the correct error when user enters an EORI that does not have two letters at the start" in {
       when(mockSubscriptionDetailsService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
 
@@ -144,7 +143,10 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
       when(mockSubscriptionDetailsService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
 
       val result: Future[Result] = controller.submit(cdsService)(
-        SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, Map("eori-number" -> "FR12345678901234567890"))
+        SessionBuilder.buildRequestWithSessionAndFormValues(
+          defaultUserId,
+          Map("eori-number" -> "FR12345678901234567890")
+        )
       )
 
       status(result) shouldBe BAD_REQUEST
@@ -161,7 +163,9 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
 
       status(result) shouldBe BAD_REQUEST
       CdsPage(contentAsString(result))
-        .getElementsText(pageLevelErrorSummaryListXPath) shouldBe "EORI number must only include letters a to z and numbers"
+        .getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe "EORI number must only include letters a to z and numbers"
     }
   }
 }
