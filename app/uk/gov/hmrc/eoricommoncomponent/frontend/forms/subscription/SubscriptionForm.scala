@@ -64,4 +64,28 @@ object SubscriptionForm {
     )
   )
 
+  def validEUEori: Constraint[String] =
+    Constraint {
+      case e if formatInput(e).isEmpty =>
+        Invalid(ValidationError("ecc.eu-eori-error.isEmpty"))
+      case e if formatInput(e).length < 3 || formatInput(e).length > 17 =>
+        Invalid(ValidationError("ecc.eu-eori-error.wrong-length"))
+      case e if !formatInput(e).take(2).forall(_.isLetter) =>
+        Invalid(ValidationError("ecc.eu-eori-error.no-two-letter-start"))
+      case e
+          if formatInput(e).take(2).forall(_.isLetter) && (formatInput(e).startsWith("GB") || formatInput(e).startsWith(
+            "XI"
+          )) =>
+        Invalid(ValidationError("ecc.eu-eori-error.not-gb-xi"))
+      case e if !formatInput(e).matches("^[A-Z]{2}[A-Z0-9]([A-Z0-9]{4,15})?$") =>
+        Invalid(ValidationError("ecc.eu-eori-error.invalid-characters"))
+      case _ => Valid
+    }
+
+  val eoriNumberEuForm: Form[EoriNumberViewModel] = Form(
+    Forms.mapping("eori-number" -> text.verifying(validEUEori))(EoriNumberViewModel.apply)(eoriNumberViewModel =>
+      Some(eoriNumberViewModel.eoriNumber)
+    )
+  )
+
 }

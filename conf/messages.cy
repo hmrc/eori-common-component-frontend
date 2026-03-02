@@ -1430,3 +1430,14 @@ cds.subscription.first-2-letters-eori.radio.hint.text = An EORI number is 2 lett
 cds.subscription.first-2-letters-eori.detail.para1 = You need an EORI number to use this online service.
 cds.subscription.first-2-letters-eori.detail.para2 = If your organisation is based in UK, you should <a href="https://www.tax.service.gov.uk/customs-registration-services/cds/register" class="govuk-link" target="_blank" rel="noopener noreferrer">apply for both a subscription and an EORI number starting with GB</a>.
 cds.subscription.first-2-letters-eori.detail.para3 = If your organisation is based in a country in the EU, you should apply for an EORI number in that country.
+
+#What is your EORI EU
+ecc.subscription.enter-eu-eori-number.page.title=Beth yw’ch rhif EORI?
+ecc.subscription.enter-eu-eori-number.heading=Beth yw’ch rhif EORI?
+ecc.subscription.enter-eu-eori-number.hint=Mae’ch rhif EORI yn 2 lythyren ac yna hyd at 15 cymeriad, fel FR12345678901, ESX1234567X neu NL12345678.
+
+ecc.eu-eori-error.isEmpty=Nodwch eich rhif EORI
+ecc.eu-eori-error.not-gb-xi=Ni ddylai rhif EORI ddechrau gyda GB neu XI
+ecc.eu-eori-error.wrong-length=Mae’n rhaid i’r rhif EORI fod rhwng 3 a 17 cymeriad
+ecc.eu-eori-error.invalid-characters=Mae’n rhaid i’r rif EORI gynnwys y llythrennau a i z a’r rhifau yn unig
+ecc.eu-eori-error.no-two-letter-start=Nodwch rif EORI yn y fformat cywir
