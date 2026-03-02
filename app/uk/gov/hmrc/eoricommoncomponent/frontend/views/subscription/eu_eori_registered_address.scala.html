@@ -1,0 +1,88 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EuEoriRegisteredAddressModel
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, Text}
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
+@import views.html.helper._
+
+@this(layout_di: layout, govukHint: GovukHint, govukButton: GovukButton, inputText: helpers.inputText, errorSummary: helpers.errorSummary, countryField: helpers.countryField)
+
+@(addressForm: Form[EuEoriRegisteredAddressModel], countries: List[Country], countriesInCountryPicker: CountriesInCountryPicker, isInReviewMode: Boolean, service: Service)(implicit request: Request[AnyContent], messages: Messages)
+
+
+@layout_di(messages("eu.eori.registered.address.heading"), countriesInCountryPicker, form = Some(addressForm), service = service) {
+    <div>
+        @errorSummary(addressForm.errors)
+
+        <h1 class="govuk-heading-l">@messages("eu.eori.registered.address.heading")</h1>
+
+        @govukHint(Hint(id= Some("eu-euro-registered-address-hint"), content = Text(messages("eu.eori.registered.address.hint")), classes = "govuk-!-margin-top-0 govuk-!-margin-bottom-5"))
+
+        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.EuEoriRegisteredAddressController.submit(service, isInReviewMode), "euEoriRegisteredAddressForm") {
+        @CSRF.formField
+
+            @inputText(
+                form = addressForm,
+                id = "line-1",
+                name = "line-1",
+                label = "eu.eori.registered.address.line-1",
+                isPageHeading = false,
+                autocomplete = Some("address-line1"),
+                classes = Some("govuk-!-width-one-half"),
+                labelClasses = Some("line-1")
+            )
+            @inputText(
+                form = addressForm,
+                id = "line-3",
+                name = "line-3",
+                label = "eu.eori.registered.address.line-3",
+                isPageHeading = false,
+                autocomplete = Some("address-level2"),
+                classes = Some("govuk-!-width-one-half"),
+                labelClasses = Some("line-3")
+            )
+            @inputText(
+                form = addressForm,
+                id = "postcode",
+                name = "postcode",
+                label = "eu.eori.registered.address.postcode-optional",
+                isPageHeading = false,
+                autocomplete = Some("postal-code"),
+                classes = Some("govuk-!-width-one-half"),
+                labelClasses = Some("postcode")
+            )
+            @countryField(
+                form = addressForm,
+                field = "countryCode",
+                label = "eu.eori.registered.address.country",
+                countries = countries
+
+            )
+
+            @govukButton(Button(
+                content = Text(messages("cds.navigation.continue")),
+                id = Some("continue-button")
+            ))
+
+            @helpers.helpAndSupport()
+        }
+    </div>
+}
