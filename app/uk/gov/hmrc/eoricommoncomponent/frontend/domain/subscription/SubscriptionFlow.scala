@@ -39,36 +39,36 @@ object SubscriptionFlows {
     )
   )
 
-  private def rowIndividualFlowConfig(addContactAddress: Boolean) = createFlowConfig(
+  private def rowIndividualFlowConfig(featureflagOn: Boolean) = createFlowConfig(
     List(
       Some(NameDobDetailsSubscriptionFlowPage),
       Some(UtrSubscriptionFlowPage),
       Some(NinoSubscriptionFlowPage),
       Some(AddressDetailsSubscriptionFlowPage),
       Some(ContactDetailsSubscriptionFlowPageMigrate),
-      Option.when(addContactAddress)(AddContactAddressSubscriptionFlowPage),
+      Option.when(featureflagOn)(AddContactAddressSubscriptionFlowPage),
       Some(ContactAddressSubscriptionFlowPage),
       Some(ConfirmContactAddressSubscriptionFlowPage)
     ).flatten
   )
 
-  private def rowOrganisationFlowConfig(addContactAddress: Boolean) = createFlowConfig(
+  private def rowOrganisationFlowConfig(featureflagOn: Boolean) = createFlowConfig(
     List(
       Some(NameDetailsSubscriptionFlowPage),
       Some(UtrSubscriptionFlowPage),
       Some(AddressDetailsSubscriptionFlowPage),
       Some(RowDateOfEstablishmentSubscriptionFlowPage),
       Some(ContactDetailsSubscriptionFlowPageMigrate),
-      Option.when(addContactAddress)(AddContactAddressSubscriptionFlowPage),
+      Option.when(featureflagOn)(AddContactAddressSubscriptionFlowPage),
       Some(ContactAddressSubscriptionFlowPage),
       Some(ConfirmContactAddressSubscriptionFlowPage)
     ).flatten
   )
 
-  def flowConfig(flow: SubscriptionFlow, addContactAddress: Boolean = false): SubscriptionFlowConfig =
+  def flowConfig(flow: SubscriptionFlow, featureflagOn: Boolean = false): SubscriptionFlowConfig =
     flow match {
-      case RowOrganisationFlow => rowOrganisationFlowConfig(addContactAddress)
-      case RowIndividualFlow   => rowIndividualFlowConfig(addContactAddress)
+      case RowOrganisationFlow => rowOrganisationFlowConfig(featureflagOn)
+      case RowIndividualFlow   => rowIndividualFlowConfig(featureflagOn)
       case otherFlows          => flows(otherFlows)
     }
 

@@ -66,7 +66,7 @@ class SubscriptionFlowManager @Inject() (
 
   private val logger = Logger(this.getClass)
 
-  private def includeContactAddress(service: Service): Boolean =
+  private def euEoriEnabled(service: Service): Boolean =
     appConfig.euEoriEnabled && service.code == Service.cds.code
 
   def currentSubscriptionFlow(implicit request: Request[AnyContent]): SubscriptionFlow =
@@ -75,7 +75,7 @@ class SubscriptionFlowManager @Inject() (
   def stepInformation(currentPage: SubscriptionPage, service: Service)(implicit
     request: Request[AnyContent]
   ): SubscriptionFlowInfo =
-    SubscriptionFlows.flowConfig(currentSubscriptionFlow, includeContactAddress(service)).stepInformation(currentPage)
+    SubscriptionFlows.flowConfig(currentSubscriptionFlow, euEoriEnabled(service)).stepInformation(currentPage)
 
   def startSubscriptionFlow(
     previousPage: Option[SubscriptionPage] = None,
@@ -85,7 +85,7 @@ class SubscriptionFlowManager @Inject() (
     val maybePreviousPageUrl = previousPage.map(page => page.url(service))
     cdsFrontendDataCache.registrationDetails map { registrationDetails =>
       val flow       = selectFlow(registrationDetails, cdsOrganisationType)
-      val flowConfig = SubscriptionFlows.flowConfig(flow, includeContactAddress(service))
+      val flowConfig = SubscriptionFlows.flowConfig(flow, euEoriEnabled(service))
 
       logger.info(s"select Subscription flow: ${flow.name}")
       (
