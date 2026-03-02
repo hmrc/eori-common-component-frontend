@@ -23,12 +23,7 @@ case class EuEoriRegisteredAddressModel(
   lineThree: String,
   postcode: Option[String],
   country: String
-) {
-
-  def toEuEoriRegisteredAddressViewModel: EuEoriRegisteredAddressViewModel =
-    EuEoriRegisteredAddressViewModel(lineOne, lineThree, postcode, country)
-
-}
+)
 
 object EuEoriRegisteredAddressModel {
   implicit val jsonFormat: OFormat[EuEoriRegisteredAddressModel] = Json.format[EuEoriRegisteredAddressModel]
@@ -45,17 +40,4 @@ object EuEoriRegisteredAddressModel {
     country
   )
 
-  def trim(value: Option[String]): Option[String] = value.map(_.trim)
-
-}
-
-case class EuEoriRegisteredAddressViewModel(
-  lineOne: String,
-  lineThree: String,
-  postcode: Option[String],
-  country: String
-)
-
-object EuEoriRegisteredAddressViewModel {
-  implicit val jsonFormat: OFormat[EuEoriRegisteredAddressViewModel] = Json.format[EuEoriRegisteredAddressViewModel]
 }

@@ -31,9 +31,9 @@ object EuEoriRegisteredAddressForm {
   def euEoriRegisteredAddressCreateForm(): Form[EuEoriRegisteredAddressModel] =
     Form(
       mapping(
-        "line-1"   -> text.verifying(validLine1),
-        "line-3"   -> text.verifying(validLine3),
-        "postcode" -> optional(text.verifying(validEuEoriRegisteredAddressPostcode)),
+        "line-1"   -> text.verifying(addressLine("line-1", 70)),
+        "line-3"   -> text.verifying(addressLine("line-3", 35)),
+        "postcode" -> optional(text.verifying(addressLine("postcode", 35))),
         "countryCode" -> Mappings.mandatoryString("eu.eori.registered.address.country.error.empty")(s =>
           s.length == Length2
         )
@@ -42,33 +42,18 @@ object EuEoriRegisteredAddressForm {
       )
     )
 
-  private def validLine1: Constraint[String] =
-    Constraint {
-      case s if s.trim.isEmpty => Invalid(ValidationError("eu.eori.registered.address.line-1.error.empty"))
-      case s if s.trim.length > 70 =>
-        Invalid(ValidationError("eu.eori.registered.address.line-1.error.too-long"))
-      case s if !s.matches(validCharsRegex) =>
-        Invalid(ValidationError("eu.eori.registered.address.line-1.error.invalid-chars"))
-      case _ => Valid
-    }
+  private def addressLine(fieldName: String, maxLength: Int): Constraint[String] =
+    Constraint { s =>
+      val trimmed = s.trim
+      val prefix  = s"eu.eori.registered.address.$fieldName.error"
 
-  private def validLine3: Constraint[String] =
-    Constraint {
-      case s if s.trim.isEmpty => Invalid(ValidationError("eu.eori.registered.address.line-3.error.empty"))
-      case s if s.trim.length > 35 =>
-        Invalid(ValidationError("eu.eori.registered.address.line-3.error.too-long"))
-      case s if !s.matches(validCharsRegex) =>
-        Invalid(ValidationError("eu.eori.registered.address.line-3.error.invalid-chars"))
-      case _ => Valid
-    }
-
-  private def validEuEoriRegisteredAddressPostcode: Constraint[String] =
-    Constraint {
-      case s if s.trim.length > 35 =>
-        Invalid(ValidationError("eu.eori.registered.address.postcode.error.too-long"))
-      case s if !s.replaceAll(" ", "").matches(euEoriPostcodeRegex.regex) =>
-        Invalid(ValidationError("eu.eori.registered.address.postcode.error.invalid-chars"))
-      case _ => Valid
+      trimmed match {
+        case t if t.isEmpty                                                        => Invalid(s"$prefix.empty")
+        case t if t.length > maxLength                                             => Invalid(s"$prefix.too-long")
+        case t if fieldName == "postcode" && !t.matches(euEoriPostcodeRegex.regex) => Invalid(s"$prefix.invalid-chars")
+        case t if fieldName.startsWith("line") && !t.matches(validCharsRegex)      => Invalid(s"$prefix.invalid-chars")
+        case _                                                                     => Valid
+      }
     }
 
   private val euEoriPostcodeRegex: Regex = "^[A-Za-z0-9' .&-]*$".r
