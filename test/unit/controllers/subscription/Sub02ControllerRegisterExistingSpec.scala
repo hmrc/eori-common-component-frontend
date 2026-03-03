@@ -28,6 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Co
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion.GB
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
@@ -123,6 +124,9 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
         when(mockSessionCache.sub02Outcome(any[Request[AnyContent]])).thenReturn(
           Future.successful(mockSubscribeOutcome)
         )
+
+        when(mockSessionCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(GB)))
+
         when(mockSubscribeOutcome.processedDate).thenReturn("22 May 2016")
 
         result =>

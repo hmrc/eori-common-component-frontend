@@ -26,6 +26,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion.{EU, GB}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.*
@@ -101,6 +102,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       )
       when(mockSessionCache.journeyCompleted(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
+      when(mockSessionCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(GB)))
       verify(mockSessionCache, never()).registerWithEoriAndIdResponse(any[Request[AnyContent]])
       invokeMigrationEnd { result =>
         assertCleanedSession(result)
@@ -120,6 +122,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       )
       when(mockSessionCache.journeyCompleted(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
+      when(mockSessionCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(EU)))
       invokeMigrationEnd { result =>
         assertCleanedSession(result)
         status(result) shouldBe OK
@@ -136,6 +139,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       )
       when(mockSessionCache.journeyCompleted(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
+      when(mockSessionCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(EU)))
       invokeMigrationEnd { result =>
         assertCleanedSession(result)
         status(result) shouldBe OK

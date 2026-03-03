@@ -20,6 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
 import util.ViewSpec
@@ -33,18 +34,31 @@ class MigrationSuccessSpec extends ViewSpec {
   "'Migration Success' Page" should {
 
     "have a feedback 'continue' button" in {
-      val link = doc().body.getElementById("feedback-continue")
+      val link = docGB().body.getElementById("feedback-continue")
       link.text mustBe "More about Advance Tariff Rulings"
       link.attr("href") mustBe "/test-atar/feedback?status=Processing"
     }
 
     "have a no feedback 'continue' button when config missing" in {
-      val link = doc(atarService.copy(feedbackUrl = None)).body.getElementById("feedback-continue")
+      val link = docGB(atarService.copy(feedbackUrl = None)).body.getElementById("feedback-continue")
       link mustBe null
+    }
+
+    "when cds and EU EORI turned on, " in {
+      val contentFirstPara =
+        docCdsEU(cdsService.copy(feedbackUrl = None)).body.getElementById("eu-process-application-text")
+      val contentSecondPara =
+        docCdsEU(cdsService.copy(feedbackUrl = None)).body.getElementById("eu-will-send-email-text")
+      contentFirstPara.text mustBe "We will process your application. This can take up to 2 hours."
+      contentSecondPara.text mustBe "We will email you when the subscription is ready to use. You can then start using the Customs Declaration Service."
+
     }
   }
 
-  def doc(service: Service = atarService): Document =
-    Jsoup.parse(contentAsString(view("", "", service, false)))
+  def docGB(service: Service = atarService): Document =
+    Jsoup.parse(contentAsString(view("", "", service, false, Some(EoriRegion.GB))))
+
+  def docCdsEU(service: Service = cdsService): Document =
+    Jsoup.parse(contentAsString(view("", "", service, true, Some(EoriRegion.EU))))
 
 }

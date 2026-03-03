@@ -64,24 +64,28 @@ class Sub02Controller @Inject() (
 
   private def renderPageWithName(service: Service)(implicit request: Request[_]): Future[Result] =
     for {
-      sub02Outcome <- sessionCache.sub02Outcome
-      _            <- sessionCache.journeyCompleted
+      sub02Outcome      <- sessionCache.sub02Outcome
+      first2LettersEori <- sessionCache.getFirst2LettersEori
+      _                 <- sessionCache.journeyCompleted
     } yield Ok(migrationSuccessView(
       sub02Outcome.processedDate,
       subscriptionTo(service),
       service,
-      isEuEoriEnabled(service)
+      isEuEoriEnabled(service),
+      first2LettersEori
     ))
 
   private def renderPageWithNameRow(service: Service)(implicit request: Request[_]): Future[Result] =
     for {
-      sub02Outcome <- sessionCache.sub02Outcome
-      _            <- sessionCache.journeyCompleted
+      sub02Outcome      <- sessionCache.sub02Outcome
+      first2LettersEori <- sessionCache.getFirst2LettersEori
+      _                 <- sessionCache.journeyCompleted
     } yield Ok(migrationSuccessView(
       sub02Outcome.processedDate,
       subscriptionTo(service),
       service,
-      isEuEoriEnabled(service)
+      isEuEoriEnabled(service),
+      first2LettersEori
     ))
 
 }
