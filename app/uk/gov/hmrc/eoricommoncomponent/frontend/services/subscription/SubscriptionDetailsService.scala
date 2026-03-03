@@ -126,6 +126,9 @@ class SubscriptionDetailsService @Inject() (
   def cachedEoriNumber(implicit request: Request[_]): Future[Option[String]] =
     sessionCache.subscriptionDetails map (_.eoriNumber)
 
+  def cachedEmail(implicit request: Request[_]): Future[Option[String]] =
+    sessionCache.emailOpt
+
   def cacheDateEstablished(date: LocalDate)(implicit request: Request[_]): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(dateEstablished = Some(date)))
 

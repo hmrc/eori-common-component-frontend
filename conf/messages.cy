@@ -1466,3 +1466,13 @@ ecc.eu-eori-error.not-gb-xi=Ni ddylai rhif EORI ddechrau gyda GB neu XI
 ecc.eu-eori-error.wrong-length=Mae’n rhaid i’r rhif EORI fod rhwng 3 a 17 cymeriad
 ecc.eu-eori-error.invalid-characters=Mae’n rhaid i’r rif EORI gynnwys y llythrennau a i z a’r rhifau yn unig
 ecc.eu-eori-error.no-two-letter-start=Nodwch rif EORI yn y fformat cywir
+
+
+ecc.subscription.we-need-to-make-checks.heading = Mae’n rhaid i ni wneud rhagor o wiriadau ar eich cais
+ecc.subscription.we-need-to-make-checks.p1 =
+ecc.subscription.we-need-to-make-checks.h2 = Yr hyn sy’n digwydd nesaf
+ecc.subscription.we-need-to-make-checks.p2a =
+ecc.subscription.we-need-to-make-checks.p2b =
+ecc.subscription.we-need-to-make-checks.h3 = Os gwrthodir eich cais
+ecc.subscription.we-need-to-make-checks.p3a = Gallwch wneud cais eto.
+ecc.subscription.we-need-to-make-checks.p3b =
