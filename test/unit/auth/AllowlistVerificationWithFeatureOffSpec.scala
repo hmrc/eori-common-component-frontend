@@ -33,6 +33,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.enter_your_
 import unit.controllers.subscription.SubscriptionFlowSpec
 import util.builders.{AuthBuilder, SessionBuilder}
 
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.enterNameForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_name
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -55,6 +60,9 @@ class AllowlistVerificationWithFeatureOffSpec extends SubscriptionFlowSpec with 
   private val mockRegistrationDetails  = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
   private val mockCdsFrontendDataCache = mock[SessionCache]
   private val enterYourDetails         = instanceOf[enter_your_details]
+  private val mockAppConfig            = mock[AppConfig]
+  private val nameForm                 = instanceOf[what_is_your_name]
+  private val errorTemplate            = instanceOf[error_template]
 
   private val controller = new NameController(
     mockAuthAction,
@@ -64,7 +72,10 @@ class AllowlistVerificationWithFeatureOffSpec extends SubscriptionFlowSpec with 
     mockSubscriptionFlowManager,
     mcc,
     enterYourDetails,
-    mockSubscriptionDetailsHolderService
+    mockSubscriptionDetailsHolderService,
+    mockAppConfig,
+    nameForm,
+    errorTemplate
   )
 
   override def beforeEach(): Unit = {

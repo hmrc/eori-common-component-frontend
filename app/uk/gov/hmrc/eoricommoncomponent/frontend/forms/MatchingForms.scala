@@ -219,10 +219,10 @@ object MatchingForms extends Logging {
       )
     )(NameDobMatchModel.apply)(nameDobMatchModel => Some(Tuple.fromProductTyped(nameDobMatchModel)))
   )
-  
+
   val enterNameForm: Form[NameModel] = Form(
     mapping(
-      "given-name" -> text.verifying(validGivenName),
+      "given-name"  -> text.verifying(validGivenName),
       "family-name" -> text.verifying(validFamilyName)
     )(NameModel.apply)(nameModel => Some(Tuple.fromProductTyped(nameModel)))
   )
