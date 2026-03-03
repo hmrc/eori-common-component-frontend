@@ -53,7 +53,11 @@ cds.eori-checker-consent.individual-or-sole-trader.yes=Yes - I want my name and 
 cds.eori-checker-consent.partnership.yes=Yes - I want my partnership name and address on the EORI checker
 cds.eori-checker-consent.no=No - Just display my EORI number on the EORI checker
 cds.eori-checker-consent.yes=Yes - I want my organisation name and address on the EORI checker
- 
+cds.when-eori-issued.label=When was this EORI number issued?
+cds.when-eori-issued.hint=Enter a month and year, for example 3 2017.
+cds.when-eori-issued.summary=I do not know when this EORI number was issued
+cds.when-eori-issued.content1=You can find the date on the confirmation email or letter you received when you applied for an EORI number.
+cds.when-eori-issued.content2=If you still cannot find the date, you will need to contact the authority that issued your EORI number.
 cds.eu-establishment.legend=Establishment in the customs territory of the union (this data element is only used for economic operators with an address  in a third country)?
 cds.eu-establishment.radio.yes.label=Indeed It Is
 cds.eu-establishment.radio.no.label=Indeed It Is Not
@@ -528,6 +532,17 @@ ecc.subscription.information.titleAndHeading.ndrc=Subscribe to Customs Trader Se
 ecc.subscription.information.titleAndHeading.gbss=Subscribe to the Safety and Security GB service
 ecc.subscription.information.titleAndHeading.ctc=Subscribe to the New Computerised Transit System (NCTS)
 ecc.subscription.information.titleAndHeading.cds=Subscribe to the Customs Declaration Service
+
+#What is your EORI EU
+ecc.subscription.enter-eu-eori-number.page.title=What is your EORI number?
+ecc.subscription.enter-eu-eori-number.heading=What is your EORI number?
+ecc.subscription.enter-eu-eori-number.hint=Your EORI number is 2 letters followed by upto 15 characters, like FR12345678901, ESX1234567X or NL12345678.
+
+ecc.eu-eori-error.isEmpty=Enter your EORI number
+ecc.eu-eori-error.not-gb-xi=EORI number must not start with GB or XI
+ecc.eu-eori-error.wrong-length=EORI number must be between 3 and 17 characters
+ecc.eu-eori-error.invalid-characters=EORI number must only include letters a to z and numbers
+ecc.eu-eori-error.no-two-letter-start=Enter an EORI number in the correct format
 
 #Get An EORI Journey
 #journey-type
@@ -1042,6 +1057,8 @@ date-of-establishment.year.empty=Date of establishment must include a year
 date-of-establishment.day-date-of-establishment.month.empty=Date of establishment must include a day and month
 date-of-establishment.day-date-of-establishment.year.empty=Date of establishment must include a day and year
 date-of-establishment.month-date-of-establishment.year.empty=Date of establishment must include a month and year
+when-eori-issued.month.empty=Enter the month and year this EORI number was issued
+when-eori-issued.year.empty=Enter the month and year this EORI number was issued
 date-invalid-year-too-short=Year must include 4 numbers
 cds.subscription.business.date-established.label=Enter the date shown on the organisation’s certificate of incorporation. You can find the date your organisation was established on the {0}</a>
 cds.subscription.llp.date-established.charity-label=Enter the date shown on the organisation’s certificate of incorporation or registration certificate.
@@ -1513,6 +1530,24 @@ contact-address.line-4=Region or state (optional)
 contact-address.postcode-optional=Postcode (optional)
 contact-address.postal-code-optional=Postal code (optional)
 contact-address.country=Country
+
+#Eu Eori Registered Address
+eu.eori.registered.address.title=What is your organisation''s registered address?
+eu.eori.registered.address.heading=What is your organisation''s registered address?
+eu.eori.registered.address.hint=Enter the address you used when you applied for an EORI number.
+eu.eori.registered.address.line-1=Street and number
+eu.eori.registered.address.line-3=Town or city
+eu.eori.registered.address.postcode-optional=Postal code (optional)
+eu.eori.registered.address.country=Country
+eu.eori.registered.address.line-1.error.empty=Enter a street and number
+eu.eori.registered.address.line-1.error.too-long=Street and number must be 70 characters or less
+eu.eori.registered.address.line-1.error.invalid-chars=Street and number must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces
+eu.eori.registered.address.line-3.error.empty=Enter a town or city
+eu.eori.registered.address.line-3.error.too-long=Town or city must be 35 characters or less
+eu.eori.registered.address.line-3.error.invalid-chars=Town or city must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces
+eu.eori.registered.address.postcode.error.too-long=Postal code must be 35 characters or less
+eu.eori.registered.address.postcode.error.invalid-chars=Postal code must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces
+eu.eori.registered.address.country.error.empty=Enter a country
 
 confirm-contact-details.page.title=Is this your contact address?
 confirm-contact-details.page.heading=Is this your contact address?

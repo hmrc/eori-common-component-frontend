@@ -17,9 +17,13 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import play.api.mvc.Request
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactAddressModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressViewModel,
+  ContactAddressModel,
+  EuEoriRegisteredAddressModel
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 
 import java.time.LocalDate
@@ -56,6 +60,11 @@ class SubscriptionBusinessService @Inject() (sessionCache: SessionCache)(implici
   def contactAddress(implicit request: Request[_]): Future[Option[ContactAddressModel]] =
     sessionCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.contactAddress
+    }
+
+  def euEoriRegisteredAddress(implicit request: Request[_]): Future[Option[EuEoriRegisteredAddressModel]] =
+    sessionCache.subscriptionDetails map { subscriptionDetails =>
+      subscriptionDetails.euEoriRegisteredAddress
     }
 
   def getCachedNameIdViewModel(implicit request: Request[_]): Future[NameIdOrganisationMatchModel] =

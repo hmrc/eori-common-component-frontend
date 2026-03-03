@@ -54,6 +54,11 @@ cds.eori-checker-consent.individual-or-sole-trader.yes=Iawn - Rwyf am i’m henw
 cds.eori-checker-consent.partnership.yes=Iawn - Rwyf am i enw a chyfeiriad fy mhartneriaeth fod ar y gwiriwr EORI
 cds.eori-checker-consent.no=Na - Dangoswch fy rhif EORI yn unig ar y gwiriwr EORI
 cds.eori-checker-consent.yes=Iawn - Rwyf am i enw a chyfeiriad fy sefydliad fod ar y gwiriwr EORI
+cds.when-eori-issued.label=Pryd y cyhoeddwyd y rhif EORI hwn?
+cds.when-eori-issued.hint=Nodwch fis a blwyddyn, er enghraifft 3 2017.
+cds.when-eori-issued.summary=Dydw i ddim yn gwybod pryd y cyhoeddwyd y rhif EORI hwn
+cds.when-eori-issued.content1=Gallwch ddod o hyd i’r dyddiad ar yr e-bost cadarnhau neu’r llythyr a gawsoch pan wnaethoch gais am rif EORI.
+cds.when-eori-issued.content2=Os na allwch ddod o hyd i’r dyddiad o hyd, bydd angen i chi gysylltu â’r awdurdod a gyhoeddodd eich rhif EORI.
 cds.eu-establishment.legend=Wedi’i sefydlu yn nhiriogaeth dollau’r undeb (dim ond ar gyfer gweithredwyr economaidd sydd â chyfeiriad mewn trydedd wlad y defnyddir yr elfen data hon)?
 cds.eu-establishment.radio.yes.label=Iawn
 cds.eu-establishment.radio.no.label=Na
@@ -908,6 +913,8 @@ date-of-establishment.year.empty=Mae’n rhaid i’r dyddiad sefydlu gynnwys blw
 date-of-establishment.day-date-of-establishment.month.empty=Mae’n rhaid i’r dyddiad sefydlu gynnwys diwrnod a mis
 date-of-establishment.day-date-of-establishment.year.empty=Mae’n rhaid i’r dyddiad sefydlu gynnwys diwrnod a blwyddyn
 date-of-establishment.month-date-of-establishment.year.empty=Mae’n rhaid i’r dyddiad sefydlu gynnwys mis a blwyddyn
+when-eori-issued.month.empty=Nodwch y mis a’r flwyddyn y cyhoeddwyd y rhif EORI hwn
+when-eori-issued.year.empty=Nodwch y mis a’r flwyddyn y cyhoeddwyd y rhif EORI hwn
 date-invalid-year-too-short=Mae’n rhaid i’r flwyddyn gynnwys 4 rhif
 date-of-birth.day.empty=Mae’n rhaid i’r dyddiad geni gynnwys diwrnod
 date-of-birth.month.empty=Mae’n rhaid i’r dyddiad geni gynnwys mis
@@ -1368,6 +1375,24 @@ contact-address.line-4=Rhanbarth neu dalaith (dewisol)
 contact-address.postcode-optional=Cod post (dewisol)
 contact-address.country=Gwlad
 
+#Eu Eori Registered Address (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.title=What is your organisation''s registered address? (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.heading=What is your organisation''s registered address? (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.hint=Enter the address you used when you applied for an EORI number. (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.line-1=Street and number (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.line-3=Town or city (SWAITING WELSH TRANSLATION)
+eu.eori.registered.address.postcode-optional=Postal code (optional) (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.country=Country (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.line-1.error.empty=Nodwch stryd a rhif
+eu.eori.registered.address.line-1.error.too-long=Mae’n rhaid i’r stryd a rhif gynnwys 70 o gymeriadau neu lai
+eu.eori.registered.address.line-1.error.invalid-chars=Mae’n rhaid i’r stryd a rhif gynnwys y llythrennau a i z, rhifau, collnodau, atalnodau llawn, ampersandau, cysylltnodau a bylchau yn unig
+eu.eori.registered.address.line-3.error.empty=Nodwch dref neu ddinas
+eu.eori.registered.address.line-3.error.too-long=Mae’n rhaid i’r dref neu’r ddinas fod yn 35 o gymeriadau neu lai
+eu.eori.registered.address.line-3.error.invalid-chars=Mae’n rhaid i’r dref neu’r ddinas gynnwys y llythrennau a i z, rhifau, collnodau, atalnodau llawn, ampersandau, cysylltnodau a bylchau yn unig
+eu.eori.registered.address.postcode.error.too-long=Mae’n rhaid i’r cod post fod yn 35 o gymeriadau neu lai
+eu.eori.registered.address.postcode.error.invalid-chars=Mae’n rhaid i’r cod post gynnwys y llythrennau a i z, rhifau, collnodau, atalnodau llawn, ampersandau, cysylltnodau a bylchau yn unig
+eu.eori.registered.address.country.error.empty=Nodwch wlad
+
 confirm-contact-details.page.title=Ai dyma’ch cyfeiriad cyswllt?
 confirm-contact-details.page.heading=Ai dyma’ch cyfeiriad cyswllt?
 confirm-contact-address.address.hint=Dyma’r cyfeiriad y byddwn yn ei ddefnyddio i gysylltu â chi ynglŷn â’ch cais
@@ -1430,3 +1455,14 @@ cds.subscription.first-2-letters-eori.radio.hint.text = An EORI number is 2 lett
 cds.subscription.first-2-letters-eori.detail.para1 = You need an EORI number to use this online service.
 cds.subscription.first-2-letters-eori.detail.para2 = If your organisation is based in UK, you should <a href="https://www.tax.service.gov.uk/customs-registration-services/cds/register" class="govuk-link" target="_blank" rel="noopener noreferrer">apply for both a subscription and an EORI number starting with GB</a>.
 cds.subscription.first-2-letters-eori.detail.para3 = If your organisation is based in a country in the EU, you should apply for an EORI number in that country.
+
+#What is your EORI EU
+ecc.subscription.enter-eu-eori-number.page.title=Beth yw’ch rhif EORI?
+ecc.subscription.enter-eu-eori-number.heading=Beth yw’ch rhif EORI?
+ecc.subscription.enter-eu-eori-number.hint=Mae’ch rhif EORI yn 2 lythyren ac yna hyd at 15 cymeriad, fel FR12345678901, ESX1234567X neu NL12345678.
+
+ecc.eu-eori-error.isEmpty=Nodwch eich rhif EORI
+ecc.eu-eori-error.not-gb-xi=Ni ddylai rhif EORI ddechrau gyda GB neu XI
+ecc.eu-eori-error.wrong-length=Mae’n rhaid i’r rhif EORI fod rhwng 3 a 17 cymeriad
+ecc.eu-eori-error.invalid-characters=Mae’n rhaid i’r rif EORI gynnwys y llythrennau a i z a’r rhifau yn unig
+ecc.eu-eori-error.no-two-letter-start=Nodwch rif EORI yn y fformat cywir

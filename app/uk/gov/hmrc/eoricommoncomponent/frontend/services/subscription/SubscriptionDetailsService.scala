@@ -18,13 +18,14 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressViewModel,
   CompanyRegisteredCountry,
-  ContactAddressModel
+  ContactAddressModel,
+  EuEoriRegisteredAddressModel
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, SessionCache}
@@ -76,6 +77,14 @@ class SubscriptionDetailsService @Inject() (
     def noneForEmptyPostcode(a: ContactAddressModel) = a.copy(postcode = a.postcode.filter(_.nonEmpty))
 
     saveSubscriptionDetails(sd => sd.copy(contactAddress = Some(noneForEmptyPostcode(address))))
+  }
+
+  def cacheEuEoriRegisteredAddressDetails(address: EuEoriRegisteredAddressModel)(implicit
+    request: Request[_]
+  ): Future[Unit] = {
+    def noneForEmptyPostcode(a: EuEoriRegisteredAddressModel) = a.copy(postcode = a.postcode.filter(_.nonEmpty))
+
+    saveSubscriptionDetails(sd => sd.copy(euEoriRegisteredAddress = Some(noneForEmptyPostcode(address))))
   }
 
   def cacheNameIdDetails(
