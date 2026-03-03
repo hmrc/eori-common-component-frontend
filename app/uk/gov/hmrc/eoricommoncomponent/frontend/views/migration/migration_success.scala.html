@@ -18,10 +18,9 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.DateFormatter
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 
 @this(layout_di: layout, feedback_di: helpers.feedback, dateFormatter: DateFormatter, govukPanel : GovukPanel )
-@(processedDate: String, subscriptionTo: String, service: Service, isEuEoriEnabled: Boolean, first2LettersEori: Option[EoriRegion])(implicit messages: Messages, request: Request[_])
+@(processedDate: String, subscriptionTo: String, service: Service, isEuEoriEnabled: Boolean)(implicit messages: Messages, request: Request[_])
 
 @confirmationHtml = {
         <strong><span class="govuk-!-font-size-27" id="active-from">@messages("subscription.subscription-results.active-from") @dateFormatter.format(processedDate)</span></strong>
@@ -37,7 +36,7 @@
             <a id="download-eori" class="govuk-link" href="@{s"/customs-enrolment-services/${service.code}/subscribe/download/text"}">@messages("cds.reg.existing.outcomes.success.download-eori-textfile")</a>
         </p>
 
-        @if(!isEuEoriEnabled || first2LettersEori == EoriRegion.GB) {
+        @if(!isEuEoriEnabled) {
         <div id='additional-information'>
             <h2 class="govuk-heading-m">@messages("cds.subscription.outcomes.steps.next")</h2>
             <p  class="govuk-body">@messages("cds.subscription.outcomes.success.will-send-email")</p>

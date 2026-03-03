@@ -20,7 +20,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
 import util.ViewSpec
@@ -56,9 +55,9 @@ class MigrationSuccessSpec extends ViewSpec {
   }
 
   def docGB(service: Service = atarService): Document =
-    Jsoup.parse(contentAsString(view("", "", service, false, Some(EoriRegion.GB))))
+    Jsoup.parse(contentAsString(view("", "", service, false)))
 
   def docCdsEU(service: Service = cdsService): Document =
-    Jsoup.parse(contentAsString(view("", "", service, true, Some(EoriRegion.EU))))
+    Jsoup.parse(contentAsString(view("", "", service, true)))
 
 }

@@ -23,6 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, En
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.*
@@ -59,8 +60,9 @@ class Sub02Controller @Inject() (
 
   def subscriptionTo(service: Service) = s"cds.subscription.outcomes.steps.next.new.${service.code}"
 
-  def isEuEoriEnabled(service: Service): Boolean =
-    if (service.code == Service.cds.code && appConfig.euEoriEnabled) true else false
+  def isEuEoriEnabled(service: Service, first2LettersEori: Option[EoriRegion]): Boolean =
+    if (service.code == Service.cds.code && appConfig.euEoriEnabled && first2LettersEori == EoriRegion.EU) true
+    else false
 
   private def renderPageWithName(service: Service)(implicit request: Request[_]): Future[Result] =
     for {
@@ -71,8 +73,7 @@ class Sub02Controller @Inject() (
       sub02Outcome.processedDate,
       subscriptionTo(service),
       service,
-      isEuEoriEnabled(service),
-      first2LettersEori
+      isEuEoriEnabled(service, first2LettersEori)
     ))
 
   private def renderPageWithNameRow(service: Service)(implicit request: Request[_]): Future[Result] =
@@ -84,8 +85,7 @@ class Sub02Controller @Inject() (
       sub02Outcome.processedDate,
       subscriptionTo(service),
       service,
-      isEuEoriEnabled(service),
-      first2LettersEori
+      isEuEoriEnabled(service, first2LettersEori)
     ))
 
 }
