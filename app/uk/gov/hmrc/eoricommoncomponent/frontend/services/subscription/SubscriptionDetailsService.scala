@@ -90,6 +90,7 @@ class SubscriptionDetailsService @Inject() (
 
     saveSubscriptionDetails(sd => sd.copy(euEoriRegisteredAddress = Some(noneForEmptyPostcode(address))))
   }
+
   def clearContactAddress()(implicit request: Request[_]): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(contactAddress = None))
 
