@@ -63,41 +63,12 @@ object SubscriptionFlows {
     )
   )
 
-  // Will be implemented fully in the DDCYLS-8136 ticket just here for testing the Add Contact Address page for now
-  private val rowIndividualFlowConfigEUCR = createFlowConfig(
-    List(
-      NameDobDetailsSubscriptionFlowPage,
-      UtrSubscriptionFlowPage,
-      NinoSubscriptionFlowPage,
-      AddressDetailsSubscriptionFlowPage,
-      ContactDetailsSubscriptionFlowPageMigrate,
-      AddContactAddressSubscriptionFlowPage,
-      ContactAddressSubscriptionFlowPage,
-      ConfirmContactAddressSubscriptionFlowPage
-    )
-  )
-
-  private val rowOrganisationFlowConfigEUCR = createFlowConfig(
-    List(
-      NameDetailsSubscriptionFlowPage,
-      UtrSubscriptionFlowPage,
-      AddressDetailsSubscriptionFlowPage,
-      RowDateOfEstablishmentSubscriptionFlowPage,
-      ContactDetailsSubscriptionFlowPageMigrate,
-      AddContactAddressSubscriptionFlowPage,
-      ContactAddressSubscriptionFlowPage,
-      ConfirmContactAddressSubscriptionFlowPage
-    )
-  )
-
   val flows: Map[SubscriptionFlow, SubscriptionFlowConfig] = Map(
-    OrganisationFlow        -> corporateRegExistingEoriFlowConfig,
-    SoleTraderFlow          -> soleTraderRegExistingEoriFlowConfig,
-    IndividualFlow          -> soleTraderRegExistingEoriFlowConfig,
-    RowOrganisationFlow     -> rowOrganisationFlowConfig,
-    RowIndividualFlow       -> rowIndividualFlowConfig,
-    RowOrganisationFlowEUCR -> rowOrganisationFlowConfigEUCR,
-    RowIndividualFlowEUCR   -> rowIndividualFlowConfigEUCR
+    OrganisationFlow    -> corporateRegExistingEoriFlowConfig,
+    SoleTraderFlow      -> soleTraderRegExistingEoriFlowConfig,
+    IndividualFlow      -> soleTraderRegExistingEoriFlowConfig,
+    RowOrganisationFlow -> rowOrganisationFlowConfig,
+    RowIndividualFlow   -> rowIndividualFlowConfig
   )
 
   private def createFlowConfig(flowStepList: List[SubscriptionPage]): SubscriptionFlowConfig =
@@ -123,14 +94,8 @@ case object SoleTraderFlow extends SubscriptionFlow("migration-eori-sole-trader"
 case object RowOrganisationFlow
     extends SubscriptionFlow("migration-eori-row-utrNino-enabled-Organisation", isIndividualFlow = false)
 
-case object RowOrganisationFlowEUCR
-    extends SubscriptionFlow("migration-eori-row-utrNino-enabled-eucr-Organisation", isIndividualFlow = false)
-
 case object RowIndividualFlow
     extends SubscriptionFlow("migration-eori-row-utrNino-enabled-Individual", isIndividualFlow = true)
-
-case object RowIndividualFlowEUCR
-    extends SubscriptionFlow("migration-eori-row-utrNino-enabled-eucr-Individual", isIndividualFlow = true)
 
 object SubscriptionFlow extends Logging {
 

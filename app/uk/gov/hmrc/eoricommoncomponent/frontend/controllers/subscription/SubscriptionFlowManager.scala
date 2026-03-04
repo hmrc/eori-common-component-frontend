@@ -22,7 +22,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   DataUnavailableException,
   RequestSessionData,
@@ -58,16 +57,12 @@ case class SubscriptionFlowConfig(
 @Singleton
 class SubscriptionFlowManager @Inject() (
   requestSessionData: RequestSessionData,
-  cdsFrontendDataCache: SessionCache,
-  appConfig: AppConfig
+  cdsFrontendDataCache: SessionCache
 )(
   implicit ec: ExecutionContext
 ) {
 
   private val logger = Logger(this.getClass)
-
-  private def euEoriEnabled(service: Service): Boolean =
-    appConfig.euEoriEnabled && service.code == Service.cds.code
 
   def currentSubscriptionFlow(implicit request: Request[AnyContent]): SubscriptionFlow =
     requestSessionData.userSubscriptionFlow
@@ -82,7 +77,7 @@ class SubscriptionFlowManager @Inject() (
   )(implicit request: Request[AnyContent]): Future[(SubscriptionPage, Session)] = {
     val maybePreviousPageUrl = previousPage.map(page => page.url(service))
     cdsFrontendDataCache.registrationDetails map { registrationDetails =>
-      val flow       = selectFlow(registrationDetails, cdsOrganisationType, service)
+      val flow       = selectFlow(registrationDetails, cdsOrganisationType)
       val flowConfig = SubscriptionFlows.flows(flow)
 
       logger.info(s"select Subscription flow: ${flow.name}")
@@ -98,17 +93,13 @@ class SubscriptionFlowManager @Inject() (
 
   private def selectFlow(
     registrationDetails: RegistrationDetails,
-    orgType: CdsOrganisationType,
-    service: Service
+    orgType: CdsOrganisationType
   )(implicit request: Request[AnyContent]): SubscriptionFlow = {
-    val isRow  = UserLocation.isRow(requestSessionData)
-    val isEUCr = euEoriEnabled(service)
-
-    val subscribePrefix = (isRow, registrationDetails.customsId, isEUCr) match {
-      case (true, None, true)  => "migration-eori-row-utrNino-enabled-eucr-"
-      case (true, None, false) => "migration-eori-row-utrNino-enabled-"
-      case (true, _, _)        => "migration-eori-row-"
-      case _                   => "migration-eori-"
+    val isRow = UserLocation.isRow(requestSessionData)
+    val subscribePrefix = (isRow, registrationDetails.customsId) match {
+      case (true, None) => "migration-eori-row-utrNino-enabled-"
+      case (true, _)    => "migration-eori-row-"
+      case _            => "migration-eori-"
     }
 
     val selectedFlow: SubscriptionFlow =

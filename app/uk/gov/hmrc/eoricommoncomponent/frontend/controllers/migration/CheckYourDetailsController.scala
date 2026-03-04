@@ -71,8 +71,8 @@ class CheckYourDetailsController @Inject() (
 
   private def isThirdCountrySubscriptionFlow(implicit request: Request[AnyContent]): Boolean =
     requestSessionData.userSubscriptionFlow match {
-      case RowOrganisationFlow | RowIndividualFlow | RowOrganisationFlowEUCR | RowIndividualFlowEUCR => true
-      case _                                                                                         => false
+      case RowOrganisationFlow | RowIndividualFlow => true
+      case _                                       => false
     }
 
 }
