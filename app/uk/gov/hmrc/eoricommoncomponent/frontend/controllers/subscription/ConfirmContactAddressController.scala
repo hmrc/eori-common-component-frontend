@@ -75,7 +75,7 @@ class ConfirmContactAddressController @Inject() (
         Future.successful(
           Redirect(
             subscriptionFlowManager
-              .stepInformation(ConfirmContactAddressSubscriptionFlowPage, service)
+              .stepInformation(ConfirmContactAddressSubscriptionFlowPage)
               .nextPage
               .url(service)
           )

@@ -77,7 +77,7 @@ class AddContactAddressControllerSpec extends ControllerSpec with BeforeAndAfter
     when(mockSubscriptionDetailsService.cacheAddContactAddressDetails(any())(any()))
       .thenReturn(Future.successful(()))
 
-    when(mockSubscriptionFlowManager.stepInformation(any(), any())(any()))
+    when(mockSubscriptionFlowManager.stepInformation(any())(any()))
       .thenReturn(SubscriptionFlowInfo(1, 2, ContactAddressSubscriptionFlowPage))
 
     when(mockSubscriptionDetailsService.clearContactAddress()(any()))

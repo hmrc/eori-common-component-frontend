@@ -137,7 +137,7 @@ class AddressLookupResultsController @Inject() (
                     else
                       Redirect(
                         subscriptionFlowManager
-                          .stepInformation(AddressDetailsSubscriptionFlowPage, service)
+                          .stepInformation(AddressDetailsSubscriptionFlowPage)
                           .nextPage
                           .url(service)
                       )

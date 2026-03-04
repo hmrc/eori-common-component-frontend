@@ -92,7 +92,7 @@ class HaveNinoSubscriptionController @Inject() (
           if (requestSessionData.userSubscriptionFlow == RowIndividualFlow)
             Redirect(CompanyRegisteredCountryController.displayPage(service))
           else
-            Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage, service).nextPage.url(service))
+            Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))
         )
       case _ => throw new IllegalStateException("No Data from the form")
     }

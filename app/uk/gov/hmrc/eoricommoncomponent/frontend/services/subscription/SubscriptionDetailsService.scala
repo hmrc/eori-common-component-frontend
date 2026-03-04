@@ -35,7 +35,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddContactAddressForm
 
 @Singleton
 class SubscriptionDetailsService @Inject() (

@@ -204,7 +204,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
   }
 
   private def mockSubscriptionFlow(url: String) = {
-    when(mockSubscriptionFlowManager.stepInformation(any(), any[Service])(any[Request[AnyContent]]))
+    when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
       .thenReturn(mockSubscriptionFlowInfo)
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
     when(mockSubscriptionPage.url(any(), any())).thenReturn(url)

@@ -93,7 +93,7 @@ class WhenEoriIssuedController @Inject() (
               Redirect(DetermineReviewPageController.determineRoute(service))
             else {
               val page = subscriptionFlowManager
-                .stepInformation(getSubscriptionPage(UserLocation.isRow(requestSessionData)), service)
+                .stepInformation(getSubscriptionPage(UserLocation.isRow(requestSessionData)))
                 .nextPage
               Redirect(page.url(service))
             }

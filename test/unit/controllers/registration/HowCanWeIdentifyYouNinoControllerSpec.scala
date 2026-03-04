@@ -80,8 +80,7 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
 
     when(
       mockSubscriptionFlowManager.stepInformation(
-        ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage),
-        any[Service]
+        ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage)
       )(
         any[Request[AnyContent]]
       )

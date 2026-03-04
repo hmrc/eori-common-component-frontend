@@ -114,7 +114,7 @@ class HowCanWeIdentifyYouNinoController @Inject() (
           Redirect(AddressLookupPostcodeController.displayPage(service))
         else
           Redirect(
-            subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage, service).nextPage.url(
+            subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage).nextPage.url(
               service
             )
           )

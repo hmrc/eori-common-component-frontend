@@ -83,8 +83,7 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
 
     when(
       mockSubscriptionFlowManager.stepInformation(
-        ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage),
-        any[Service]
+        ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage)
       )(
         any[Request[AnyContent]]
       )

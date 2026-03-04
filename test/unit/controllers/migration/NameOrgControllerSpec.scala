@@ -173,7 +173,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     )
 
   private def mockSubscriptionFlowNextPage() = {
-    when(mockSubscriptionFlowManager.stepInformation(any(), any[Service])(any[Request[AnyContent]]))
+    when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
       .thenReturn(mockSubscriptionFlowInfo)
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
     when(mockSubscriptionPage.url(atarService)).thenReturn(EnterYourBusinessAddress.url)

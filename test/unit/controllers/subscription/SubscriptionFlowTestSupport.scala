@@ -49,7 +49,7 @@ trait SubscriptionFlowTestSupport extends ControllerSpec with AuthActionMock {
 
   def setupMockSubscriptionFlowManager(currentPage: SubscriptionPage): Unit = {
     when(nextPage.url(any[Service], any[SubscribeJourney])).thenReturn(nextPageUrl)
-    when(mockSubscriptionFlowManager.stepInformation(meq(currentPage), any[Service])(any[Request[AnyContent]]))
+    when(mockSubscriptionFlowManager.stepInformation(meq(currentPage))(any[Request[AnyContent]]))
       .thenReturn(subscriptionFlowStepInfo)
   }
 

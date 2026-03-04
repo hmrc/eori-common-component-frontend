@@ -46,10 +46,7 @@ class AddContactAddressController @Inject() (
   def form(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       sessionCache.getAddContactAddress.map { addContactAddress =>
-        val prepopulatedForm = addContactAddress
-          .map(yesNo => confirmAddContactAddressYesNoAnswerForm().fill(yesNo))
-          .getOrElse(confirmAddContactAddressYesNoAnswerForm())
-        Ok(addContactAddressView(prepopulatedForm, addContactAddress, isInReviewMode, service))
+        Ok(addContactAddressView(confirmAddContactAddressYesNoAnswerForm(), addContactAddress, isInReviewMode, service))
       }
     }
 
@@ -63,7 +60,7 @@ class AddContactAddressController @Inject() (
             if (addContactAddress.isYes) {
               Future.successful(Redirect(
                 subscriptionFlowManager
-                  .stepInformation(AddContactAddressSubscriptionFlowPage, service)
+                  .stepInformation(AddContactAddressSubscriptionFlowPage)
                   .nextPage
                   .url(service)
               ))

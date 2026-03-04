@@ -39,45 +39,65 @@ object SubscriptionFlows {
     )
   )
 
-  private def rowIndividualFlowConfig(featureflagOn: Boolean) = createFlowConfig(
+  private val rowIndividualFlowConfig = createFlowConfig(
     List(
-      Some(NameDobDetailsSubscriptionFlowPage),
-      Some(UtrSubscriptionFlowPage),
-      Some(NinoSubscriptionFlowPage),
-      Some(AddressDetailsSubscriptionFlowPage),
-      Some(ContactDetailsSubscriptionFlowPageMigrate),
-      Option.when(featureflagOn)(AddContactAddressSubscriptionFlowPage),
-      Some(ContactAddressSubscriptionFlowPage),
-      Some(ConfirmContactAddressSubscriptionFlowPage)
-    ).flatten
+      NameDobDetailsSubscriptionFlowPage,
+      UtrSubscriptionFlowPage,
+      NinoSubscriptionFlowPage,
+      AddressDetailsSubscriptionFlowPage,
+      ContactDetailsSubscriptionFlowPageMigrate,
+      ContactAddressSubscriptionFlowPage,
+      ConfirmContactAddressSubscriptionFlowPage
+    )
   )
 
-  private def rowOrganisationFlowConfig(featureflagOn: Boolean) = createFlowConfig(
+  private val rowOrganisationFlowConfig = createFlowConfig(
     List(
-      Some(NameDetailsSubscriptionFlowPage),
-      Some(UtrSubscriptionFlowPage),
-      Some(AddressDetailsSubscriptionFlowPage),
-      Some(RowDateOfEstablishmentSubscriptionFlowPage),
-      Some(ContactDetailsSubscriptionFlowPageMigrate),
-      Option.when(featureflagOn)(AddContactAddressSubscriptionFlowPage),
-      Some(ContactAddressSubscriptionFlowPage),
-      Some(ConfirmContactAddressSubscriptionFlowPage)
-    ).flatten
+      NameDetailsSubscriptionFlowPage,
+      UtrSubscriptionFlowPage,
+      AddressDetailsSubscriptionFlowPage,
+      RowDateOfEstablishmentSubscriptionFlowPage,
+      ContactDetailsSubscriptionFlowPageMigrate,
+      ContactAddressSubscriptionFlowPage,
+      ConfirmContactAddressSubscriptionFlowPage
+    )
   )
 
-  def flowConfig(flow: SubscriptionFlow, featureflagOn: Boolean = false): SubscriptionFlowConfig =
-    flow match {
-      case RowOrganisationFlow => rowOrganisationFlowConfig(featureflagOn)
-      case RowIndividualFlow   => rowIndividualFlowConfig(featureflagOn)
-      case otherFlows          => flows(otherFlows)
-    }
+  // Will be implemented fully in the DDCYLS-8136 ticket just here for testing the Add Contact Address page for now
+  private val rowIndividualFlowConfigEUCR = createFlowConfig(
+    List(
+      NameDobDetailsSubscriptionFlowPage,
+      UtrSubscriptionFlowPage,
+      NinoSubscriptionFlowPage,
+      AddressDetailsSubscriptionFlowPage,
+      ContactDetailsSubscriptionFlowPageMigrate,
+      AddContactAddressSubscriptionFlowPage,
+      ContactAddressSubscriptionFlowPage,
+      ConfirmContactAddressSubscriptionFlowPage
+    )
+  )
+
+  private val rowOrganisationFlowConfigEUCR = createFlowConfig(
+    List(
+      NameDetailsSubscriptionFlowPage,
+      UtrSubscriptionFlowPage,
+      AddressDetailsSubscriptionFlowPage,
+      RowDateOfEstablishmentSubscriptionFlowPage,
+      ContactDetailsSubscriptionFlowPageMigrate,
+      AddContactAddressSubscriptionFlowPage,
+      ContactAddressSubscriptionFlowPage,
+      ConfirmContactAddressSubscriptionFlowPage
+    )
+  )
 
   val flows: Map[SubscriptionFlow, SubscriptionFlowConfig] = Map(
-    OrganisationFlow    -> corporateRegExistingEoriFlowConfig,
-    SoleTraderFlow      -> soleTraderRegExistingEoriFlowConfig,
-    IndividualFlow      -> soleTraderRegExistingEoriFlowConfig,
-    RowOrganisationFlow -> rowOrganisationFlowConfig(false),
-    RowIndividualFlow   -> rowIndividualFlowConfig(false)
+    OrganisationFlow        -> corporateRegExistingEoriFlowConfig,
+    SoleTraderFlow          -> soleTraderRegExistingEoriFlowConfig,
+    IndividualFlow          -> soleTraderRegExistingEoriFlowConfig,
+    RowOrganisationFlow     -> rowOrganisationFlowConfig,
+    RowIndividualFlow       -> rowIndividualFlowConfig,
+    RowOrganisationFlowEUCR -> rowOrganisationFlowConfigEUCR,
+    RowIndividualFlowEUCR   -> rowIndividualFlowConfigEUCR
   )
 
   private def createFlowConfig(flowStepList: List[SubscriptionPage]): SubscriptionFlowConfig =
@@ -103,8 +123,14 @@ case object SoleTraderFlow extends SubscriptionFlow("migration-eori-sole-trader"
 case object RowOrganisationFlow
     extends SubscriptionFlow("migration-eori-row-utrNino-enabled-Organisation", isIndividualFlow = false)
 
+case object RowOrganisationFlowEUCR
+    extends SubscriptionFlow("migration-eori-row-utrNino-enabled-eucr-Organisation", isIndividualFlow = false)
+
 case object RowIndividualFlow
     extends SubscriptionFlow("migration-eori-row-utrNino-enabled-Individual", isIndividualFlow = true)
+
+case object RowIndividualFlowEUCR
+    extends SubscriptionFlow("migration-eori-row-utrNino-enabled-eucr-Individual", isIndividualFlow = true)
 
 object SubscriptionFlow extends Logging {
 

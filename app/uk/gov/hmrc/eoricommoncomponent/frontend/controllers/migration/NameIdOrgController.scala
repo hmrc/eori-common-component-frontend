@@ -148,7 +148,7 @@ class NameIDOrgController @Inject() (
         else
           Redirect(
             subscriptionFlowManager
-              .stepInformation(NameUtrDetailsSubscriptionFlowPage, service)
+              .stepInformation(NameUtrDetailsSubscriptionFlowPage)
               .nextPage
               .url(service)
           )
