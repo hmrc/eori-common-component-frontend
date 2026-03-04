@@ -18,12 +18,13 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
 import play.api.Logging
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressViewModel,
   CompanyRegisteredCountry,
-  ContactAddressModel
+  ContactAddressModel,
+  EuEoriRegisteredAddressModel
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
@@ -44,7 +45,8 @@ case class SubscriptionDetails(
   customsId: Option[CustomsId] = None,
   formData: FormData = FormData(),
   registeredCompany: Option[CompanyRegisteredCountry] = None,
-  contactAddress: Option[ContactAddressModel] = None
+  contactAddress: Option[ContactAddressModel] = None,
+  euEoriRegisteredAddress: Option[EuEoriRegisteredAddressModel] = None
 ) extends Logging {
 
   def name: String =

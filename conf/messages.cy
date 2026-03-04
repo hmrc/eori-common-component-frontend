@@ -1375,6 +1375,24 @@ contact-address.line-4=Rhanbarth neu dalaith (dewisol)
 contact-address.postcode-optional=Cod post (dewisol)
 contact-address.country=Gwlad
 
+#Eu Eori Registered Address (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.title=What is your organisation''s registered address? (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.heading=What is your organisation''s registered address? (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.hint=Enter the address you used when you applied for an EORI number. (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.line-1=Street and number (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.line-3=Town or city (SWAITING WELSH TRANSLATION)
+eu.eori.registered.address.postcode-optional=Postal code (optional) (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.country=Country (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.line-1.error.empty=Nodwch stryd a rhif
+eu.eori.registered.address.line-1.error.too-long=Mae’n rhaid i’r stryd a rhif gynnwys 70 o gymeriadau neu lai
+eu.eori.registered.address.line-1.error.invalid-chars=Mae’n rhaid i’r stryd a rhif gynnwys y llythrennau a i z, rhifau, collnodau, atalnodau llawn, ampersandau, cysylltnodau a bylchau yn unig
+eu.eori.registered.address.line-3.error.empty=Nodwch dref neu ddinas
+eu.eori.registered.address.line-3.error.too-long=Mae’n rhaid i’r dref neu’r ddinas fod yn 35 o gymeriadau neu lai
+eu.eori.registered.address.line-3.error.invalid-chars=Mae’n rhaid i’r dref neu’r ddinas gynnwys y llythrennau a i z, rhifau, collnodau, atalnodau llawn, ampersandau, cysylltnodau a bylchau yn unig
+eu.eori.registered.address.postcode.error.too-long=Mae’n rhaid i’r cod post fod yn 35 o gymeriadau neu lai
+eu.eori.registered.address.postcode.error.invalid-chars=Mae’n rhaid i’r cod post gynnwys y llythrennau a i z, rhifau, collnodau, atalnodau llawn, ampersandau, cysylltnodau a bylchau yn unig
+eu.eori.registered.address.country.error.empty=Nodwch wlad
+
 confirm-contact-details.page.title=Ai dyma’ch cyfeiriad cyswllt?
 confirm-contact-details.page.heading=Ai dyma’ch cyfeiriad cyswllt?
 confirm-contact-address.address.hint=Dyma’r cyfeiriad y byddwn yn ei ddefnyddio i gysylltu â chi ynglŷn â’ch cais
@@ -1453,3 +1471,12 @@ ecc.eu-eori-error.no-two-letter-start=Nodwch rif EORI yn y fformat cywir
 cds.subscription.eu-eori-outcomes.success.steps.next=Yr hyn sy’n digwydd nesaf
 cds.subscription.eu-eori-outcomes.success.process-application=Byddwn yn prosesu’ch cais. Gall hyn gymryd hyd at 2 awr.
 cds.subscription.eu-eori-outcomes.success.will-send-email=Byddwn yn anfon e-bost atoch pan fydd y tanysgrifiad yn barod i’w ddefnyddio. Yna, gallwch ddechrau defnyddio’r Gwasanaeth Datganiadau Tollau.
+
+ecc.subscription.we-need-to-make-checks.heading = Mae’n rhaid i ni wneud rhagor o wiriadau ar eich cais
+ecc.subscription.we-need-to-make-checks.p1 =
+ecc.subscription.we-need-to-make-checks.h2 = Yr hyn sy’n digwydd nesaf
+ecc.subscription.we-need-to-make-checks.p2a =
+ecc.subscription.we-need-to-make-checks.p2b =
+ecc.subscription.we-need-to-make-checks.h3 = Os gwrthodir eich cais
+ecc.subscription.we-need-to-make-checks.p3a = Gallwch wneud cais eto.
+ecc.subscription.we-need-to-make-checks.p3b =

@@ -84,6 +84,12 @@ class SubscriptionFlowSpec extends UnitSpec with TestData {
       ) shouldBe "/customs-enrolment-services/atar/subscribe/contact-address"
     }
 
+    "be correct for EuEoriRegisteredAddressSubscriptionFlowPage" in {
+      EuEoriRegisteredAddressSubscriptionFlowPage.url(
+        cdsService
+      ) shouldBe "/customs-enrolment-services/cds/subscribe/eu-eori-registered-address"
+    }
+
     "be correct for UtrSubscriptionFlowPage" in {
       UtrSubscriptionFlowPage.url(atarService) shouldBe "/customs-enrolment-services/atar/subscribe/row-utr"
     }
