@@ -1466,3 +1466,17 @@ ecc.eu-eori-error.not-gb-xi=Ni ddylai rhif EORI ddechrau gyda GB neu XI
 ecc.eu-eori-error.wrong-length=Mae’n rhaid i’r rhif EORI fod rhwng 3 a 17 cymeriad
 ecc.eu-eori-error.invalid-characters=Mae’n rhaid i’r rif EORI gynnwys y llythrennau a i z a’r rhifau yn unig
 ecc.eu-eori-error.no-two-letter-start=Nodwch rif EORI yn y fformat cywir
+
+#EU EORI outcomes
+cds.subscription.eu-eori-outcomes.success.steps.next=Yr hyn sy’n digwydd nesaf
+cds.subscription.eu-eori-outcomes.success.process-application=Byddwn yn prosesu’ch cais. Gall hyn gymryd hyd at 2 awr.
+cds.subscription.eu-eori-outcomes.success.will-send-email=Byddwn yn anfon e-bost atoch pan fydd y tanysgrifiad yn barod i’w ddefnyddio. Yna, gallwch ddechrau defnyddio’r Gwasanaeth Datganiadau Tollau.
+
+ecc.subscription.we-need-to-make-checks.heading =Mae’n rhaid i ni wneud rhagor o wiriadau ar eich cais
+ecc.subscription.we-need-to-make-checks.p1 =Gall hyn gymryd hyd at 5 diwrnod gwaith.
+ecc.subscription.we-need-to-make-checks.h2 =Yr hyn sy’n digwydd nesaf
+ecc.subscription.we-need-to-make-checks.p2a =Byddwn yn anfon e-bost atoch yn {0} ar ôl i ni gwblhau’r gwiriadau.
+ecc.subscription.we-need-to-make-checks.p2b =Bydd yr e-bost yn dweud wrthych a yw’ch cais wedi bod yn llwyddiannus.
+ecc.subscription.we-need-to-make-checks.h3 =Os gwrthodir eich cais
+ecc.subscription.we-need-to-make-checks.p3a =Gallwch wneud cais eto.
+ecc.subscription.we-need-to-make-checks.p3b =Os oes angen help arnoch wrth gwblhau’ch cais, bydd angen i chi gysylltu â’r awdurdod gwnaeth gyhoeddi’ch rhif EORI.

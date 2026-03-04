@@ -17,20 +17,22 @@
 package unit.controllers.subscription
 
 import common.support.testdata.TestData
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result, Session}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion.{EU, GB}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
 import util.ControllerSpec
-import util.builders.AuthBuilder._
+import util.builders.AuthBuilder.*
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import java.time.LocalDateTime
@@ -44,6 +46,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSessionCache               = mock[SessionCache]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
+  private val mockAppConfig                  = mock[AppConfig]
 
   private val migrationSuccessView = instanceOf[migration_success]
 
@@ -53,7 +56,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
     mockSessionCache,
     mockSubscriptionDetailsService,
     mcc,
-    migrationSuccessView
+    migrationSuccessView,
+    mockAppConfig
   )(global)
 
   val eoriNumberResponse: String                = "EORI-Number"
@@ -98,6 +102,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       )
       when(mockSessionCache.journeyCompleted(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
+      when(mockSessionCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(GB)))
       verify(mockSessionCache, never()).registerWithEoriAndIdResponse(any[Request[AnyContent]])
       invokeMigrationEnd { result =>
         assertCleanedSession(result)
@@ -117,6 +122,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       )
       when(mockSessionCache.journeyCompleted(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
+      when(mockSessionCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(EU)))
       invokeMigrationEnd { result =>
         assertCleanedSession(result)
         status(result) shouldBe OK
@@ -133,6 +139,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       )
       when(mockSessionCache.journeyCompleted(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
+      when(mockSessionCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(EU)))
       invokeMigrationEnd { result =>
         assertCleanedSession(result)
         status(result) shouldBe OK

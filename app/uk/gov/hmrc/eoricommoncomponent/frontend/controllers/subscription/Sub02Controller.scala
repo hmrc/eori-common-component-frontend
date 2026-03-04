@@ -16,15 +16,17 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
-import play.api.mvc._
+import play.api.mvc.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
 
 import javax.inject.{Inject, Singleton}
@@ -37,7 +39,8 @@ class Sub02Controller @Inject() (
   sessionCache: SessionCache,
   subscriptionDetailsService: SubscriptionDetailsService,
   mcc: MessagesControllerComponents,
-  migrationSuccessView: migration_success
+  migrationSuccessView: migration_success,
+  appConfig: AppConfig
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
 
@@ -57,16 +60,31 @@ class Sub02Controller @Inject() (
 
   def subscriptionTo(service: Service) = s"cds.subscription.outcomes.steps.next.new.${service.code}"
 
+  def isEuEoriEnabled(service: Service, first2LettersEori: Option[EoriRegion]): Boolean =
+    service.code == Service.cds.code && appConfig.euEoriEnabled && first2LettersEori == EoriRegion.EU
+
   private def renderPageWithName(service: Service)(implicit request: Request[_]): Future[Result] =
     for {
-      sub02Outcome <- sessionCache.sub02Outcome
-      _            <- sessionCache.journeyCompleted
-    } yield Ok(migrationSuccessView(sub02Outcome.processedDate, subscriptionTo(service), service))
+      sub02Outcome      <- sessionCache.sub02Outcome
+      first2LettersEori <- sessionCache.getFirst2LettersEori
+      _                 <- sessionCache.journeyCompleted
+    } yield Ok(migrationSuccessView(
+      sub02Outcome.processedDate,
+      subscriptionTo(service),
+      service,
+      isEuEoriEnabled(service, first2LettersEori)
+    ))
 
   private def renderPageWithNameRow(service: Service)(implicit request: Request[_]): Future[Result] =
     for {
-      sub02Outcome <- sessionCache.sub02Outcome
-      _            <- sessionCache.journeyCompleted
-    } yield Ok(migrationSuccessView(sub02Outcome.processedDate, subscriptionTo(service), service))
+      sub02Outcome      <- sessionCache.sub02Outcome
+      first2LettersEori <- sessionCache.getFirst2LettersEori
+      _                 <- sessionCache.journeyCompleted
+    } yield Ok(migrationSuccessView(
+      sub02Outcome.processedDate,
+      subscriptionTo(service),
+      service,
+      isEuEoriEnabled(service, first2LettersEori)
+    ))
 
 }
