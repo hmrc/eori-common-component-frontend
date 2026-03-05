@@ -1375,7 +1375,7 @@ contact-address.line-4=Rhanbarth neu dalaith (dewisol)
 contact-address.postcode-optional=Cod post (dewisol)
 contact-address.country=Gwlad
 
-#Eu Eori Registered Address (AWAITING WELSH TRANSLATION)
+#Eu Eori Registered Address
 eu.eori.registered.address.title=Beth yw cyfeiriad cofrestredig eich sefydliad?
 eu.eori.registered.address.heading.organisation=Beth yw cyfeiriad cofrestredig eich sefydliad?
 eu.eori.registered.address.heading.individual=Beth yw’ch cyfeiriad cofrestredig?
