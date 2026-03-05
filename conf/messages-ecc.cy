@@ -116,7 +116,7 @@ ecc.subscription.information.para1=Er mwyn eich tanysgrifio i’r gwasanaeth ar 
 
 ecc.subscription.information.para2.heading=Rhif EORI sy’n dechrau gyda GB
 ecc.subscription.information.para2=Os nad oes gennych un, gallwch {0}
-ecc.subscription.information.para2.CDS=You need to tell us: (WAITING FOR WELSH TRANSLATION)
+ecc.subscription.information.para2.CDS=Mae’n rhaid i chi roi gwybod i ni am y canlynol:
 ecc.subscription.information.para2.link=wneud cais am danysgrifiad a rhif EORI
 
 ecc.subscription.information.section.organisation.subheading=Os byddwch yn gwneud cais fel cwmni cyfyngedig, partneriaeth neu sefydliad arall
@@ -125,14 +125,14 @@ ecc.subscription.information.section.organisation.list.heading=I gadarnhau pwy y
 ecc.subscription.information.section.organisation.list.first=enw a’r cyfeiriad cofrestredig
 
 ecc.subscription.information.section.organisation.list.third=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth, os ydych yn talu Treth Gorfforaeth yn y DU
-ecc.subscription.information.section.organisation.list.first.CDS=your registered name and address (WAITING FOR WELSH TRANSLATION)
-ecc.subscription.information.section.organisation.list.second.CDS=your EORI number (WAITING FOR WELSH TRANSLATION)
-ecc.subscription.information.section.organisation.list.third.CDS=an email address we can use to contact you (WAITING FOR WELSH TRANSLATION)
+ecc.subscription.information.section.organisation.list.first.CDS=eich enw a’r cyfeiriad cofrestredig
+ecc.subscription.information.section.organisation.list.second.CDS=eich rhif EORI
+ecc.subscription.information.section.organisation.list.third.CDS=cyfeiriad e-bost y gallwn ei ddefnyddio i gysylltu â chi
 
-ecc.subscription.information.section.uk.CDS=If you are based in the UK, we will ask you for: (WAITING FOR WELSH TRANSLATION)
-ecc.subscription.information.section.uk.list.first.CDS=your Unique Taxpayer Reference (UTR), if you or your organisation are registered for Self Assessment or Corporation Tax (WAITING FOR WELSH TRANSLATION)
-ecc.subscription.information.section.uk.list.second.CDS= your National Insurance number, if you apply as a sole trader or individual (WAITING FOR WELSH TRANSLATION)
-ecc.subscription.information.section.non-uk.CDS=If you are based outside the UK, we may also ask you to tell us when your EORI number was issued. (WAITING FOR WELSH TRANSLATION)
+ecc.subscription.information.section.uk.CDS=Os ydych wedi’ch lleoli yn y DU, byddwn yn gofyn i chi am y canlynol:
+ecc.subscription.information.section.uk.list.first.CDS=eich Cyfeirnod Unigryw y Trethdalwr (UTR), os ydych chi neu’ch sefydliad wedi cofrestru ar gyfer Hunanasesiad neu Dreth Gorfforaeth
+ecc.subscription.information.section.uk.list.second.CDS=eich rhif Yswiriant Gwladol, os byddwch yn gwneud cais fel unig fasnachwr neu’n unigolyn
+ecc.subscription.information.section.non-uk.CDS=Os ydych wedi’ch lleoli y tu allan i’r DU, mae’n bosibl y byddwn hefyd yn gofyn i chi roi gwybod i ni pryd y cyhoeddwyd eich rhif EORI.
 
 ecc.subscription.information.section.organisation.utr.link=<a href="https://www.gov.uk/find-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">Dod o hyd i’ch UTR (yn agor tab newydd)</a>
 
@@ -145,7 +145,7 @@ ecc.subscription.information.only.once=Mae tanysgrifio yn golygu’r canlynol:
 ecc.subscription.information.only.once.bullet1=bydd yn rhaid i chi nodi rhywfaint o fanylion personol
 ecc.subscription.information.only.once.bullet2=bydd CThEF yn gwneud gwiriad diogelwch er mwyn gwirio’ch manylion
 ecc.subscription.information.only.once.para1 = Dim ond unwaith y mae angen i chi wneud hyn.
-ecc.subscription.information.only.once.para1.CDS = You only need to do this once. It usually takes about 6 minutes to fill in this application. (WAITING FOR WELSH TRANSLATION)
+ecc.subscription.information.only.once.para1.CDS = Dim ond unwaith y bydd angen i chi wneud hyn. Fel arfer, mae’n cymryd tua 6 munud i lenwi’r cais hwn.
 
 
 ecc.subscription.information.only.once.para1.atar= Unwaith i chi danysgrifio, gallwch wneud cais am y canlynol: <ul class="govuk-body"><li>Dyfarniad Tariffau Uwch</li><li>Dyfarniad Prisio Uwch</li></ul>
@@ -163,11 +163,12 @@ ecc.subscription.information.only.once.para1.ndrc =Unwaith i chi danysgrifio, ga
 ecc.subscription.information.email.confirm=Byddwn yn prosesu’ch cais ac yn anfon e-bost atoch gyda’r canlyniad cyn pen 2 awr.
 
 ecc.subscription.information.section.how-long=Faint o amser y mae’n ei gymryd
+ecc.subscription.information.section.how-long.CDS=Pryd allwch ddefnyddio’ch tanysgrifiad
 ecc.subscription.information.section.average-time=Mae ceisiadau’n cymryd 6 munud ar gyfartaledd i’w cwblhau.
 ecc.subscription.information.section.approval-message=Os ydym yn cymeradwyo’ch cais, bydd y tanysgrifiad yn barod i’w ddefnyddio o fewn naill ai:
 ecc.subscription.information.section.approval.list.first=2 awr
 ecc.subscription.information.section.approval.list.second=3 i 5 diwrnod gwaith, os bydd angen i ni wneud rhagor o wiriadau
-ecc.subscription.information.section.approval.list.second.CDS=5 working days, if we need to make more checks (WAITING FOR WELSH TRANSLATION)
+ecc.subscription.information.section.approval.list.second.CDS=5 diwrnod gwaith, os bydd angen i ni wneud rhagor o wiriadau
 
 cds.navigation.subscribe=Tanysgrifio
 
