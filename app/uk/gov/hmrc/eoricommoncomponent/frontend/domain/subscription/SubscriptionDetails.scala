@@ -42,6 +42,7 @@ case class SubscriptionDetails(
   nameOrganisationDetails: Option[NameOrganisationMatchModel] = None,
   nameDobDetails: Option[NameDobMatchModel] = None,
   nameDetails: Option[NameMatchModel] = None,
+  euNameDetails: Option[NameModel] = None,
   idDetails: Option[IdMatchModel] = None,
   customsId: Option[CustomsId] = None,
   formData: FormData = FormData(),

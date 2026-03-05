@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
@@ -162,6 +163,9 @@ class SubscriptionDetailsService @Inject() (
 
   def cacheNinoMatch(ninoMatch: Option[NinoMatchModel])(implicit request: Request[_]): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(formData = sd.formData.copy(ninoMatch = ninoMatch)))
+
+  def saveEuNameDetails(nameDetails: NameModel)(implicit request: Request[_]): Future[Unit] =
+    saveSubscriptionDetails(sd => sd.copy(euNameDetails = Some(nameDetails)))
 
   private def contactDetails(view: ContactDetailsModel, isInReviewMode: Boolean)(implicit
     request: Request[_]

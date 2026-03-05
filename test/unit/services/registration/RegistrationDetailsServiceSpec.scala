@@ -140,6 +140,7 @@ class RegistrationDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
         None,
         None,
         None,
+        None,
         FormData(None, None, None, None, Some(UserLocationDetails(Some("GB")))),
         None,
         None

@@ -16,46 +16,54 @@
 
 package unit.controllers.migration
 
-import common.pages.migration.NameDobSoleTraderPage
-import common.pages.migration.NameDobSoleTraderPage._
+import common.pages.migration.{NameDetailsPage, NameDobSoleTraderPage}
+import common.pages.migration.NameDobSoleTraderPage.*
+import common.pages.migration.NameDetailsPage.*
 import common.pages.registration.DoYouHaveAnEoriPage.pageLevelErrorSummaryListXPath
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq as meq, *}
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.prop.TableDrivenPropertyChecks._
+import org.scalatest.matchers.should.Matchers.endWith
+import org.scalatest.prop.TableDrivenPropertyChecks.*
 import org.scalatest.prop.TableFor2
 import org.scalatest.prop.Tables.Table
 import play.api.mvc.{AnyContent, Request, Result}
-import play.api.test.Helpers._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController
+import play.api.test.Helpers.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.enter_your_details
 import unit.controllers.CdsPage
 import unit.controllers.subscription.SubscriptionFlowSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion.EU
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_name
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
+class NameControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
 
   protected override val mockSubscriptionFlowManager: SubscriptionFlowManager = mock[SubscriptionFlowManager]
   protected override val formId: String                                       = NameDobSoleTraderPage.formId
 
   protected override val submitInCreateModeUrl: String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameController
       .submit(isInReviewMode = false, atarService)
       .url
 
   protected override val submitInReviewModeUrl: String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameController
       .submit(isInReviewMode = true, atarService)
       .url
 
@@ -63,8 +71,11 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
   private val mockRegistrationDetails  = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
   private val mockCdsFrontendDataCache = mock[SessionCache]
   private val enterYourDetails         = instanceOf[enter_your_details]
+  private val mockAppConfig            = mock[AppConfig]
+  private val nameForm                 = instanceOf[what_is_your_name]
+  private val errorTemplate            = instanceOf[error_template]
 
-  private val controller = new NameDobSoleTraderController(
+  private val controller = new NameController(
     mockAuthAction,
     mockSubscriptionBusinessService,
     mockRequestSessionData,
@@ -72,7 +83,10 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     mockSubscriptionFlowManager,
     mcc,
     enterYourDetails,
-    mockSubscriptionDetailsHolderService
+    mockSubscriptionDetailsHolderService,
+    mockAppConfig,
+    nameForm,
+    errorTemplate
   )
 
   private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
@@ -94,6 +108,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.SoleTrader))
     when(mockRequestSessionData.selectedUserLocationWithIslands(any())).thenReturn(Some(UserLocation.Eu))
+    when(mockAppConfig.euEoriEnabled).thenReturn(false)
 
     registerSaveNameDobDetailsMockSuccess()
     mockFunctionWithRegistrationDetails(mockRegistrationDetails)
@@ -103,6 +118,9 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
   val subscriptionFlows: TableFor2[SubscriptionFlow, String] =
     Table[SubscriptionFlow, String](("Flow name", "Label"), (SoleTraderFlow, "Enter your details"))
+
+  val euEoriSubscriptionFlows: TableFor2[SubscriptionFlow, String] =
+    Table[SubscriptionFlow, String](("Flow name", "Label"), (SoleTraderFlow, "What is your name?"))
 
   val formModes: TableFor2[String, SubscriptionFlow => (Future[Result] => Any) => Unit] = Table(
     ("formMode", "showFormFunction"),
@@ -184,6 +202,55 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     }
   }
 
+  "Viewing the create form when EU EORI is enabled and region is EU" should {
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(cdsService))
+
+    "display back link correctly" in {
+      showCreateFormEuEori(subscriptionDetails = SubscriptionDetails())(verifyBackLinkInCreateModeRegister)
+    }
+
+    "display the correct text for the continue button" in {
+      showCreateFormEuEori(subscriptionDetails = SubscriptionDetails()) { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
+      }
+    }
+
+    "leave fields empty if details weren't found in cache" in {
+      showCreateFormEuEori(subscriptionDetails = SubscriptionDetails()) { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementValue(givenNameFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(familyNameFieldXPath) shouldBe Symbol("empty")
+      }
+    }
+
+    "fill fields with details if stored in cache" in {
+      showCreateFormEuEori(subscriptionDetails =
+        SubscriptionDetails(euNameDetails = Some(NameModel("Alain", "Lemoine")))
+      ) { result =>
+        val page               = CdsPage(contentAsString(result))
+        val expectedGivenName  = s"${NameDetailsPage.filledValues.givenName}"
+        val expectedFamilyName = s"${NameDetailsPage.filledValues.familyName}"
+
+        page.getElementValue(givenNameFieldXPath) shouldBe expectedGivenName
+        page.getElementValue(familyNameFieldXPath) shouldBe expectedFamilyName
+      }
+    }
+  }
+
+  "Viewing the create form when the EU EORI is enabled and the region is not EU" should {
+    "show the enter details form" in {
+      showCreateFormEuEori(subscriptionDetails = SubscriptionDetails(), region = EoriRegion.GB) { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementValue(firstNameFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(lastNameFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(dateOfBirthYearFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(dateOfBirthMonthFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(dateOfBirthDayFieldXPath) shouldBe Symbol("empty")
+      }
+    }
+  }
+
   "Viewing the review form " should {
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(atarService))
@@ -216,6 +283,51 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     }
   }
 
+  "Viewing the review form when EU EORI is enabled and region is EU" should {
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(atarService))
+
+    "display relevant data in form fields when subscription details exist in the cache" in {
+      showReviewFormEuEori() { result =>
+        val page              = CdsPage(contentAsString(result))
+        val expectedFirstName = s"${NameDetailsPage.filledValues.givenName}"
+        val expectedLastName  = s"${NameDetailsPage.filledValues.familyName}"
+
+        page.getElementValue(givenNameFieldXPath) shouldBe expectedFirstName
+        page.getElementValue(familyNameFieldXPath) shouldBe expectedLastName
+      }
+    }
+
+    "not display the number of steps and back link to review page" in {
+      showReviewFormEuEori()(verifyNoStepsAndBackLinkInReviewMode)
+    }
+
+    "display the correct text for the continue button" in {
+      showReviewFormEuEori() { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
+      }
+    }
+  }
+
+  "Viewing the review form when EU EORI is enabled and region is not EU" should {
+
+    "display the enter your details form" in {
+      when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any()))
+        .thenReturn(Future.successful(NameDobSoleTraderPage.filledValues))
+
+      showReviewFormEuEori(region = EoriRegion.GB) { result =>
+        val page              = CdsPage(contentAsString(result))
+        val expectedFirstName = s"${NameDobSoleTraderPage.filledValues.firstName}"
+        val expectedLastName  = s"${NameDobSoleTraderPage.filledValues.lastName}"
+        val expectedDob       = s"${NameDobSoleTraderPage.filledValues.dateOfBirth}"
+
+        page.getElementValue(firstNameFieldXPath) shouldBe expectedFirstName
+        page.getElementValue(lastNameFieldXPath) shouldBe expectedLastName
+        getDobFromPage(page) shouldBe expectedDob
+      }
+    }
+  }
+
   "Submitting the form in Create mode" should {
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
@@ -230,6 +342,28 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
           any[Request[_]]
         )
       }
+    }
+
+    "save the EU name details" in {
+      when(nextPage.url(any[Service], any[SubscribeJourney])).thenReturn(
+        "/customs-enrolment-services/:service/subscribe/eu-eori-registered-address"
+      )
+      when(mockSubscriptionFlowManager.stepInformation(meq(EuEoriRegisteredAddressSubscriptionFlowPage))(
+        any[Request[AnyContent]]
+      ))
+        .thenReturn(subscriptionFlowStepInfo)
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+      when(mockCdsFrontendDataCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(EU)))
+      when(mockSubscriptionDetailsHolderService.saveEuNameDetails(any())(any())).thenReturn(Future.unit)
+      val form = Map("given-name" -> "Alain", "family-name" -> "Lemoine")
+      val result = controller.submit(isInReviewMode = false, service = cdsService)(
+        SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
+      )
+      status(result) shouldBe SEE_OTHER
+      await(result).header.headers("Location") should endWith(
+        "/customs-enrolment-services/:service/subscribe/eu-eori-registered-address"
+      )
     }
 
     "validation error when first name is not submitted" in {
@@ -614,6 +748,22 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     test(result)
   }
 
+  private def showCreateFormEuEori(
+    subscriptionFlow: SubscriptionFlow = SoleTraderFlow,
+    subscriptionDetails: SubscriptionDetails,
+    region: EoriRegion = EoriRegion.EU
+  )(test: Future[Result] => Any): Unit = {
+    withAuthorisedUser(defaultUserId, mockAuthConnector)
+
+    when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
+    when(mockAppConfig.euEoriEnabled).thenReturn(true)
+    when(mockCdsFrontendDataCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(region)))
+    when(mockCdsFrontendDataCache.subscriptionDetails(any())).thenReturn(Future.successful(subscriptionDetails))
+
+    val result = controller.createForm(cdsService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+    test(result)
+  }
+
   private def showReviewForm(subscriptionFlow: SubscriptionFlow = SoleTraderFlow)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
@@ -623,6 +773,23 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     val result =
       controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+    test(result)
+  }
+
+  private def showReviewFormEuEori(
+    subscriptionFlow: SubscriptionFlow = SoleTraderFlow,
+    region: EoriRegion = EoriRegion.EU
+  )(test: Future[Result] => Any): Unit = {
+    withAuthorisedUser(defaultUserId, mockAuthConnector)
+
+    when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
+    when(mockAppConfig.euEoriEnabled).thenReturn(true)
+    when(mockCdsFrontendDataCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(region)))
+    when(mockCdsFrontendDataCache.subscriptionDetails(any())).thenReturn(
+      Future.successful(SubscriptionDetails(euNameDetails = Some(NameModel("Alain", "Lemoine"))))
+    )
+
+    val result = controller.reviewForm(cdsService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     test(result)
   }
 

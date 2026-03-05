@@ -1628,3 +1628,9 @@ ecc.subscription.we-need-to-make-checks.p2b = The email will tell you if your ap
 ecc.subscription.we-need-to-make-checks.h3 = If your application is rejected
 ecc.subscription.we-need-to-make-checks.p3a = You can apply again.
 ecc.subscription.we-need-to-make-checks.p3b = If you need help with completing your application, you will need to contact the authority that issued your EORI number.
+
+# What is your name
+cds.subscription.name.title = What is your name?
+cds.subscription.name.hint = We will use this to verify your identity. Enter the exact name you used when you applied for an EORI number.
+cds.subscription.name.given-name.label = Given name
+cds.subscription.name.family-name.label = Family name
