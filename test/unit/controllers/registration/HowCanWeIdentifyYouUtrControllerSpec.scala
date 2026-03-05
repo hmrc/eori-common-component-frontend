@@ -45,7 +45,6 @@ import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 

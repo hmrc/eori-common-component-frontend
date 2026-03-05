@@ -18,7 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 
 import play.api.data.Forms._
 import play.api.data.validation._
-import play.api.data.{Form, Forms}
+import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 
@@ -28,19 +28,15 @@ object AddContactAddressForm {
 
   private val validYesNoAnswerOptions = Set("true", "false")
 
-  // Might need to confirm validation in here
-
   def confirmAddContactAddressYesNoAnswerForm()(implicit messages: Messages): Form[YesNo] = yesNoAnswerForm()
 
   private def yesNoAnswerForm()(implicit messages: Messages): Form[YesNo] = Form(
     mapping(
       YesNo.yesNoAnswer -> optional(
         text.verifying(
-          // Change actual error message later
           messages("cds.subscription.add-contact-address.page-error.yes-no-answer"),
           oneOf(validYesNoAnswerOptions)
         )
-        // Same here
       ).verifying(messages("cds.subscription.add-contact-address.page-error.yes-no-answer"), _.isDefined)
         .transform[Boolean](str => str.get.toBoolean, bool => Option(String.valueOf(bool)))
     )(YesNo.apply)(yesNo => Some(yesNo.isYes))

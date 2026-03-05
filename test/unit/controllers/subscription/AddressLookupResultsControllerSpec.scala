@@ -48,7 +48,6 @@ import util.builders.AuthBuilder.withAuthorisedUser
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterEach {
 
