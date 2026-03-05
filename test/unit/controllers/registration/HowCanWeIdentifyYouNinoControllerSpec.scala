@@ -78,7 +78,9 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
       .thenReturn(Future.successful(None))
 
     when(
-      mockSubscriptionFlowManager.stepInformation(ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage))(
+      mockSubscriptionFlowManager.stepInformation(
+        ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage)
+      )(
         any[Request[AnyContent]]
       )
     ).thenReturn(SubscriptionFlowInfo(3, 5, AddressDetailsSubscriptionFlowPage))

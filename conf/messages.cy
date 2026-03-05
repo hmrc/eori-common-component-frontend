@@ -1264,6 +1264,11 @@ cds.error.helpSupport=Help a chymorth
 cds.error.contact.part1=Ffôn: 0300 200 3705
 cds.error.contact.part2=Ar agor 08:00 i 18:00 o ddydd Llun i ddydd Gwener (ar gau ar wyliau banc).
 
+cds.subscription.add-contact-address.page.title=A ydych am ychwanegu cyfeiriad cyswllt?
+cds.subscription.add-contact-address.yes=Iawn
+cds.subscription.add-contact-address.no=Na
+cds.subscription.add-contact-address.page-error.yes-no-answer=Dewiswch ‘Iawn’ os ydych am ychwanegu cyfeiriad cyswllt
+
 #Email error page
 cds.email.error.title=Ni allwn eich tanysgrifio i’r Gwasanaeth Datganiadau Tollau
 cds.email.error.message.part1=Mae ein system yn dal i brosesu eich manylion. Bydd hyn yn cymryd awr fel arfer, ond gall gymryd yn hirach.
@@ -1375,14 +1380,15 @@ contact-address.line-4=Rhanbarth neu dalaith (dewisol)
 contact-address.postcode-optional=Cod post (dewisol)
 contact-address.country=Gwlad
 
-#Eu Eori Registered Address (AWAITING WELSH TRANSLATION)
-eu.eori.registered.address.title=What is your organisation''s registered address? (AWAITING WELSH TRANSLATION)
-eu.eori.registered.address.heading=What is your organisation''s registered address? (AWAITING WELSH TRANSLATION)
-eu.eori.registered.address.hint=Enter the address you used when you applied for an EORI number. (AWAITING WELSH TRANSLATION)
-eu.eori.registered.address.line-1=Street and number (AWAITING WELSH TRANSLATION)
-eu.eori.registered.address.line-3=Town or city (SWAITING WELSH TRANSLATION)
-eu.eori.registered.address.postcode-optional=Postal code (optional) (AWAITING WELSH TRANSLATION)
-eu.eori.registered.address.country=Country (AWAITING WELSH TRANSLATION)
+#Eu Eori Registered Address
+eu.eori.registered.address.title=Beth yw cyfeiriad cofrestredig eich sefydliad?
+eu.eori.registered.address.heading.organisation=Beth yw cyfeiriad cofrestredig eich sefydliad?
+eu.eori.registered.address.heading.individual=Beth yw’ch cyfeiriad cofrestredig?
+eu.eori.registered.address.hint=Nodwch y cyfeiriad a ddefnyddiwyd gennych pan wnaethoch gais am rif EORI.
+eu.eori.registered.address.line-1=Stryd a rhif
+eu.eori.registered.address.line-3=Tref neu ddinas
+eu.eori.registered.address.postcode-optional=Cod post (dewisol)
+eu.eori.registered.address.country=Gwlad
 eu.eori.registered.address.line-1.error.empty=Nodwch stryd a rhif
 eu.eori.registered.address.line-1.error.too-long=Mae’n rhaid i’r stryd a rhif gynnwys 70 o gymeriadau neu lai
 eu.eori.registered.address.line-1.error.invalid-chars=Mae’n rhaid i’r stryd a rhif gynnwys y llythrennau a i z, rhifau, collnodau, atalnodau llawn, ampersandau, cysylltnodau a bylchau yn unig

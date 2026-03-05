@@ -61,6 +61,8 @@ class CheckYourDetailsSpec extends ViewSpec {
     )
   )
 
+  private val addContactAddressDetails = None
+
   private val contactAddressDetail = Some(
     ContactAddressModel("flat 20", Some("street line 2"), "city", Some("region"), Some("HJ2 3HJ"), "FR")
   )
@@ -797,6 +799,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       isIndividualSubscriptionFlow,
       orgType,
       contactDetails,
+      addContactAddressDetails,
       address,
       eori,
       existingEori,

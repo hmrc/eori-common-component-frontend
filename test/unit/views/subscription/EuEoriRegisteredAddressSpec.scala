@@ -20,9 +20,9 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.{ContactAddressForm, EuEoriRegisteredAddressForm}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.EuEoriRegisteredAddressForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{contact_address, eu_eori_registered_address}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eu_eori_registered_address
 import util.ViewSpec
 
 class EuEoriRegisteredAddressSpec extends ViewSpec {
@@ -38,16 +38,30 @@ class EuEoriRegisteredAddressSpec extends ViewSpec {
   private val formWithError = form.bind(Map("line-1" -> "", "line-3" -> "", "countryCode" -> ""))
 
   private val doc: Document =
-    Jsoup.parse(contentAsString(view(form, countries, picker, isInReviewMode = false, atarService)))
+    Jsoup.parse(contentAsString(view(form, countries, picker, isCompany = true, isInReviewMode = false, atarService)))
+
+  private val docIndividual: Document =
+    Jsoup.parse(contentAsString(view(form, countries, picker, isCompany = false, isInReviewMode = false, atarService)))
 
   private val docWithErrorSummary: Document =
-    Jsoup.parse(contentAsString(view(formWithError, countries, picker, isInReviewMode = false, atarService)))
+    Jsoup.parse(contentAsString(view(
+      formWithError,
+      countries,
+      picker,
+      isCompany = true,
+      isInReviewMode = false,
+      atarService
+    )))
 
   "Eu Eori registered address view" should {
 
-    "display correct title" in {
+    "display correct title when its a company" in {
 
       doc.title() must startWith("What is your organisation's registered address?")
+    }
+    "display correct title when its not a company" in {
+
+      docIndividual.title() must startWith("What is your registered address?")
     }
     "display hint" in {
 

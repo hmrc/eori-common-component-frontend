@@ -50,7 +50,8 @@ sealed case class CachedData(
   submissionCompleteDetails: Option[SubmissionCompleteData] = None,
   completed: Option[Boolean] = None,
   userLocation: Option[UserLocationDetails] = None,
-  first2LettersEori: Option[EoriRegion] = None
+  first2LettersEori: Option[EoriRegion] = None,
+  addContactAddress: Option[YesNo] = None
 )
 
 object CachedData {
@@ -71,6 +72,7 @@ object CachedData {
   val addressLookupParamsKey               = "addressLookupParams"
   val completed                            = "completed"
   val first2LettersEori                    = "first2LettersEori"
+  val addContactAddressKey                 = "addContactAddress"
   implicit val format: OFormat[CachedData] = Json.format[CachedData]
 }
 
@@ -272,6 +274,9 @@ class SessionCache @Inject() (
 
   def clearAddressLookupParams(implicit request: Request[_]): Future[Unit] =
     putData(addressLookupParamsKey, Json.toJson(AddressLookupParams("", None))).map(_ => ())
+
+  def getAddContactAddress(implicit request: Request[_]): Future[Option[YesNo]] =
+    getData[YesNo](addContactAddressKey)
 
   def remove(implicit request: Request[_]): Future[Boolean] =
     preservingMdc {

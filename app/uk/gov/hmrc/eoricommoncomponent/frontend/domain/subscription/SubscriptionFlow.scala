@@ -249,6 +249,15 @@ case object UserLocationPage extends SubscriptionPage {
 
 }
 
+case object AddContactAddressSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AddContactAddressController
+      .form(false, service)
+      .url
+
+}
+
 case class PreviousPage(someUrl: String) extends SubscriptionPage() {
 
   override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =

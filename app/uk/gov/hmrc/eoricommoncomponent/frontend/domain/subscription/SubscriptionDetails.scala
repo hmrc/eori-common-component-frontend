@@ -36,6 +36,7 @@ case class SubscriptionDetails(
   eoriNumber: Option[String] = None,
   existingEoriNumber: Option[ExistingEori] = None,
   email: Option[String] = None,
+  addContactAddressDetails: Option[YesNo] = None,
   addressDetails: Option[AddressViewModel] = None,
   nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = None,
   nameOrganisationDetails: Option[NameOrganisationMatchModel] = None,

@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.EuEoriR
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.EuEoriRegisteredAddressController.submit
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.UserLocationDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.EuEoriRegisteredAddressSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Country
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eu_eori_registered_address
@@ -53,6 +53,7 @@ class EuEoriRegisteredAddressControllerSpec
     submit(cdsService, isInReviewMode = true).url
 
   private val mockCdsFrontendDataCache       = mock[SessionCache]
+  private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val emulatedFailure                = new UnsupportedOperationException("Emulation of service call failure")
 
@@ -65,6 +66,7 @@ class EuEoriRegisteredAddressControllerSpec
     mockSubscriptionBusinessService,
     mockSubscriptionFlowManager,
     mockCdsFrontendDataCache,
+    mockRequestSessionData,
     view
   )
 
@@ -122,6 +124,9 @@ class EuEoriRegisteredAddressControllerSpec
       when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
         Future.successful(UserLocationDetails(None))
       )
+
+      when(mockRequestSessionData.isCompany(any)).thenReturn(true)
+
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.title() should startWith("What is your organisation's registered address?")
@@ -176,17 +181,29 @@ class EuEoriRegisteredAddressControllerSpec
 
   }
 
-  "Contact Address Controller form in review mode" should {
+  "Eu Eori registered Address Controller form in review mode" should {
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewPage(cdsService))
 
-    "display title as 'What is your organisation's registered address?'" in {
+    "display title as 'What is your organisation's registered address?' when its a company" in {
       when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
         Future.successful(UserLocationDetails(None))
       )
+      when(mockRequestSessionData.isCompany(any)).thenReturn(true)
       showReviewForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.title() should startWith("What is your organisation's registered address?")
+      }
+    }
+
+    "display title as 'What is your registered address?' when its not a company" in {
+      when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
+        Future.successful(UserLocationDetails(None))
+      )
+      when(mockRequestSessionData.isCompany(any)).thenReturn(false)
+      showReviewForm() { result =>
+        val page = CdsPage(contentAsString(result))
+        page.title() should startWith("What is your registered address?")
       }
     }
 

@@ -284,5 +284,23 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
       }
     }
+
+    "return 200 (OK) and display form with non-GB eori unchanged" in {
+      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
+      when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(
+        Future.successful(Some("FR123456789012"))
+      )
+
+      val result = controller.createForm(atarService)(getRequest)
+
+      val formCaptor: ArgumentCaptor[Form[EoriNumberViewModel]] =
+        ArgumentCaptor.forClass(classOf[Form[EoriNumberViewModel]])
+
+      status(result) shouldBe OK
+
+      verify(whatIsYourEoriView).apply(formCaptor.capture(), meq(false), any())(any(), any())
+
+      formCaptor.getValue.data shouldBe Map("eori-number" -> "FR123456789012")
+    }
   }
 }

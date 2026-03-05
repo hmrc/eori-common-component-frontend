@@ -20,12 +20,11 @@ import play.api.data.Form
 import play.api.mvc.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EuEoriRegisteredAddressModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.EuEoriRegisteredAddressForm.euEoriRegisteredAddressCreateForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -44,6 +43,7 @@ class EuEoriRegisteredAddressController @Inject() (
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionFlowManager: SubscriptionFlowManager,
   sessionCache: SessionCache,
+  requestSessionData: RequestSessionData,
   view: eu_eori_registered_address
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
@@ -83,7 +83,14 @@ class EuEoriRegisteredAddressController @Inject() (
   )(implicit request: Request[AnyContent]): Future[Result] =
     sessionCache.userLocation.map { userLocation =>
       val (countriesToInclude, countriesInCountryPicker) = Countries.getCountryParameters(userLocation.location)
-      status(view(form, countriesToInclude, countriesInCountryPicker, isInReviewMode, service))
+      status(view(
+        form,
+        countriesToInclude,
+        countriesInCountryPicker,
+        requestSessionData.isCompany,
+        isInReviewMode,
+        service
+      ))
     }
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
