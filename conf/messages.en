@@ -1538,7 +1538,8 @@ contact-address.country=Country
 
 #Eu Eori Registered Address
 eu.eori.registered.address.title=What is your organisation''s registered address?
-eu.eori.registered.address.heading=What is your organisation''s registered address?
+eu.eori.registered.address.heading.organisation=What is your organisation''s registered address?
+eu.eori.registered.address.heading.individual=What is your registered address?
 eu.eori.registered.address.hint=Enter the address you used when you applied for an EORI number.
 eu.eori.registered.address.line-1=Street and number
 eu.eori.registered.address.line-3=Town or city
