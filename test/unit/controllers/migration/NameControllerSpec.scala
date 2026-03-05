@@ -41,6 +41,7 @@ import unit.controllers.subscription.SubscriptionFlowSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion.EU
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
@@ -237,6 +238,19 @@ class NameControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
     }
   }
 
+  "Viewing the create form when the EU EORI is enabled and the region is not EU" should {
+    "show the enter details form" in {
+      showCreateFormEuEori(subscriptionDetails = SubscriptionDetails(), region = EoriRegion.GB) { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementValue(firstNameFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(lastNameFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(dateOfBirthYearFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(dateOfBirthMonthFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(dateOfBirthDayFieldXPath) shouldBe Symbol("empty")
+      }
+    }
+  }
+
   "Viewing the review form " should {
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(atarService))
@@ -295,6 +309,25 @@ class NameControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
     }
   }
 
+  "Viewing the review form when EU EORI is enabled and region is not EU" should {
+
+    "display the enter your details form" in {
+      when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any()))
+        .thenReturn(Future.successful(NameDobSoleTraderPage.filledValues))
+
+      showReviewFormEuEori(region = EoriRegion.GB) { result =>
+        val page              = CdsPage(contentAsString(result))
+        val expectedFirstName = s"${NameDobSoleTraderPage.filledValues.firstName}"
+        val expectedLastName  = s"${NameDobSoleTraderPage.filledValues.lastName}"
+        val expectedDob       = s"${NameDobSoleTraderPage.filledValues.dateOfBirth}"
+
+        page.getElementValue(firstNameFieldXPath) shouldBe expectedFirstName
+        page.getElementValue(lastNameFieldXPath) shouldBe expectedLastName
+        getDobFromPage(page) shouldBe expectedDob
+      }
+    }
+  }
+
   "Submitting the form in Create mode" should {
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
@@ -312,17 +345,25 @@ class NameControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
     }
 
     "save the EU name details" in {
-      when(nextPage.url(any[Service], any[SubscribeJourney])).thenReturn("/customs-enrolment-services/:service/subscribe/eu-eori-registered-address")
-      when(mockSubscriptionFlowManager.stepInformation(meq(EuEoriRegisteredAddressSubscriptionFlowPage))(any[Request[AnyContent]]))
+      when(nextPage.url(any[Service], any[SubscribeJourney])).thenReturn(
+        "/customs-enrolment-services/:service/subscribe/eu-eori-registered-address"
+      )
+      when(mockSubscriptionFlowManager.stepInformation(meq(EuEoriRegisteredAddressSubscriptionFlowPage))(
+        any[Request[AnyContent]]
+      ))
         .thenReturn(subscriptionFlowStepInfo)
       withAuthorisedUser(defaultUserId, mockAuthConnector)
       when(mockAppConfig.euEoriEnabled).thenReturn(true)
       when(mockCdsFrontendDataCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(EU)))
       when(mockSubscriptionDetailsHolderService.saveEuNameDetails(any())(any())).thenReturn(Future.unit)
       val form = Map("given-name" -> "Alain", "family-name" -> "Lemoine")
-      val result = controller.submit(isInReviewMode = false, service = cdsService)(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
+      val result = controller.submit(isInReviewMode = false, service = cdsService)(
+        SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
+      )
       status(result) shouldBe SEE_OTHER
-      await(result).header.headers("Location") should endWith("/customs-enrolment-services/:service/subscribe/eu-eori-registered-address")
+      await(result).header.headers("Location") should endWith(
+        "/customs-enrolment-services/:service/subscribe/eu-eori-registered-address"
+      )
     }
 
     "validation error when first name is not submitted" in {
@@ -709,13 +750,14 @@ class NameControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
 
   private def showCreateFormEuEori(
     subscriptionFlow: SubscriptionFlow = SoleTraderFlow,
-    subscriptionDetails: SubscriptionDetails
+    subscriptionDetails: SubscriptionDetails,
+    region: EoriRegion = EoriRegion.EU
   )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
     when(mockAppConfig.euEoriEnabled).thenReturn(true)
-    when(mockCdsFrontendDataCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(EU)))
+    when(mockCdsFrontendDataCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(region)))
     when(mockCdsFrontendDataCache.subscriptionDetails(any())).thenReturn(Future.successful(subscriptionDetails))
 
     val result = controller.createForm(cdsService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
@@ -734,13 +776,15 @@ class NameControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
     test(result)
   }
 
-  private def showReviewFormEuEori(subscriptionFlow: SubscriptionFlow = SoleTraderFlow)(test: Future[Result] => Any)
-    : Unit = {
+  private def showReviewFormEuEori(
+    subscriptionFlow: SubscriptionFlow = SoleTraderFlow,
+    region: EoriRegion = EoriRegion.EU
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
     when(mockAppConfig.euEoriEnabled).thenReturn(true)
-    when(mockCdsFrontendDataCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(EU)))
+    when(mockCdsFrontendDataCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(region)))
     when(mockCdsFrontendDataCache.subscriptionDetails(any())).thenReturn(
       Future.successful(SubscriptionDetails(euNameDetails = Some(NameModel("Alain", "Lemoine"))))
     )

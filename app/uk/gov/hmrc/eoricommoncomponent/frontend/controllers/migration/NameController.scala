@@ -34,6 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.cdsCode
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -64,11 +65,21 @@ class NameController @Inject() (
   def createForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
       implicit request => (_: LoggedInUserWithEnrolments) =>
-        if (appConfig.euEoriEnabled) {
-          handleEuEoriJourney(service, false)
+        if (appConfig.euEoriEnabled && service.code == cdsCode) {
+          cdsFrontendDataCache.getFirst2LettersEori flatMap {
+            case Some(EoriRegion.EU) =>
+              cdsFrontendDataCache.subscriptionDetails.map { sd =>
+                val form = sd.euNameDetails.fold(enterNameForm)(nm => enterNameForm.fill(nm))
+                Ok(nameForm(form, false, service))
+              }
+            case _ =>
+              subscriptionBusinessService.cachedSubscriptionNameDobViewModel flatMap { maybeCachedNameDobViewModel =>
+                populateOkView(maybeCachedNameDobViewModel, false, service)
+              }
+          }
         } else {
           subscriptionBusinessService.cachedSubscriptionNameDobViewModel flatMap { maybeCachedNameDobViewModel =>
-            populateOkView(maybeCachedNameDobViewModel, isInReviewMode = false, service)
+            populateOkView(maybeCachedNameDobViewModel, false, service)
           }
         }
     }
@@ -76,8 +87,18 @@ class NameController @Inject() (
   def reviewForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
       implicit request => (_: LoggedInUserWithEnrolments) =>
-        if (appConfig.euEoriEnabled) {
-          handleEuEoriJourney(service, true)
+        if (appConfig.euEoriEnabled && service.code == cdsCode) {
+          cdsFrontendDataCache.getFirst2LettersEori flatMap {
+            case Some(EoriRegion.EU) =>
+              cdsFrontendDataCache.subscriptionDetails.map { sd =>
+                val form = sd.euNameDetails.fold(enterNameForm)(nm => enterNameForm.fill(nm))
+                Ok(nameForm(form, true, service))
+              }
+            case _ =>
+              subscriptionBusinessService.getCachedSubscriptionNameDobViewModel flatMap { cdm =>
+                populateOkView(Some(cdm), isInReviewMode = true, service)
+              }
+          }
         } else {
           subscriptionBusinessService.getCachedSubscriptionNameDobViewModel flatMap { cdm =>
             populateOkView(Some(cdm), isInReviewMode = true, service)
@@ -87,30 +108,13 @@ class NameController @Inject() (
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
-      if (appConfig.euEoriEnabled) {
-        cdsFrontendDataCache.getFirst2LettersEori.flatMap { optEoriPrefix =>
-          if (!isEuEori(optEoriPrefix)) {
-            Future.successful(InternalServerError(errorPage(service)))
-          } else {
-            handleEnterNameForm(service, isInReviewMode)
-          }
+      if (appConfig.euEoriEnabled && service.code == cdsCode) {
+        cdsFrontendDataCache.getFirst2LettersEori.flatMap {
+          case Some(EoriRegion.EU) => handleEnterNameForm(service, isInReviewMode)
+          case _                   => handleEnterNameDobForm(service, isInReviewMode)
         }
       } else {
-        val form = if (UserLocation.isRow(requestSessionData)) enterNameDobFormRow else enterNameDobForm
-        form.bindFromRequest().fold(
-          formWithErrors =>
-            cdsFrontendDataCache.registrationDetails map { _ =>
-              BadRequest(
-                enterYourDetails(
-                  formWithErrors,
-                  isInReviewMode,
-                  service,
-                  requestSessionData.selectedUserLocationWithIslands
-                )
-              )
-            },
-          formData => storeNameDobDetails(formData, isInReviewMode, service)
-        )
+        handleEnterNameDobForm(service, isInReviewMode)
       }
     }
 
@@ -158,19 +162,24 @@ class NameController @Inject() (
           }
     )
 
-  private def handleEuEoriJourney(service: Service, isInReviewMode: Boolean)(implicit
+  private def handleEnterNameDobForm(service: Service, isInReviewMode: Boolean)(implicit
     request: Request[AnyContent]
-  ): Future[Result] =
-    cdsFrontendDataCache.getFirst2LettersEori flatMap { optEoriPrefix =>
-      if (!isEuEori(optEoriPrefix)) {
-        Future.successful(InternalServerError(errorPage(service)))
-      } else {
-        cdsFrontendDataCache.subscriptionDetails.map { sd =>
-          val form = sd.euNameDetails.fold(enterNameForm)(nm => enterNameForm.fill(nm))
-          Ok(nameForm(form, isInReviewMode, service))
-        }
-      }
-    }
+  ) = {
+    val form = if (UserLocation.isRow(requestSessionData)) enterNameDobFormRow else enterNameDobForm
+    form.bindFromRequest().fold(
+      formWithErrors =>
+        cdsFrontendDataCache.registrationDetails map { _ =>
+          BadRequest(
+            enterYourDetails(
+              formWithErrors,
+              isInReviewMode,
+              service,
+              requestSessionData.selectedUserLocationWithIslands
+            )
+          )
+        },
+      formData => storeNameDobDetails(formData, isInReviewMode, service)
+    )
+  }
 
-  private def isEuEori(optEoriPrefix: Option[EoriRegion]): Boolean = optEoriPrefix.contains(EoriRegion.EU)
 }
