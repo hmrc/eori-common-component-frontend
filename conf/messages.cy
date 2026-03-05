@@ -1376,13 +1376,14 @@ contact-address.postcode-optional=Cod post (dewisol)
 contact-address.country=Gwlad
 
 #Eu Eori Registered Address (AWAITING WELSH TRANSLATION)
-eu.eori.registered.address.title=What is your organisation''s registered address? (AWAITING WELSH TRANSLATION)
-eu.eori.registered.address.heading=What is your organisation''s registered address? (AWAITING WELSH TRANSLATION)
-eu.eori.registered.address.hint=Enter the address you used when you applied for an EORI number. (AWAITING WELSH TRANSLATION)
-eu.eori.registered.address.line-1=Street and number (AWAITING WELSH TRANSLATION)
-eu.eori.registered.address.line-3=Town or city (SWAITING WELSH TRANSLATION)
-eu.eori.registered.address.postcode-optional=Postal code (optional) (AWAITING WELSH TRANSLATION)
-eu.eori.registered.address.country=Country (AWAITING WELSH TRANSLATION)
+eu.eori.registered.address.title=Beth yw cyfeiriad cofrestredig eich sefydliad?
+eu.eori.registered.address.heading.organisation=Beth yw cyfeiriad cofrestredig eich sefydliad?
+eu.eori.registered.address.heading.individual=Beth yw’ch cyfeiriad cofrestredig?
+eu.eori.registered.address.hint=Nodwch y cyfeiriad a ddefnyddiwyd gennych pan wnaethoch gais am rif EORI.
+eu.eori.registered.address.line-1=Stryd a rhif
+eu.eori.registered.address.line-3=Tref neu ddinas
+eu.eori.registered.address.postcode-optional=Cod post (dewisol)
+eu.eori.registered.address.country=Gwlad
 eu.eori.registered.address.line-1.error.empty=Nodwch stryd a rhif
 eu.eori.registered.address.line-1.error.too-long=Mae’n rhaid i’r stryd a rhif gynnwys 70 o gymeriadau neu lai
 eu.eori.registered.address.line-1.error.invalid-chars=Mae’n rhaid i’r stryd a rhif gynnwys y llythrennau a i z, rhifau, collnodau, atalnodau llawn, ampersandau, cysylltnodau a bylchau yn unig

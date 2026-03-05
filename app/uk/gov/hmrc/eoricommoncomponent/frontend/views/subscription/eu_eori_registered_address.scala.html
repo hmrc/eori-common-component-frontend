@@ -25,14 +25,22 @@
 
 @this(layout_di: layout, govukHint: GovukHint, govukButton: GovukButton, inputText: helpers.inputText, errorSummary: helpers.errorSummary, countryField: helpers.countryField)
 
-@(addressForm: Form[EuEoriRegisteredAddressModel], countries: List[Country], countriesInCountryPicker: CountriesInCountryPicker, isInReviewMode: Boolean, service: Service)(implicit request: Request[AnyContent], messages: Messages)
+@(addressForm: Form[EuEoriRegisteredAddressModel], countries: List[Country], countriesInCountryPicker: CountriesInCountryPicker, isCompany: Boolean, isInReviewMode: Boolean, service: Service)(implicit request: Request[AnyContent], messages: Messages)
+@headingText = @{
+    if(isCompany) {
+        messages("eu.eori.registered.address.heading.organisation")
+    } else {
+        messages("eu.eori.registered.address.heading.individual")
+    }
+}
 
-
-@layout_di(messages("eu.eori.registered.address.heading"), countriesInCountryPicker, form = Some(addressForm), service = service) {
+@layout_di(headingText, countriesInCountryPicker, form = Some(addressForm), service = service) {
     <div>
         @errorSummary(addressForm.errors)
 
-        <h1 class="govuk-heading-l">@messages("eu.eori.registered.address.heading")</h1>
+        <h1 class="govuk-heading-l">
+            @headingText
+        </h1>
 
         @govukHint(Hint(id= Some("eu-euro-registered-address-hint"), content = Text(messages("eu.eori.registered.address.hint")), classes = "govuk-!-margin-top-0 govuk-!-margin-bottom-5"))
 
