@@ -1367,6 +1367,10 @@ cds.sole-trader.address-check.page-error.yes-no-answer=Tell us if this is these 
 cds.sole-trader.address-check.field-error.yes-no-answer=Select yes if these details are correct
 
 #contact details
+cds.subscription.add-contact-address.page.title=Do you want to add a contact address?
+cds.subscription.add-contact-address.yes=Yes
+cds.subscription.add-contact-address.no=No
+cds.subscription.add-contact-address.page-error.yes-no-answer=Select yes if you want to add a contact address
 cds.subscription.contact-details.page.title=Who can we contact?
 cds.subscription.contact-details.steps=contact
 cds.subscription.contact-details.heading=Who can we contact?

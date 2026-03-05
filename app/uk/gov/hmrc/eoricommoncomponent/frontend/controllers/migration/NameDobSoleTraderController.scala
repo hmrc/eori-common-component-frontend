@@ -106,7 +106,9 @@ class NameDobSoleTraderController @Inject() (
           )
         )
       else
-        Redirect(subscriptionFlowManager.stepInformation(NameDobDetailsSubscriptionFlowPage).nextPage.url(service))
+        Redirect(
+          subscriptionFlowManager.stepInformation(NameDobDetailsSubscriptionFlowPage).nextPage.url(service)
+        )
     }
 
 }

@@ -55,7 +55,10 @@ case class SubscriptionFlowConfig(
 }
 
 @Singleton
-class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData, cdsFrontendDataCache: SessionCache)(
+class SubscriptionFlowManager @Inject() (
+  requestSessionData: RequestSessionData,
+  cdsFrontendDataCache: SessionCache
+)(
   implicit ec: ExecutionContext
 ) {
 
@@ -65,8 +68,7 @@ class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData,
     requestSessionData.userSubscriptionFlow
 
   def stepInformation(currentPage: SubscriptionPage)(implicit request: Request[AnyContent]): SubscriptionFlowInfo =
-    SubscriptionFlows(currentSubscriptionFlow)
-      .stepInformation(currentPage)
+    SubscriptionFlows.flows(currentSubscriptionFlow).stepInformation(currentPage)
 
   def startSubscriptionFlow(
     previousPage: Option[SubscriptionPage] = None,
@@ -75,24 +77,25 @@ class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData,
   )(implicit request: Request[AnyContent]): Future[(SubscriptionPage, Session)] = {
     val maybePreviousPageUrl = previousPage.map(page => page.url(service))
     cdsFrontendDataCache.registrationDetails map { registrationDetails =>
-      val flow = selectFlow(registrationDetails, cdsOrganisationType)
+      val flow       = selectFlow(registrationDetails, cdsOrganisationType)
+      val flowConfig = SubscriptionFlows.flows(flow)
 
       logger.info(s"select Subscription flow: ${flow.name}")
       (
-        SubscriptionFlows(flow).pagesInOrder.head,
+        flowConfig.pagesInOrder.head,
         requestSessionData.storeUserSubscriptionFlow(
           flow,
-          SubscriptionFlows(flow).determinePageBeforeSubscriptionFlow(maybePreviousPageUrl).url(service)
+          flowConfig.determinePageBeforeSubscriptionFlow(maybePreviousPageUrl).url(service)
         )
       )
     }
   }
 
-  private def selectFlow(registrationDetails: RegistrationDetails, orgType: CdsOrganisationType)(implicit
-    request: Request[AnyContent]
-  ): SubscriptionFlow = {
+  private def selectFlow(
+    registrationDetails: RegistrationDetails,
+    orgType: CdsOrganisationType
+  )(implicit request: Request[AnyContent]): SubscriptionFlow = {
     val isRow = UserLocation.isRow(requestSessionData)
-
     val subscribePrefix = (isRow, registrationDetails.customsId) match {
       case (true, None) => "migration-eori-row-utrNino-enabled-"
       case (true, _)    => "migration-eori-row-"

@@ -68,6 +68,9 @@ class SubscriptionDetailsService @Inject() (
       saveSubscriptionDetails(sd => sd.copy(contactDetails = Some(contactDetails)))
     }
 
+  def cacheAddContactAddressDetails(addressDetailsYesorNo: YesNo)(implicit request: Request[_]): Future[Unit] =
+    saveSubscriptionDetails(sd => sd.copy(addContactAddressDetails = Some(addressDetailsYesorNo)))
+
   def cacheAddressDetails(address: AddressViewModel)(implicit request: Request[_]): Future[Unit] = {
     def noneForEmptyPostcode(a: AddressViewModel) = a.copy(postcode = a.postcode.filter(_.nonEmpty))
     saveSubscriptionDetails(sd => sd.copy(addressDetails = Some(noneForEmptyPostcode(address))))
@@ -86,6 +89,9 @@ class SubscriptionDetailsService @Inject() (
 
     saveSubscriptionDetails(sd => sd.copy(euEoriRegisteredAddress = Some(noneForEmptyPostcode(address))))
   }
+
+  def clearContactAddress()(implicit request: Request[_]): Future[Unit] =
+    saveSubscriptionDetails(sd => sd.copy(contactAddress = None))
 
   def cacheNameIdDetails(
     nameIdOrganisationMatchModel: NameIdOrganisationMatchModel

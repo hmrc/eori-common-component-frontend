@@ -50,6 +50,7 @@ class CheckYourDetailsController @Inject() (
             isThirdCountrySubscription = isThirdCountrySubscriptionFlow,
             isIndividualSubscriptionFlow = requestSessionData.userSubscriptionFlow.isIndividualFlow,
             organisationType = requestSessionData.userSelectedOrganisationType,
+            addContactAddressDetails = subscriptionDetailsHolder.addContactAddressDetails,
             addressDetails = subscriptionDetailsHolder.addressDetails,
             contactDetails = subscriptionDetailsHolder.contactDetails,
             eoriNumber = subscriptionDetailsHolder.eoriNumber,
