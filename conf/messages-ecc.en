@@ -139,6 +139,7 @@ ecc.subscription.information.section.organisation.utr.link=<a href="https://www.
 
 ecc.subscription.information.section.individual.subheading=If you apply as a sole trader or individual
 ecc.subscription.information.section.how-long=How long it takes
+ecc.subscription.information.section.how-long.CDS=When you can use your subscription
 ecc.subscription.information.section.average-time=Applications take an average of 6 minutes to complete.
 ecc.subscription.information.section.approval-message=If we approve your application, the subscription will be ready to use within either:
 ecc.subscription.information.section.approval.list.first=2 hours
