@@ -196,13 +196,14 @@ class EuEoriRegisteredAddressControllerSpec
       }
     }
 
-    "display title as 'What is your organisation's registered address?' when its not a company" in {
+    "display title as 'What is your registered address?' when its not a company" in {
       when(mockCdsFrontendDataCache.userLocation(any[Request[_]])).thenReturn(
         Future.successful(UserLocationDetails(None))
       )
+      when(mockRequestSessionData.isCompany(any)).thenReturn(false)
       showReviewForm() { result =>
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("What is your organisation's registered address?")
+        page.title() should startWith("What is your registered address?")
       }
     }
 
