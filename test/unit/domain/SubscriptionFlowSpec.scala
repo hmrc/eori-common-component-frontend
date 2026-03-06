@@ -111,7 +111,7 @@ class SubscriptionFlowSpec extends UnitSpec with TestData {
     }
 
     "be correct for NameDobDetailsSubscriptionFlowPage" in {
-      NameDobDetailsSubscriptionFlowPage.url(atarService) shouldBe "/customs-enrolment-services/atar/subscribe/name"
+      NameDobDetailsSubscriptionFlowPage.url(atarService) shouldBe "/customs-enrolment-services/atar/subscribe/namedob"
     }
 
     "be correct for HowCanWeIdentifyYouSubscriptionFlowPage" in {

@@ -198,7 +198,7 @@ case object NameDetailsSubscriptionFlowPage extends SubscriptionPage {
 case object NameDobDetailsSubscriptionFlowPage extends SubscriptionPage {
 
   override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
       .createForm(service)
       .url
 

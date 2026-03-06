@@ -139,12 +139,12 @@ class CheckYourDetailsSpec extends ViewSpec {
         val fullName = page.body.getElementsByClass("review-tbl__full-name").get(0)
         fullName.getElementsByClass("govuk-summary-list__key").text mustBe "Full name"
         fullName.getElementsByClass("govuk-summary-list__value").text mustBe "FName LName"
-        fullName.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+        fullName.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
 
         val dob = page.body.getElementsByClass("review-tbl__date-of-birth").get(0)
         dob.getElementsByClass("govuk-summary-list__key").text mustBe "Date of birth"
         dob.getElementsByClass("govuk-summary-list__value").text mustBe "8 April 2003"
-        dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+        dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
         page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
@@ -177,12 +177,12 @@ class CheckYourDetailsSpec extends ViewSpec {
         val fullName = page.body.getElementsByClass("review-tbl__full-name").get(0)
         fullName.getElementsByClass("govuk-summary-list__key").text mustBe "Full name"
         fullName.getElementsByClass("govuk-summary-list__value").text mustBe "FName LName"
-        fullName.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+        fullName.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
 
         val dob = page.body.getElementsByClass("review-tbl__date-of-birth").get(0)
         dob.getElementsByClass("govuk-summary-list__key").text mustBe "Date of birth"
         dob.getElementsByClass("govuk-summary-list__value").text mustBe "8 April 2003"
-        dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+        dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
         page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val ninoRow = page.body.getElementsByClass("review-tbl__nino").get(0)
@@ -384,12 +384,12 @@ class CheckYourDetailsSpec extends ViewSpec {
         val fullName = page.body.getElementsByClass("review-tbl__full-name").get(0)
         fullName.getElementsByClass("govuk-summary-list__key").text mustBe "Full name"
         fullName.getElementsByClass("govuk-summary-list__value").text mustBe "FName LName"
-        fullName.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+        fullName.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
 
         val dob = page.body.getElementsByClass("review-tbl__date-of-birth").get(0)
         dob.getElementsByClass("govuk-summary-list__key").text mustBe "Date of birth"
         dob.getElementsByClass("govuk-summary-list__value").text mustBe "8 April 2003"
-        dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+        dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
         page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
@@ -447,12 +447,12 @@ class CheckYourDetailsSpec extends ViewSpec {
         val fullName = page.body.getElementsByClass("review-tbl__full-name").get(0)
         fullName.getElementsByClass("govuk-summary-list__key").text mustBe "Full name"
         fullName.getElementsByClass("govuk-summary-list__value").text mustBe "FName LName"
-        fullName.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+        fullName.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
 
         val dob = page.body.getElementsByClass("review-tbl__date-of-birth").get(0)
         dob.getElementsByClass("govuk-summary-list__key").text mustBe "Date of birth"
         dob.getElementsByClass("govuk-summary-list__value").text mustBe "8 April 2003"
-        dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+        dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
         page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
@@ -492,12 +492,12 @@ class CheckYourDetailsSpec extends ViewSpec {
         val fullName = page.body.getElementsByClass("review-tbl__full-name").get(0)
         fullName.getElementsByClass("govuk-summary-list__key").text mustBe "Full name"
         fullName.getElementsByClass("govuk-summary-list__value").text mustBe "FName LName"
-        fullName.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+        fullName.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
 
         val dob = page.body.getElementsByClass("review-tbl__date-of-birth").get(0)
         dob.getElementsByClass("govuk-summary-list__key").text mustBe "Date of birth"
         dob.getElementsByClass("govuk-summary-list__value").text mustBe "8 April 2003"
-        dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+        dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
         page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
