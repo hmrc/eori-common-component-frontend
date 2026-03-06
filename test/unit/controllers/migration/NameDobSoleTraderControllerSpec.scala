@@ -29,7 +29,7 @@ import org.scalatest.prop.TableFor2
 import org.scalatest.prop.Tables.Table
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers.*
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -52,18 +52,18 @@ import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class NameControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
+class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
 
   protected override val mockSubscriptionFlowManager: SubscriptionFlowManager = mock[SubscriptionFlowManager]
   protected override val formId: String                                       = NameDobSoleTraderPage.formId
 
   protected override val submitInCreateModeUrl: String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
       .submit(isInReviewMode = false, atarService)
       .url
 
   protected override val submitInReviewModeUrl: String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
       .submit(isInReviewMode = true, atarService)
       .url
 
@@ -75,7 +75,7 @@ class NameControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
   private val nameForm                 = instanceOf[what_is_your_name]
   private val errorTemplate            = instanceOf[error_template]
 
-  private val controller = new NameController(
+  private val controller = new NameDobSoleTraderController(
     mockAuthAction,
     mockSubscriptionBusinessService,
     mockRequestSessionData,
