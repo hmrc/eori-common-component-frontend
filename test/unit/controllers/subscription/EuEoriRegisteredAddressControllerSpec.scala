@@ -276,7 +276,8 @@ class EuEoriRegisteredAddressControllerSpec
     "redirect to next screen" in {
       submitForm(mandatoryFields) { result =>
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some("https://www.gov.uk/check-eori-number")
+        redirectLocation(result) shouldBe Some("next-page-url")
+        Console.println(redirectLocation(result))
       }
     }
   }
@@ -303,7 +304,7 @@ class EuEoriRegisteredAddressControllerSpec
     "redirect to next screen" in {
       submitForm(mandatoryFields) { result =>
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some("https://www.gov.uk/check-eori-number")
+        redirectLocation(result) shouldBe Some("next-page-url")
       }
     }
   }

@@ -22,6 +22,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EuEoriRegisteredAddressModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.EuEoriRegisteredAddressSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.EuEoriRegisteredAddressForm.euEoriRegisteredAddressCreateForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
@@ -102,14 +104,19 @@ class EuEoriRegisteredAddressController @Inject() (
             subscriptionDetailsService.cacheEuEoriRegisteredAddressDetails(address).map { _ =>
               if (isInReviewMode)
 //                TODO: Redirect(DetermineReviewPageController.determineRoute(service))
-                Redirect("https://www.gov.uk/eori")
+                Redirect(DetermineReviewPageController.determineRoute(service))
               else
 //                TODO: Redirect(
 //                  subscriptionFlowManager
 //                    .stepInformation(EuEoriRegisteredAddressSubscriptionFlowPage)
 //                    .nextPage
 //                    .url(service))
-                Redirect("https://www.gov.uk/check-eori-number")
+                Redirect(
+                  subscriptionFlowManager
+                    .stepInformation(EuEoriRegisteredAddressSubscriptionFlowPage)
+                    .nextPage
+                    .url(service)
+                )
             }
         )
     }

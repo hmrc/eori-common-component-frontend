@@ -36,6 +36,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   SessionCache
 }
 import util.ControllerSpec
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
@@ -45,9 +46,10 @@ class SubscriptionFlowManagerSpec
 
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
+  private val appConfig                = mock[AppConfig]
 
   val controller =
-    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache)(global)
+    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache, appConfig)(global)
 
   private val mockOrgRegistrationDetails        = mock[RegistrationDetailsOrganisation]
   private val mockIndividualRegistrationDetails = mock[RegistrationDetailsIndividual]
@@ -225,9 +227,10 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
 
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
+  private val appConfig                = mock[AppConfig]
 
   val controller =
-    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache)(global)
+    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache, appConfig)(global)
 
   private val mockSession = mock[Session]
 

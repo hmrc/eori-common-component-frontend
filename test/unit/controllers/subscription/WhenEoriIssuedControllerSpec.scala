@@ -277,8 +277,16 @@ class WhenEoriIssuedControllerSpec
       controller.submit(isInReviewMode = false, atarService)
     )
 
-    "redirect to next page in subscription flow" in {
-      submitFormInCreateMode(ValidRequest)(verifyRedirectToNextPageInCreateMode)
+    "redirect to select organisation type page" in {
+      when(mockSubscriptionDetailsHolderService.cacheDateEstablished(any[LocalDate])(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(()))
+
+      val result = controller
+        .submit(isInReviewMode = false, cdsService)
+        .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, ValidRequest))
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result).get shouldBe "/customs-enrolment-services/cds/subscribe/matching/organisation-type"
     }
   }
 

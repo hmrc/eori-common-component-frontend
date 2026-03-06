@@ -20,6 +20,7 @@ import play.api.mvc.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
@@ -92,10 +93,9 @@ class WhenEoriIssuedController @Inject() (
             if (isInReviewMode)
               Redirect(DetermineReviewPageController.determineRoute(service))
             else {
-              val page = subscriptionFlowManager
-                .stepInformation(getSubscriptionPage(UserLocation.isRow(requestSessionData)))
-                .nextPage
-              Redirect(page.url(service))
+              Redirect(OrganisationTypeController.form(service)).withSession(
+                requestSessionData.sessionWithUserLocationAdded(UserLocation.Eu)
+              )
             }
           }
       )
