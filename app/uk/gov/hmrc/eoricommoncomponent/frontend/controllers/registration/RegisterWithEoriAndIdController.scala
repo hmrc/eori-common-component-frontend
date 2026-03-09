@@ -17,27 +17,30 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import play.api.Logger
-import play.api.mvc._
+import play.api.mvc.*
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, GroupEnrolmentExtractor}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
   ApplicationController,
   EnrolmentAlreadyExistsController
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.Sub02Controller
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, MissingGroupId}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubmissionCompleteData
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.cdsCode
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.*
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -65,10 +68,12 @@ class RegisterWithEoriAndIdController @Inject() (
   subscriptionOutcomeFailSoloAndIndividualView: subscription_outcome_fail_solo_and_individual,
   subscriptionOutcomeFailRowUtrOrgView: subscription_outcome_fail_row_utr_organisation,
   subscriptionOutcomeFailRowView: subscription_outcome_fail_row,
+  subscriptionOutcomeFailEuEoriView: subscription_outcome_fail_eu_eori,
   reg06EoriAlreadyLinked: reg06_eori_already_linked,
   reg06IdAlreadyLinked: reg06_id_already_linked,
   groupEnrolment: GroupEnrolmentExtractor,
-  notifyRcmService: NotifyRcmService
+  notifyRcmService: NotifyRcmService,
+  appConfig: AppConfig
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -191,24 +196,35 @@ class RegisterWithEoriAndIdController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
       for {
         subscriptionDetails <- cache.subscriptionDetails
+        firstLetterOfEori   <- cache.getFirst2LettersEori
         orgType   = subscriptionDetails.formData.organisationType
         customsId = subscriptionDetails.customsId
         _ <- cache.journeyCompleted
       } yield {
         val isUk = requestSessionData.selectedUserLocation.forall(_ == UserLocation.Uk)
-        val view = determineFailView(service, orgType, customsId.nonEmpty, isUk)
+        val isEuEori =
+          firstLetterOfEori.contains(EoriRegion.EU) && appConfig.euEoriEnabled && service.code == Service.cds.code
+        val view = determineFailView(service, orgType, customsId.nonEmpty, isUk, isEuEori)
         Ok(view)
       }
 
+    }
+
+  def euEoriApplicationUnsuccessful(service: Service): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
+      Future.successful(Ok(subscriptionOutcomeFailEuEoriView(service)))
     }
 
   def determineFailView(
     service: Service,
     orgType: Option[CdsOrganisationType],
     isCustomsIdPopulated: Boolean,
-    isUk: Boolean
+    isUk: Boolean,
+    isEuEori: Boolean
   )(implicit request: Request[_]): HtmlFormat.Appendable =
-    if (isUk)
+    if (isEuEori) {
+      subscriptionOutcomeFailEuEoriView(service)
+    } else if (isUk)
       orgType match {
         case Some(Company)                         => subscriptionOutcomeFailCompanyView(service)
         case Some(CdsOrganisationType.Partnership) => subscriptionOutcomeFailPartnershipView(service)

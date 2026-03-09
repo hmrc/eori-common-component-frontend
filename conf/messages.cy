@@ -559,6 +559,23 @@ cds.sub02.outcome.subscription-in-progress.received=Daeth y cais i law CThEF ar 
 cds.sub02.outcome.subscription-in-progress.what-happens-next=Yr hyn sy’n digwydd nesaf
 cds.sub02.outcome.subscription-in-progress.we-are-processing=Rydym yn prosesu’ch cais am EORI - gall hyn gymryd hyd at 5 diwrnod gwaith.
 cds.sub02.outcome.subscription-in-progress.send-you-an-email=Byddwn yn anfon e-bost atoch pan fydd eich cais wedi’i brosesu.
+
+# EU EORI outcome - application unsuccessful
+cds.eu-eori.outcome.unsuccessful.h1=Roedd eich cais yn aflwyddiannus
+cds.eu-eori.outcome.unsuccessful.p1=Nid oedd modd i ni ddilysu’r wybodaeth a nodwyd gennych.
+cds.eu-eori.outcome.unsuccessful.h2-1=Gwiriwch eich bod wedi nodi’r manylion cywir
+cds.eu-eori.outcome.unsuccessful.p2=Mae’n bosibl bod mwy nag un o’r manylion hyn yn anghywir:
+cds.eu-eori.outcome.unsuccessful.l1=Rhif EORI
+cds.eu-eori.outcome.unsuccessful.l2=dyddiad y cyhoeddwyd eich rhif EORI
+cds.eu-eori.outcome.unsuccessful.l3=enw
+cds.eu-eori.outcome.unsuccessful.l4=cyfeiriad cofrestredig
+cds.eu-eori.outcome.unsuccessful.p3=Mae angen i chi ddefnyddio’r un manylion a ddarparwyd gennych pan wnaethoch gais am eich rhif EORI.
+cds.eu-eori.outcome.unsuccessful.p4=Gwiriwch y manylion hyn a gwnewch {0}.
+cds.eu-eori.outcome.unsuccessful.p4-link=gais eto
+cds.eu-eori.outcome.unsuccessful.h2-2=Os ydych wedi nodi’r manylion cywir
+cds.eu-eori.outcome.unsuccessful.p5=Os ydych wedi cofrestru ar gyfer rhif EORI yn ddiweddar, mae’n bosibl nad yw’n weithredol eto. Gall gymryd ychydig o amser cyn i rif newydd fod yn barod i’w ddefnyddio. Ceisiwch danysgrifio nes ymlaen.
+cds.eu-eori.outcome.unsuccessful.p6=Os oes angen mwy o wybodaeth neu help arnoch, bydd angen i chi gysylltu â’r awdurdod gwnaeth gyhoeddi’ch rhif EORI.
+
 cds.reg06.outcome.eori-already-linked.title-and-heading=Cais yn aflwyddiannus
 cds.reg06.outcome.eori-already-linked.heading=Mae eisoes gan {0} fynediad at CDS gyda Phorth y Llywodraeth gwahanol
 cds.reg06.outcome.eori-already-linked.received=Daeth y cais i ar {0}

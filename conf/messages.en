@@ -637,6 +637,22 @@ cds.sub02.outcome.subscription-in-progress.what-happens-next=What happens next
 cds.sub02.outcome.subscription-in-progress.we-are-processing=We are processing your EORI application, this can take up to 5 working days.
 cds.sub02.outcome.subscription-in-progress.send-you-an-email=We will send you an email when your application has been processed.
 
+# EU EORI outcome - application unsuccessful
+cds.eu-eori.outcome.unsuccessful.h1=Your application was unsuccessful
+cds.eu-eori.outcome.unsuccessful.p1=We could not verify the information you entered.
+cds.eu-eori.outcome.unsuccessful.h2-1=Check you entered the correct details
+cds.eu-eori.outcome.unsuccessful.p2=One or more of these details may be incorrect:
+cds.eu-eori.outcome.unsuccessful.l1=EORI number
+cds.eu-eori.outcome.unsuccessful.l2=date your EORI number was issued
+cds.eu-eori.outcome.unsuccessful.l3=name
+cds.eu-eori.outcome.unsuccessful.l4=registered address
+cds.eu-eori.outcome.unsuccessful.p3=You need to use the same details you provided when you applied for your EORI number.
+cds.eu-eori.outcome.unsuccessful.p4=Check these details and {0}.
+cds.eu-eori.outcome.unsuccessful.p4-link=apply again
+cds.eu-eori.outcome.unsuccessful.h2-2=If you entered the correct details
+cds.eu-eori.outcome.unsuccessful.p5=If you recently registered for an EORI number, it may not be active yet. It can take some time before a new number is ready to use. Try subscribing later.
+cds.eu-eori.outcome.unsuccessful.p6=If you need more information or help, you will need to contact the authority that issued your EORI number.
+
 # Reg06 Outcome EORI already linked 600 and 602
 cds.reg06.outcome.eori-already-linked.title-and-heading=The application for
 cds.reg06.outcome.eori-already-linked.heading={0} has been unsuccessful
