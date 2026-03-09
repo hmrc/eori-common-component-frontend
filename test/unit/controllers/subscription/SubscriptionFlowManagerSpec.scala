@@ -36,6 +36,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   SessionCache
 }
 import util.ControllerSpec
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
@@ -45,9 +46,10 @@ class SubscriptionFlowManagerSpec
 
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
+  private val appConfig                = mock[AppConfig]
 
   val controller =
-    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache)(global)
+    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache, appConfig)(global)
 
   private val mockOrgRegistrationDetails        = mock[RegistrationDetailsOrganisation]
   private val mockIndividualRegistrationDetails = mock[RegistrationDetailsIndividual]
@@ -225,9 +227,10 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
 
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
+  private val appConfig                = mock[AppConfig]
 
   val controller =
-    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache)(global)
+    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache, appConfig)(global)
 
   private val mockSession = mock[Session]
 
@@ -290,6 +293,89 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       verify(mockRequestSessionData).storeUserSubscriptionFlow(RowOrganisationFlow, UserLocationPage.url(atarService))(
         mockRequest
       )
+    }
+  }
+}
+
+class SubscriptionFlowManagerEucrEnabledSpec
+    extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec {
+
+  private val mockRequestSessionData   = mock[RequestSessionData]
+  private val mockCdsFrontendDataCache = mock[SessionCache]
+  private val mockAppConfig            = mock[AppConfig]
+
+  val controller =
+    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache, mockAppConfig)(global)
+
+  private val mockSession = mock[Session]
+  private val mockRequest = mock[Request[AnyContent]]
+
+  override def beforeEach(): Unit = {
+    reset(mockRequestSessionData)
+    reset(mockSession)
+    reset(mockCdsFrontendDataCache)
+    when(
+      mockRequestSessionData.storeUserSubscriptionFlow(any[SubscriptionFlow], any[String])(any[Request[AnyContent]])
+    )
+      .thenReturn(mockSession)
+    when(mockCdsFrontendDataCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[Request[_]]))
+      .thenReturn(Future.successful(true))
+    when(mockAppConfig.euEoriEnabled).thenReturn(true) // flag ON
+  }
+
+  "First Page with EUCR enabled" should {
+
+    "start RowOrganisationFlowEUCR when org type is Company, ROW, no customsId, and service is CDS" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
+        .thenReturn(Future.successful(RegistrationDetailsOrganisation())) // customsId = None
+
+      val (subscriptionPage, session) =
+        await(
+          controller.startSubscriptionFlow(None, Company, cdsService)(mockRequest)
+        ) // cdsService ensures service.code == cds.code
+
+      subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
+      session shouldBe mockSession
+      verify(mockRequestSessionData).storeUserSubscriptionFlow(
+        RowOrganisationFlowEUCR,
+        UserLocationPage.url(cdsService)
+      )(mockRequest)
+    }
+
+    "start RowIndividualFlowEUCR when org type is Individual, ROW, no customsId, and service is CDS" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
+        .thenReturn(Future.successful(RegistrationDetailsIndividual())) // customsId = None
+
+      val (subscriptionPage, session) =
+        await(controller.startSubscriptionFlow(None, Individual, cdsService)(mockRequest))
+
+      subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
+      session shouldBe mockSession
+      verify(mockRequestSessionData).storeUserSubscriptionFlow(
+        RowIndividualFlowEUCR,
+        UserLocationPage.url(cdsService)
+      )(mockRequest)
+    }
+
+    "fall back to RowOrganisationFlow (non-EUCR) when service is NOT CDS even with flag on" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
+        .thenReturn(Future.successful(RegistrationDetailsOrganisation()))
+
+      val (subscriptionPage, session) =
+        await(controller.startSubscriptionFlow(None, Company, atarService)(mockRequest)) // non-CDS service
+
+      subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
+      session shouldBe mockSession
+      verify(mockRequestSessionData).storeUserSubscriptionFlow(
+        RowOrganisationFlow,
+        UserLocationPage.url(atarService)
+      )(mockRequest)
     }
   }
 }

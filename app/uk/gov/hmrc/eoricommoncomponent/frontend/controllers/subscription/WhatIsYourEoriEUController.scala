@@ -24,6 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolment
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori_eu
 
@@ -59,7 +60,7 @@ class WhatIsYourEoriEUController @Inject() (
           ))),
         formData =>
           subscriptionDetailsHolderService.cacheEoriNumber(formData.eoriNumber).map { _ =>
-            Redirect("https://www.gov.uk/check-eori-number")
+            Redirect(routes.WhenEoriIssuedController.createForm(service))
           }
       )
     }

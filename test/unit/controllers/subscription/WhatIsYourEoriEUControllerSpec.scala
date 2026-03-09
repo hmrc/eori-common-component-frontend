@@ -76,7 +76,7 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
       )
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result).get shouldBe "https://www.gov.uk/check-eori-number"
+      redirectLocation(result).get shouldBe "/customs-enrolment-services/cds/subscribe/when-eori-issued"
     }
 
     "Display the correct error when nothing is entered" in {

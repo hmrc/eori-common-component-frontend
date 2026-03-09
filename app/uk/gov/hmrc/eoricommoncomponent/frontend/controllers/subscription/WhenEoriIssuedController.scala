@@ -20,6 +20,7 @@ import play.api.mvc.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
@@ -39,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class WhenEoriIssuedController @Inject() (
   authAction: AuthAction,
-  subscriptionFlowManager: SubscriptionFlowManager,
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionDetailsHolderService: SubscriptionDetailsService,
   requestSessionData: RequestSessionData,
@@ -86,16 +86,12 @@ class WhenEoriIssuedController @Inject() (
           ),
         date =>
           saveDateEstablished(date).map { _ =>
-            // TODO
-            // Update the code below when we begin work on DDCYLS-8136
-            // to integrate the new EU EORI journey into CDS navigation.
             if (isInReviewMode)
               Redirect(DetermineReviewPageController.determineRoute(service))
             else {
-              val page = subscriptionFlowManager
-                .stepInformation(getSubscriptionPage(UserLocation.isRow(requestSessionData)))
-                .nextPage
-              Redirect(page.url(service))
+              Redirect(OrganisationTypeController.form(service)).withSession(
+                requestSessionData.sessionWithUserLocationAdded(UserLocation.Eu)
+              )
             }
           }
       )
@@ -103,8 +99,5 @@ class WhenEoriIssuedController @Inject() (
 
   private def saveDateEstablished(date: LocalDate)(implicit request: Request[_]) =
     subscriptionDetailsHolderService.cacheDateEstablished(date)
-
-  private def getSubscriptionPage(location: Boolean) =
-    if (location) RowDateOfEstablishmentSubscriptionFlowPage else DateOfEstablishmentSubscriptionFlowPageMigrate
 
 }
