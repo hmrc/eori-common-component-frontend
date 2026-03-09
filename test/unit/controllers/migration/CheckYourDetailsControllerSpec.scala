@@ -16,22 +16,27 @@
 
 package unit.controllers.migration
 
-import common.support.testdata.subscription.SubscriptionContactDetailsModelBuilder._
+import common.support.testdata.subscription.SubscriptionContactDetailsModelBuilder.*
 import common.support.testdata.subscription.{BusinessDatesOrganisationTypeTables, ReviewPageOrganisationTypeTables}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.CheckYourDetailsController
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   RowOrganisationFlow,
   SubscriptionDetails,
   SubscriptionFlow
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressViewModel,
+  CompanyRegisteredCountry,
+  EuEoriRegisteredAddressModel
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 import util.ControllerSpec
@@ -53,11 +58,18 @@ class CheckYourDetailsControllerSpec
   private val mockCdsDataCache       = mock[SessionCache]
   private val mockRequestSessionData = mock[RequestSessionData]
   private val mockSubscriptionFlow   = mock[SubscriptionFlow]
-
-  private val checkYourDetailsView = instanceOf[check_your_details]
+  private val sub02Controller        = mock[Sub02Controller]
+  private val checkYourDetailsView   = instanceOf[check_your_details]
 
   val controller =
-    new CheckYourDetailsController(mockAuthAction, mockCdsDataCache, mcc, checkYourDetailsView, mockRequestSessionData)
+    new CheckYourDetailsController(
+      mockAuthAction,
+      mockCdsDataCache,
+      mcc,
+      checkYourDetailsView,
+      mockRequestSessionData,
+      sub02Controller
+    )
 
   override def beforeEach(): Unit = {
     reset(mockCdsDataCache)
@@ -74,7 +86,13 @@ class CheckYourDetailsControllerSpec
       addressDetails =
         Some(AddressViewModel(street = "street", city = "city", postcode = Some("postcode"), countryCode = "GB")),
       email = Some("john.doe@example.com"),
-      registeredCompany = Some(CompanyRegisteredCountry("GB"))
+      registeredCompany = Some(CompanyRegisteredCountry("GB")),
+      euEoriRegisteredAddress = Some(EuEoriRegisteredAddressModel(
+        lineOne = "street",
+        lineThree = "city",
+        postcode = Some("postcode"),
+        country = "FR"
+      ))
     )
     when(mockCdsDataCache.email(any[Request[_]])).thenReturn(Future.successful(Email))
 
@@ -85,6 +103,10 @@ class CheckYourDetailsControllerSpec
       Future.successful(individualRegistrationDetails)
     )
     when(mockCdsDataCache.addressLookupParams(any[Request[_]])).thenReturn(Future.successful(None))
+    when(mockCdsDataCache.getFirst2LettersEori(any[Request[_]])).thenReturn(Future.successful(None))
+    when(mockCdsDataCache.subscriptionDetails(any[Request[_]])).thenReturn(Future.successful(
+      subscriptionDetailsHolderForCompany
+    ))
   }
 
   "Reviewing the details" should {

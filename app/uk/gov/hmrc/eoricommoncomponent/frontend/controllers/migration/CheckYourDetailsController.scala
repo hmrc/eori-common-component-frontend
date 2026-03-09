@@ -19,8 +19,9 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
@@ -34,7 +35,8 @@ class CheckYourDetailsController @Inject() (
   cdsFrontendCache: SessionCache,
   mcc: MessagesControllerComponents,
   checkYourDetailsView: check_your_details,
-  requestSessionData: RequestSessionData
+  requestSessionData: RequestSessionData,
+  sub02Controller: Sub02Controller
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -45,10 +47,12 @@ class CheckYourDetailsController @Inject() (
           subscriptionDetailsHolder <- cdsFrontendCache.subscriptionDetails
           email                     <- cdsFrontendCache.email
           addressLookupParams       <- cdsFrontendCache.addressLookupParams
+          first2LettersEori         <- cdsFrontendCache.getFirst2LettersEori
         } yield Ok(
           checkYourDetailsView(
             isThirdCountrySubscription = isThirdCountrySubscriptionFlow,
             isIndividualSubscriptionFlow = requestSessionData.userSubscriptionFlow.isIndividualFlow,
+            isEuCdsFlow = sub02Controller.isEuEoriEnabled(service, first2LettersEori),
             organisationType = requestSessionData.userSelectedOrganisationType,
             addContactAddressDetails = subscriptionDetailsHolder.addContactAddressDetails,
             addressDetails = subscriptionDetailsHolder.addressDetails,
@@ -64,6 +68,7 @@ class CheckYourDetailsController @Inject() (
             registeredCountry = subscriptionDetailsHolder.registeredCompany,
             addressLookupParams = addressLookupParams,
             contactAddress = subscriptionDetailsHolder.contactAddress,
+            euEoriRegisteredAddress = subscriptionDetailsHolder.euEoriRegisteredAddress,
             service = service
           )
         )

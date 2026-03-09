@@ -61,7 +61,7 @@ class Sub02Controller @Inject() (
   def subscriptionTo(service: Service) = s"cds.subscription.outcomes.steps.next.new.${service.code}"
 
   def isEuEoriEnabled(service: Service, first2LettersEori: Option[EoriRegion]): Boolean =
-    service.code == Service.cds.code && appConfig.euEoriEnabled && first2LettersEori == EoriRegion.EU
+    service.code == Service.cds.code && appConfig.euEoriEnabled && first2LettersEori == Some(EoriRegion.EU)
 
   private def renderPageWithName(service: Service)(implicit request: Request[_]): Future[Result] =
     for {

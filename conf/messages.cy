@@ -1510,3 +1510,12 @@ cds.subscription.name.title = Beth yw’ch enw?
 cds.subscription.name.hint = Byddwn yn defnyddio hwn i gadarnhau pwy ydych. Nodwch yr union enw a ddefnyddioch pan wnaethoch gais am rif EORI.
 cds.subscription.name.given-name.label = Enw a roddwyd
 cds.subscription.name.family-name.label = Enw teuluol
+
+# Check your answers
+cds.subscription.when-eori-issued.label = Pryd y cyhoeddwyd y rhif EORI hwn
+cds.subscription.organisation-address.label = Cyfeiriad y sefydliad
+cds.subscription.registered-address.label = Cyfeiriad cofrestredig
+cds.form.declaration.agree.heading = Drwy barhau, rydych yn cytuno’r canlynol:
+cds.form.declaration.agree.line1 = bod yr wybodaeth rydych yn ei darparu yn gywir ac yn gyflawn
+cds.form.declaration.agree.line2 = byddwn yn gwirio’ch manylion yn erbyn data a gedwir gan awdurdod cyhoeddi’ch rhif EORI
+cds.subscription.form.send = Cytuno a pharhau

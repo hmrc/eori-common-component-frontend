@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, ExistingEori, NameIdOrganisationMatchModel, _}
 @import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressLookupParams, AddressViewModel, CompanyRegisteredCountry, ContactAddressModel}
+@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, Text}
@@ -29,6 +29,7 @@
 
 @(isThirdCountrySubscription: Boolean,
         isIndividualSubscriptionFlow: Boolean,
+        isEuCdsFlow: Boolean,
         organisationType: Option[CdsOrganisationType],
         contactDetails: Option[ContactDetailsModel],
         addContactAddressDetails: Option[YesNo],
@@ -44,6 +45,7 @@
         registeredCountry: Option[CompanyRegisteredCountry],
         addressLookupParams: Option[AddressLookupParams],
         contactAddress: Option[ContactAddressModel],
+        euEoriRegisteredAddress: Option[EuEoriRegisteredAddressModel],
         service: Service)(implicit request: Request[_], messages: Messages)
 
 @labelForEUCountry(countryCode: String) = @{
@@ -176,6 +178,13 @@
 @helpers.noMarginParagraph(transformCountryCodeToLabel(cd.country))
 }
 
+@euEoriRegisteredAddressHtml(cd: EuEoriRegisteredAddressModel) = {
+@helpers.noMarginParagraph(cd.lineOne)
+@helpers.noMarginParagraph(cd.lineThree)
+@cd.postcode.map(postcode => helpers.noMarginParagraph(postcode))
+@helpers.noMarginParagraph(transformCountryCodeToLabel(cd.country))
+}
+
 @isAddressLookup = @{
     addressLookupParams.exists(_.nonEmpty())
 }
@@ -189,11 +198,11 @@
     utr.forall(_.id == messages("cds.not-entered.label")) && nino.forall(_.id == messages("cds.not-entered.label")) && nameIdOrganisationDetails.forall(_.id.isEmpty)
 }
 
-@doeRow(de: LocalDate) = @{
+@doeRow(key: String, de: LocalDate, fieldName: String) = @{
     Some(row(
-        "cds.date-established.label",
+        key,
         Some(Html(formatDate(de))),
-        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service)),"review-tbl__date-established"
+        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service)), fieldName
     ))
 }
 @row(key: String, value: Option[Html], call: Option[Call] = None, fieldName: String = "") = @{
@@ -233,12 +242,25 @@
                     if(existingEori.isEmpty) Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.reviewForm(service)) else None,
                     "review-tbl__eori-number"
                 )),
+                dateEstablished.flatMap { de =>
+                    if(isEuCdsFlow)
+                        doeRow("cds.subscription.when-eori-issued.label", de, "review-tbl__when-eori-issued")
+                    else None
+                },
                 nameOrganisationDetails.flatMap { d => {
                     if(isThirdCountrySubscription && !isIndividualSubscriptionFlow) {
                         Some(row(nameLabel, Some(Html(d.name)), Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController.reviewForm(service)), "review-tbl__org_name"))
                     } else None
                 }
                 },
+                euEoriRegisteredAddress.flatMap { ad => {
+                    val label = if(isIndividualSubscriptionFlow) "cds.subscription.registered-address.label" else "cds.subscription.organisation-address.label"
+                    if(isEuCdsFlow)
+                        Some(row(label, Some(euEoriRegisteredAddressHtml(ad)),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.EuEoriRegisteredAddressController.reviewPage(service)),
+                            "review-tbl__org_address"))
+                    else None
+                }},
                 nameDobDetails.flatMap { nd => {
                     if(isIndividualSubscriptionFlow) {
                         Some(row("subscription.check-your-details.full-name.label", Some(Html(s"${nd.firstName} ${nd.lastName}")), Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service)),"review-tbl__full-name"))
@@ -292,8 +314,8 @@
                 }
                 },
                 dateEstablished.flatMap { de => {
-                    if(!isThirdCountrySubscription && !isIndividualSubscriptionFlow)
-                        doeRow(de)
+                    if(!isThirdCountrySubscription && !isIndividualSubscriptionFlow && !isEuCdsFlow)
+                        doeRow("cds.date-established.label", de, "review-tbl__date-established")
                     else None
                 }
                 },
@@ -314,8 +336,8 @@
                 }
                 },
                 dateEstablished.flatMap { de => {
-                    if(isThirdCountrySubscription  && !isIndividualSubscriptionFlow)
-                        doeRow(de)
+                    if(isThirdCountrySubscription  && !isIndividualSubscriptionFlow && !isEuCdsFlow)
+                        doeRow("cds.date-established.label", de, "review-tbl__date-established")
                     else None
                 }
                 },
@@ -331,12 +353,14 @@
                 }
                 },
                 addContactAddressDetails.flatMap { addAddress =>
-                    Some(row(
-                        "cds.subscription.add-contact-address.page.title",
-                        Some(Html(if(addAddress.isYes) messages("cds.yes") else messages("cds.no"))),
-                        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AddContactAddressController.form(true, service)),
-                            "review-tbl__contact-address"
-                    ))
+                    if (isEuCdsFlow)
+                        Some(row(
+                            "cds.subscription.add-contact-address.page.title",
+                            Some(Html(if(addAddress.isYes) messages("cds.yes") else messages("cds.no"))),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AddContactAddressController.form(true, service)),
+                                "review-tbl__contact-address"
+                        ))
+                    else None
                 },
                 contactAddress.flatMap { cd => {
                     if(isThirdCountrySubscription && isUtrAndNinoEmpty) {
@@ -355,7 +379,16 @@
         ))
 
         <h2 id="declaration" class="govuk-heading-m">@messages("cds.form.declaration")</h2>
-        <p class="govuk-body" id="disclaimer">@messages("cds.form.disclaimer")</p>
+
+        @if(isEuCdsFlow) {
+            <p class="govuk-body" id="disclaimer">@messages("cds.form.declaration.agree.heading")</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("cds.form.declaration.agree.line1")</li>
+                <li>@messages("cds.form.declaration.agree.line2")</li>
+            </ul>
+        } else {
+            <p class="govuk-body" id="disclaimer">@messages("cds.form.disclaimer")</p>
+        }
 
         <div class="govuk-form-group">
             @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RegisterWithEoriAndIdController.registerWithEoriAndId(service)) {
@@ -363,7 +396,7 @@
 
                 @govukButton(Button(
                     preventDoubleClick = Option(true),
-                    content = Text(messages("cds.form.send")),
+                    content = Text(if(isEuCdsFlow) messages("cds.subscription.form.send") else messages("cds.form.send")),
                     id = Some("continue-button")
                 ))
             }
