@@ -28,4 +28,9 @@ object ApplicationPendingPage extends WebPage {
   override val title = "We need to make more checks on your application"
 }
 
+object EuEoriAplicationUnsuccessfulPage extends WebPage {
+
+  override val title = "Your application was unsuccessful"
+}
+
 object ApplicationUnsuccessfulPage extends ApplicationUnsuccessfulPage

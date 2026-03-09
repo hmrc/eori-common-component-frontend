@@ -1,0 +1,57 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, Text}
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import views.html.helper._
+
+@this(layout_di: layout, h1: helpers.h1, h2: helpers.h2, p: helpers.paragraph)
+
+@(service: Service)(implicit request: Request[_], messages: Messages)
+
+@layout_di(messages("cds.eu-eori.outcome.unsuccessful.h1"), displayBackLink = false, service = service) {
+    <div>
+
+        @h1(messages("cds.eu-eori.outcome.unsuccessful.h1"))
+        @p(messages("cds.eu-eori.outcome.unsuccessful.p1"))
+        @h2(messages("cds.eu-eori.outcome.unsuccessful.h2-1"))
+        @p(messages("cds.eu-eori.outcome.unsuccessful.p2"))
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("cds.eu-eori.outcome.unsuccessful.l1")</li>
+            <li>@messages("cds.eu-eori.outcome.unsuccessful.l2")</li>
+            <li>@messages("cds.eu-eori.outcome.unsuccessful.l3")</li>
+            <li>@messages("cds.eu-eori.outcome.unsuccessful.l4")</li>
+        </ul>
+        @p(messages("cds.eu-eori.outcome.unsuccessful.p3"))
+
+        <p class="govuk-body" id="start-again">
+            @Html(messages(
+            "cds.eu-eori.outcome.unsuccessful.p4",
+            s"""<a href="${ApplicationController.startSubscription(service).url}" class="govuk-link">${messages("cds.eu-eori.outcome.unsuccessful.p4-link")}</a>"""
+            ))
+        </p>
+
+        @h2(messages("cds.eu-eori.outcome.unsuccessful.h2-2"))
+        @p(messages("cds.eu-eori.outcome.unsuccessful.p5"))
+        @p(messages("cds.eu-eori.outcome.unsuccessful.p6"))
+
+        @helpers.helpAndSupport()
+    </div>
+}
