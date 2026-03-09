@@ -103,14 +103,8 @@ class EuEoriRegisteredAddressController @Inject() (
           address =>
             subscriptionDetailsService.cacheEuEoriRegisteredAddressDetails(address).map { _ =>
               if (isInReviewMode)
-//                TODO: Redirect(DetermineReviewPageController.determineRoute(service))
                 Redirect(DetermineReviewPageController.determineRoute(service))
               else
-//                TODO: Redirect(
-//                  subscriptionFlowManager
-//                    .stepInformation(EuEoriRegisteredAddressSubscriptionFlowPage)
-//                    .nextPage
-//                    .url(service))
                 Redirect(
                   subscriptionFlowManager
                     .stepInformation(EuEoriRegisteredAddressSubscriptionFlowPage)
