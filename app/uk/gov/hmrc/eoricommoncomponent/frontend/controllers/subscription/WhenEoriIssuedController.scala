@@ -40,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class WhenEoriIssuedController @Inject() (
   authAction: AuthAction,
-  subscriptionFlowManager: SubscriptionFlowManager,
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionDetailsHolderService: SubscriptionDetailsService,
   requestSessionData: RequestSessionData,
@@ -87,9 +86,6 @@ class WhenEoriIssuedController @Inject() (
           ),
         date =>
           saveDateEstablished(date).map { _ =>
-            // TODO
-            // Update the code below when we begin work on DDCYLS-8136
-            // to integrate the new EU EORI journey into CDS navigation.
             if (isInReviewMode)
               Redirect(DetermineReviewPageController.determineRoute(service))
             else {
@@ -103,8 +99,5 @@ class WhenEoriIssuedController @Inject() (
 
   private def saveDateEstablished(date: LocalDate)(implicit request: Request[_]) =
     subscriptionDetailsHolderService.cacheDateEstablished(date)
-
-  private def getSubscriptionPage(location: Boolean) =
-    if (location) RowDateOfEstablishmentSubscriptionFlowPage else DateOfEstablishmentSubscriptionFlowPageMigrate
 
 }

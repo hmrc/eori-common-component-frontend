@@ -155,7 +155,7 @@ class NameDobSoleTraderController @Inject() (
           .map { _ =>
             Redirect(
               subscriptionFlowManager
-                .stepInformation(EuEoriRegisteredAddressSubscriptionFlowPage)
+                .stepInformation(NameDobDetailsSubscriptionFlowPage)
                 .nextPage
                 .url(service)
             )

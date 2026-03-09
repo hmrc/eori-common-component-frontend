@@ -65,7 +65,6 @@ class WhenEoriIssuedControllerSpec
 
   private val controller = new WhenEoriIssuedController(
     mockAuthAction,
-    mockSubscriptionFlowManager,
     mockSubscriptionBusinessService,
     mockSubscriptionDetailsHolderService,
     mockRequestSessionData,

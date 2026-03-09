@@ -19,9 +19,10 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 @import views.html.helper._
 
-@this(errorSummary: helpers.errorSummary, layout_di: layout, h1: helpers.h1, p: helpers.paragraph, inputText: helpers.inputText, govukButton: GovukButton)
+@this(errorSummary: helpers.errorSummary, govukHint: GovukHint, layout_di: layout, h1: helpers.h1, p: helpers.paragraph, inputText: helpers.inputText, govukButton: GovukButton)
 
 @(subscriptionNameForm: Form[NameModel], isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
@@ -29,15 +30,18 @@
 
     @h1(messages("cds.subscription.name.title"))
 
-    @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.submit(isInReviewMode, service), "subscriptionNameForm") {
+    @govukHint(Hint(id = Some("cds.subscription.name.hint"), content = Text(messages("cds.subscription.name.hint")), classes = "govuk-!-margin-top-0 govuk-!-margin-bottom-5"))
 
-        @p(messages("cds.subscription.name.hint"))
+    @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.submit(isInReviewMode, service), "subscriptionNameForm") {
+        @CSRF.formField
+
+        
 
         @inputText(
             form = subscriptionNameForm,
             id = "given-name",
             name = "given-name",
-            label = messages("cds.subscription.name.first-name.label"),
+            label = messages("cds.subscription.name.given-name.label"),
             isPageHeading = false,
             autocomplete = Some("given-name"),
             spellcheck =  Some(false),
