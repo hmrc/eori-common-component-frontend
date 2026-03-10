@@ -1395,6 +1395,7 @@ contact-address.line-2=Cyfeiriad – llinell 2 (dewisol)
 contact-address.line-3=Tref neu ddinas
 contact-address.line-4=Rhanbarth neu dalaith (dewisol)
 contact-address.postcode-optional=Cod post (dewisol)
+contact-address.postal-code-optional=Cod post (dewisol)
 contact-address.country=Gwlad
 
 #Eu Eori Registered Address
@@ -1470,14 +1471,14 @@ cds.eori-already-exists.p4 = neu ffonio’r Llinell Gymorth ar 0300 200 1900.
 sign-in-to-another-account = Mewngofnodi i gyfrif arall
 
 # First 2 letters of EORI number
-cds.subscription.first-2-letters-eori.heading = What are the first two letters of your EORI number?
+cds.subscription.first-2-letters-eori.heading = Beth yw 2 lythyren gyntaf eich rhif EORI?
 cds.subscription.first-2-letters-eori.page-error = Dewiswch y 2 lythyren gyntaf o’ch rhif EORI
 cds.subscription.first-2-letters-eori.radio.gb = GB
-cds.subscription.first-2-letters-eori.radio.eu = Another 2 letters, like DE, ES or FR
-cds.subscription.first-2-letters-eori.radio.hint.text = An EORI number is 2 letters followed by up to 15 characters, like GB123456123456, ESX1234567X or NL12345678.
-cds.subscription.first-2-letters-eori.detail.para1 = You need an EORI number to use this online service.
-cds.subscription.first-2-letters-eori.detail.para2 = If your organisation is based in UK, you should <a href="https://www.tax.service.gov.uk/customs-registration-services/cds/register" class="govuk-link" target="_blank" rel="noopener noreferrer">apply for both a subscription and an EORI number starting with GB</a>.
-cds.subscription.first-2-letters-eori.detail.para3 = If your organisation is based in a country in the EU, you should apply for an EORI number in that country.
+cds.subscription.first-2-letters-eori.radio.eu = 2 lythyren arall, fel DE, ES neu FR
+cds.subscription.first-2-letters-eori.radio.hint.text = Mae rhif EORI yn 2 lythyren ac yna hyd at 15 cymeriad, fel GB123456123456, ESX1234567X neu NL12345678.
+cds.subscription.first-2-letters-eori.detail.para1 = Mae angen rhif EORI arnoch i ddefnyddio’r gwasanaeth ar-lein hwn.
+cds.subscription.first-2-letters-eori.detail.para2 = Os yw’ch sefydliad wedi’i leoli yn y DU, <a href="https://www.tax.service.gov.uk/customs-registration-services/cds/register" class="govuk-link" target="_blank" rel="noopener noreferrer">dylech wneud cais am danysgrifiad a rhif EORI sy’n dechrau gyda GB</a>.
+cds.subscription.first-2-letters-eori.detail.para3 = Os yw’ch sefydliad wedi’i leoli mewn gwlad yn yr UE, dylech wneud cais am rif EORI yn y wlad honno.
 
 #What is your EORI EU
 ecc.subscription.enter-eu-eori-number.page.title=Beth yw’ch rhif EORI?
@@ -1503,3 +1504,9 @@ ecc.subscription.we-need-to-make-checks.p2b =Bydd yr e-bost yn dweud wrthych a y
 ecc.subscription.we-need-to-make-checks.h3 =Os gwrthodir eich cais
 ecc.subscription.we-need-to-make-checks.p3a =Gallwch wneud cais eto.
 ecc.subscription.we-need-to-make-checks.p3b =Os oes angen help arnoch wrth gwblhau’ch cais, bydd angen i chi gysylltu â’r awdurdod gwnaeth gyhoeddi’ch rhif EORI.
+
+# What is your name
+cds.subscription.name.title = Beth yw’ch enw?
+cds.subscription.name.hint = Byddwn yn defnyddio hwn i gadarnhau pwy ydych. Nodwch yr union enw a ddefnyddioch pan wnaethoch gais am rif EORI.
+cds.subscription.name.given-name.label = Enw a roddwyd
+cds.subscription.name.family-name.label = Enw teuluol
