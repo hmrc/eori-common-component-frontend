@@ -31,6 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentE
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WeNeedToMakeChecksController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse.*
@@ -530,6 +531,45 @@ class RegisterWithEoriAndIdControllerSpec
         header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .pending(atarService)
           .url
+      }
+    }
+
+    "redirect to 'we need to make more checks' when subscription for organisation returns status as WORKLIST within SubscriptionPending" in {
+      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+      when(
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
+      ).thenReturn(
+        Future.successful(
+          SubscriptionPending(formBundleIdResponse, processingDateResponse, Some(emailVerificationTimestamp))
+        )
+      )
+      when(mockReg06Service.sendOrganisationRequest(any(), any[HeaderCarrier], any())).thenReturn(
+        Future.successful(true)
+      )
+      when(mockCache.registrationDetails(any[Request[_]])).thenReturn(Future.successful(
+        organisationRegistrationDetails
+      ))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]])).thenReturn(Future.successful(
+        stubRegisterWithEoriAndIdResponse()
+      ))
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
+      when(
+        mockSubscriptionDetailsService
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
+      ).thenReturn(Future.successful(()))
+
+      when(mockSubscriptionStatusService.getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())).thenReturn(
+        Future.successful(NewSubscription)
+      )
+
+      regExistingEoriCDS() { result =>
+        assertCleanedSession(result)
+        status(result) shouldBe SEE_OTHER
+        header(LOCATION, result).value shouldBe WeNeedToMakeChecksController.displayPage(cdsService).url
       }
     }
 

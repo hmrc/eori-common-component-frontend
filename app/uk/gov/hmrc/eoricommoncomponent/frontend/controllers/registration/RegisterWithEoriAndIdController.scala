@@ -26,8 +26,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
   ApplicationController,
   EnrolmentAlreadyExistsController
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WeNeedToMakeChecksController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.Sub02Controller
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, MissingGroupId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, CdsController, MissingGroupId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse.*
@@ -210,6 +211,11 @@ class RegisterWithEoriAndIdController @Inject() (
 
     }
 
+  def applicationFail(service: Service): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
+      Future.successful(Ok(subscriptionOutcomeFailRowView(service, isOrganisation = false)))
+    }
+
   def euEoriApplicationUnsuccessful(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
       Future.successful(Ok(subscriptionOutcomeFailEuEoriView(service)))
@@ -334,8 +340,10 @@ class RegisterWithEoriAndIdController @Inject() (
     loggedInUser: LoggedInUserWithEnrolments,
     hc: HeaderCarrier
   ): Future[Result] = {
-    val internalId = InternalId(loggedInUser.internalId)
-    val groupId    = GroupId(loggedInUser.groupId)
+    val internalId         = InternalId(loggedInUser.internalId)
+    val groupId            = GroupId(loggedInUser.groupId)
+    val cdsEuUser: Boolean = appConfig.euEoriEnabled && service.code == Service.cdsCode
+
     cdsSubscriber
       .subscribeWithCachedDetails(service)
       .flatMap {
@@ -343,10 +351,18 @@ class RegisterWithEoriAndIdController @Inject() (
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId, service)
             .map(_ => Redirect(Sub02Controller.migrationEnd(service)))
+        case _: SubscriptionPending if cdsEuUser =>
+          subscriptionDetailsService
+            .saveKeyIdentifiers(groupId, internalId, service)
+            .map(_ => Redirect(WeNeedToMakeChecksController.displayPage(service)))
         case _: SubscriptionPending =>
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId, service)
             .map(_ => Redirect(RegisterWithEoriAndIdController.pending(service)))
+        case _: SubscriptionFailed if cdsEuUser =>
+          subscriptionDetailsService
+            .saveKeyIdentifiers(groupId, internalId, service)
+            .map(_ => Redirect(RegisterWithEoriAndIdController.applicationFail(service)))
         case _: SubscriptionFailed =>
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId, service)
