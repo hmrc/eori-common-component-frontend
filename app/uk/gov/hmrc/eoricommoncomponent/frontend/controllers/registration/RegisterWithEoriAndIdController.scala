@@ -211,11 +211,6 @@ class RegisterWithEoriAndIdController @Inject() (
 
     }
 
-  def applicationFail(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
-      Future.successful(Ok(subscriptionOutcomeFailEuEoriView(service)))
-    }
-
   def euEoriApplicationUnsuccessful(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
       Future.successful(Ok(subscriptionOutcomeFailEuEoriView(service)))
@@ -359,10 +354,6 @@ class RegisterWithEoriAndIdController @Inject() (
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId, service)
             .map(_ => Redirect(RegisterWithEoriAndIdController.pending(service)))
-        case _: SubscriptionFailed if cdsEuUser =>
-          subscriptionDetailsService
-            .saveKeyIdentifiers(groupId, internalId, service)
-            .map(_ => Redirect(RegisterWithEoriAndIdController.applicationFail(service)))
         case _: SubscriptionFailed =>
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId, service)
