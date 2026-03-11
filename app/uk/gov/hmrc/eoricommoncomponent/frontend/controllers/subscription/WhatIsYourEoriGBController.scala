@@ -58,12 +58,14 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 
 @Singleton
 class WhatIsYourEoriGBController @Inject() (
   authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
   requestSessionData: RequestSessionData,
+  sessionCache: SessionCache,
   subscriptionDetailsHolderService: SubscriptionDetailsService,
   groupEnrolment: GroupEnrolmentExtractor,
   enrolmentStoreProxyService: EnrolmentStoreProxyService,
@@ -86,7 +88,7 @@ class WhatIsYourEoriGBController @Inject() (
           case Some(e) =>
             useExistingEori(e, service)
           case None =>
-            subscriptionBusinessService.cachedEoriNumber.map(eori => populateView(eori, isInReviewMode, service))
+            sessionCache.getEoriGB.map(eori => populateView(eori, isInReviewMode, service))
         }
     }
 
@@ -115,6 +117,7 @@ class WhatIsYourEoriGBController @Inject() (
           checkEoriNumberConnector.check(eori).flatMap {
             case Some(true) => submitEori(formData, isInReviewMode, service)
             case _ =>
+              sessionCache.saveGBEoriNumber(eori)
               subscriptionDetailsHolderService.cacheEoriNumber(eori).map { _ =>
                 Redirect(routes.WhatIsYourEoriCheckFailedController.displayPage(service))
               }
@@ -128,6 +131,7 @@ class WhatIsYourEoriGBController @Inject() (
   ): Future[Result] = {
     val eori = eoriWithCountry(formData.eoriNumber)
 
+    sessionCache.saveGBEoriNumber(eori)
     subscriptionDetailsHolderService.cacheEoriNumber(eori).flatMap { _ =>
       enrolmentStoreProxyService.isEnrolmentInUse(service, ExistingEori(eori, service.enrolmentKey)).map {
         case Some(ExistingEori(id, _)) if id.nonEmpty =>

@@ -30,6 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsY
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, ExistingEori, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   EnrolmentStoreProxyService,
   SubscriptionBusinessService,
@@ -50,6 +51,7 @@ class WhatIsYourEoriGBControllerSpec extends ControllerSpec with AuthActionMock 
   private val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
   private val mockSubscriptionDetailsService  = mock[SubscriptionDetailsService]
   private val mockRequestSessionData          = mock[RequestSessionData]
+  private val mockSessionCache                = mock[SessionCache]
   private val mockCheckEoriNumberConnector    = mock[CheckEoriNumberConnector]
   private val groupEnrolmentExtractor         = mock[GroupEnrolmentExtractor]
   private val whatIsYourEoriGBView            = mock[what_is_your_eori_gb]
@@ -60,6 +62,7 @@ class WhatIsYourEoriGBControllerSpec extends ControllerSpec with AuthActionMock 
     mockAuthAction,
     mockSubscriptionBusinessService,
     mockRequestSessionData,
+    mockSessionCache,
     mockSubscriptionDetailsService,
     groupEnrolmentExtractor,
     enrolmentStoreProxyService,
@@ -118,7 +121,7 @@ class WhatIsYourEoriGBControllerSpec extends ControllerSpec with AuthActionMock 
       "createForm method is invoked and eori is presented in cache (dropped GB for eori for displaying purposes)" in {
 
         when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
-        when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(Future.successful(Some(eori)))
+        when(mockSessionCache.getEoriGB(any())).thenReturn(Future.successful(Some(eori)))
 
         val result = controller.createForm(cdsService)(getRequest)
 
@@ -135,7 +138,7 @@ class WhatIsYourEoriGBControllerSpec extends ControllerSpec with AuthActionMock 
       "createForm method is invoked and eori is not presented in cache" in {
 
         when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
-        when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
+        when(mockSessionCache.getEoriGB(any())).thenReturn(Future.successful(None))
 
         val result = controller.createForm(cdsService)(getRequest)
 
@@ -152,7 +155,7 @@ class WhatIsYourEoriGBControllerSpec extends ControllerSpec with AuthActionMock 
       "reviewForm method is invoked and eori is presented in cache (dropped GB for eori for displaying purposes)" in {
 
         when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
-        when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(Future.successful(Some(eori)))
+        when(mockSessionCache.getEoriGB(any())).thenReturn(Future.successful(Some(eori)))
 
         val result = controller.reviewForm(cdsService)(getRequest)
 
@@ -169,7 +172,7 @@ class WhatIsYourEoriGBControllerSpec extends ControllerSpec with AuthActionMock 
       "reviewForm method is invoked and eori is not presented in cache" in {
 
         when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
-        when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
+        when(mockSessionCache.getEoriGB(any())).thenReturn(Future.successful(None))
 
         val result = controller.reviewForm(cdsService)(getRequest)
 

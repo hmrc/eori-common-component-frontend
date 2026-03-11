@@ -32,12 +32,14 @@ import util.builders.AuthBuilder.withAuthorisedUser
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 
 class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterEach {
 
   private val mockAuthConnector              = mock[AuthConnector]
   private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
+  private val mockSessionCache               = mock[SessionCache]
   private val mockWhatIsYourEoriEUPage       = instanceOf[what_is_your_eori_eu]
   private val pageLevelErrorSummaryListXPath = "//ul[@class='govuk-list govuk-error-summary__list']"
 
@@ -54,12 +56,18 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
   }
 
   private val controller =
-    new WhatIsYourEoriEUController(mockAuthAction, mcc, mockSubscriptionDetailsService, mockWhatIsYourEoriEUPage)
+    new WhatIsYourEoriEUController(
+      mockAuthAction,
+      mcc,
+      mockSubscriptionDetailsService,
+      mockWhatIsYourEoriEUPage,
+      mockSessionCache
+    )
 
   "What Is Your Eori EU Controller" should {
     "Display the 'What is your EORI number' page" in {
 
-      when(mockSubscriptionDetailsService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
+      when(mockSessionCache.getEoriEu(any())).thenReturn(Future.successful(None))
 
       val result = controller.form(cdsService)(SessionBuilder.buildRequestWithSession(defaultUserId))
 
