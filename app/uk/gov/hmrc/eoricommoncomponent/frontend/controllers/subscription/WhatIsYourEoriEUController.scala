@@ -20,6 +20,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
@@ -35,7 +36,8 @@ class WhatIsYourEoriEUController @Inject() (
   authAction: AuthAction,
   mcc: MessagesControllerComponents,
   subscriptionDetailsHolderService: SubscriptionDetailsService,
-  whatIsYourEoriEuView: what_is_your_eori_eu
+  whatIsYourEoriEuView: what_is_your_eori_eu,
+  sessionCache: SessionCache
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -43,7 +45,7 @@ class WhatIsYourEoriEUController @Inject() (
 
   def form(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
-      subscriptionDetailsHolderService.cachedEoriNumber.map { eori =>
+      sessionCache.getEoriEu.map { eori =>
         val cachedEori = EoriNumberViewModel(eori.getOrElse(""))
         Ok(whatIsYourEoriEuView(form.fill(cachedEori), false, service))
       }
@@ -59,6 +61,7 @@ class WhatIsYourEoriEUController @Inject() (
             service
           ))),
         formData =>
+          sessionCache.saveEUEoriNumber(formData.eoriNumber)
           subscriptionDetailsHolderService.cacheEoriNumber(formData.eoriNumber).map { _ =>
             Redirect(routes.WhenEoriIssuedController.createForm(service))
           }

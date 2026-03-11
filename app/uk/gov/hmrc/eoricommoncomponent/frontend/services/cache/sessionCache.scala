@@ -46,6 +46,8 @@ sealed case class CachedData(
   groupEnrolment: Option[EnrolmentResponse] = None,
   keepAlive: Option[String] = None,
   eori: Option[String] = None,
+  cachedGBEoriNumber: Option[String] = None,
+  cachedEUEoriNumber: Option[String] = None,
   addressLookupParams: Option[AddressLookupParams] = None,
   submissionCompleteDetails: Option[SubmissionCompleteData] = None,
   completed: Option[Boolean] = None,
@@ -73,6 +75,8 @@ object CachedData {
   val completed                            = "completed"
   val first2LettersEori                    = "first2LettersEori"
   val addContactAddressKey                 = "addContactAddress"
+  val cachedGBEoriNumberKey                = "cachedGBEoriNumber"
+  val cachedEUEoriNumberKey                = "cachedEUEoriNumber"
   implicit val format: OFormat[CachedData] = Json.format[CachedData]
 }
 
@@ -159,6 +163,12 @@ class SessionCache @Inject() (
   def saveEori(eori: Eori)(implicit request: Request[_]): Future[Boolean] =
     putData(eoriKey, Json.toJson(eori.id)) map (_ => true)
 
+  def saveGBEoriNumber(eoriNumber: String)(implicit request: Request[_]): Future[Boolean] =
+    putData(cachedGBEoriNumberKey, Json.toJson(eoriNumber)) map (_ => true)
+
+  def saveEUEoriNumber(eoriNumber: String)(implicit request: Request[_]): Future[Boolean] =
+    putData(cachedEUEoriNumberKey, Json.toJson(eoriNumber)) map (_ => true)
+
   def keepAlive(implicit request: Request[_]): Future[Boolean] =
     putData(keepAliveKey, Json.toJson(LocalDateTime.now().toString)) map (_ => true)
 
@@ -181,6 +191,12 @@ class SessionCache @Inject() (
 
   def eori(implicit request: Request[_]): Future[Option[String]] =
     getData[String](eoriKey)
+
+  def getEoriGB(implicit request: Request[_]): Future[Option[String]] =
+    getData[String](cachedGBEoriNumberKey)
+
+  def getEoriEu(implicit request: Request[_]): Future[Option[String]] =
+    getData[String](cachedEUEoriNumberKey)
 
   def email(implicit request: Request[_]): Future[String] =
     getData[String](emailKey).map(_.getOrElse {
