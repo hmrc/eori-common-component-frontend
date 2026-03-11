@@ -63,6 +63,7 @@ class CheckYourDetailsController @Inject() (
             nameIdOrganisationDetails = subscriptionDetailsHolder.nameIdOrganisationDetails,
             nameOrganisationDetails = subscriptionDetailsHolder.nameOrganisationDetails,
             nameDobDetails = subscriptionDetailsHolder.nameDobDetails,
+            euNameDetails = subscriptionDetailsHolder.euNameDetails,
             dateEstablished = subscriptionDetailsHolder.dateEstablished,
             customsId = subscriptionDetailsHolder.customsId,
             registeredCountry = subscriptionDetailsHolder.registeredCompany,

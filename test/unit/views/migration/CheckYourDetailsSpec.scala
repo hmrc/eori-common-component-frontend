@@ -24,6 +24,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import play.i18n.Lang
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressLookupParams,
@@ -81,6 +82,7 @@ class CheckYourDetailsSpec extends ViewSpec {
   private val dateTime          = Some(LocalDate.now())
   private val nino              = Some(Nino("AB123456C"))
   private val nameDobMatchModel = Some(NameDobMatchModel("FName", None, "LName", LocalDate.parse("2003-04-08")))
+  private val euNameModel       = Some(NameModel("EUGivenName", "EUFamilyName"))
   private val registeredCountry = Some(CompanyRegisteredCountry("GB"))
   private val enLan             = Lang.forCode("en")
   private val cyLan             = Lang.forCode("cy")
@@ -550,6 +552,9 @@ class CheckYourDetailsSpec extends ViewSpec {
         val contactAddress = page.body.getElementsByClass("review-tbl__contact-address").get(0)
         contactAddress.getElementsByClass("govuk-summary-list__value").text mustBe "Yes"
 
+        page.body.getElementsByClass("review-tbl__nino") mustBe empty
+        page.body.getElementsByClass("review-tbl__utr") mustBe empty
+
         page.body.getElementById("declaration").text mustBe "Declaration"
         page.body.select("ul.govuk-list--bullet li").size() mustBe 2
         page.body.getElementById("disclaimer").text mustBe "By continuing, you agree that:"
@@ -565,7 +570,7 @@ class CheckYourDetailsSpec extends ViewSpec {
 
         val fullName = page.body.getElementsByClass("review-tbl__full-name").get(0)
         fullName.getElementsByClass("govuk-summary-list__key").text mustBe "Full name"
-        fullName.getElementsByClass("govuk-summary-list__value").text mustBe "FName LName"
+        fullName.getElementsByClass("govuk-summary-list__value").text mustBe "EUGivenName EUFamilyName"
 
         val whenEori = page.body.getElementsByClass("review-tbl__when-eori-issued").get(0)
         whenEori.getElementsByClass("govuk-summary-list__value").text mustBe languageUtils.Dates.formatDate(
@@ -580,6 +585,9 @@ class CheckYourDetailsSpec extends ViewSpec {
 
         val contactAddress = page.body.getElementsByClass("review-tbl__contact-address").get(0)
         contactAddress.getElementsByClass("govuk-summary-list__value").text mustBe "Yes"
+
+        page.body.getElementsByClass("review-tbl__nino") mustBe empty
+        page.body.getElementsByClass("review-tbl__utr") mustBe empty
 
         page.body.getElementById("declaration").text mustBe "Declaration"
         page.body.select("ul.govuk-list--bullet li").size() mustBe 2
@@ -861,6 +869,7 @@ class CheckYourDetailsSpec extends ViewSpec {
     isEuCdsFlow: Boolean = false,
     orgType: Option[CdsOrganisationType] = organisationType,
     nameDobMatchModel: Option[NameDobMatchModel] = nameDobMatchModel,
+    euNameModel: Option[NameModel] = euNameModel,
     isThirdCountrySubscription: Boolean = false,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg,
     existingEori: Option[ExistingEori] = None,
@@ -888,6 +897,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       nameIdOrganisationDetails,
       Some(NameOrganisationMatchModel("Org name")),
       nameDobMatchModel,
+      euNameModel,
       dateTime,
       customsId,
       companyRegisteredCountry,
