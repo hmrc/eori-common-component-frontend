@@ -213,7 +213,7 @@ class RegisterWithEoriAndIdController @Inject() (
 
   def applicationFail(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
-      Future.successful(Ok(subscriptionOutcomeFailRowView(service, isOrganisation = false)))
+      Future.successful(Ok(subscriptionOutcomeFailEuEoriView(service)))
     }
 
   def euEoriApplicationUnsuccessful(service: Service): Action[AnyContent] =
