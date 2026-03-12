@@ -31,7 +31,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentE
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.*
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WeNeedToMakeChecksController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse.*
@@ -43,7 +42,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SubscriptionDetails
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion.EU
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion.{EU, GB}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
@@ -259,6 +258,7 @@ class RegisterWithEoriAndIdControllerSpec
         mockSubscriptionDetailsService
           .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
+      when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.GB)))
 
       regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
@@ -302,6 +302,7 @@ class RegisterWithEoriAndIdControllerSpec
       )
       when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
+      when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.GB)))
 
       regExistingEori() { result =>
         assertCleanedSession(result)
@@ -347,6 +348,8 @@ class RegisterWithEoriAndIdControllerSpec
       )
       when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
+
+      when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.GB)))
 
       regExistingEori() { result =>
         assertCleanedSession(result)
@@ -395,6 +398,7 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
+      when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.GB)))
 
       regExistingEori() { result =>
         assertCleanedSession(result)
@@ -440,6 +444,7 @@ class RegisterWithEoriAndIdControllerSpec
         mockSubscriptionStatusService
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
       ).thenReturn(Future.successful(NewSubscription))
+      when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.GB)))
 
       regExistingEori() { result =>
         assertCleanedSession(result)
@@ -486,6 +491,8 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
 
+      when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.GB)))
+
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
@@ -524,6 +531,8 @@ class RegisterWithEoriAndIdControllerSpec
         mockSubscriptionStatusService
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
       ).thenReturn(Future.successful(NewSubscription))
+
+      when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.GB)))
 
       regExistingEori() { result =>
         assertCleanedSession(result)
@@ -565,6 +574,8 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockSubscriptionStatusService.getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())).thenReturn(
         Future.successful(NewSubscription)
       )
+
+      when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.EU)))
 
       regExistingEoriCDS() { result =>
         assertCleanedSession(result)
@@ -781,6 +792,8 @@ class RegisterWithEoriAndIdControllerSpec
           .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
 
+      when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.GB)))
+
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
@@ -820,6 +833,8 @@ class RegisterWithEoriAndIdControllerSpec
         mockSubscriptionDetailsService
           .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
+
+      when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.EU)))
 
       regExistingEoriCDS() { result =>
         assertCleanedSession(result)
