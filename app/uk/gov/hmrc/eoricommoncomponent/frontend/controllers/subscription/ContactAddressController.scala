@@ -51,6 +51,8 @@ class ContactAddressController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
+  def isEuEoriEnabled(service: Service): Boolean = appConfig.euEoriEnabled && service.code == Service.cds.code
+
   def displayPage(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       subscriptionBusinessService.contactAddress.flatMap {
@@ -68,7 +70,8 @@ class ContactAddressController @Inject() (
   private def populateOkView(contactAddress: Option[ContactAddressModel], isInReviewMode: Boolean, service: Service)(
     implicit request: Request[AnyContent]
   ): Future[Result] = {
-    lazy val form = contactAddress.fold(contactAddressCreateForm())(contactAddressCreateForm().fill(_))
+    val euFlag    = isEuEoriEnabled(service)
+    lazy val form = contactAddress.fold(contactAddressCreateForm(euFlag))(contactAddressCreateForm(euFlag).fill(_))
     populateCountriesToInclude(service, isInReviewMode, form, Ok)
   }
 
@@ -95,7 +98,8 @@ class ContactAddressController @Inject() (
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
-      contactAddressCreateForm().bindFromRequest()
+      val euFlag = isEuEoriEnabled(service)
+      contactAddressCreateForm(euFlag).bindFromRequest()
         .fold(
           formWithErrors => populateCountriesToInclude(service, isInReviewMode, formWithErrors, BadRequest),
           address =>
