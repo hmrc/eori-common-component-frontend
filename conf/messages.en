@@ -1650,3 +1650,12 @@ cds.subscription.name.title = What is your name?
 cds.subscription.name.hint = We will use this to verify your identity. Enter the exact name you used when you applied for an EORI number.
 cds.subscription.name.given-name.label = Given name
 cds.subscription.name.family-name.label = Family name
+
+# Check your answers
+cds.subscription.when-eori-issued.label = When this EORI number was issued
+cds.subscription.organisation-address.label = Organisation address
+cds.subscription.registered-address.label = Registered address
+cds.form.declaration.agree.heading = By continuing, you agree that:
+cds.form.declaration.agree.line1 = the information you are providing is correct and complete
+cds.form.declaration.agree.line2 = we will check your details against data held by your EORI number’s issuing authority
+cds.subscription.form.send = Agree and continue

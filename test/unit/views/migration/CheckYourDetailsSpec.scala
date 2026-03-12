@@ -23,14 +23,17 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import play.i18n.Lang
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressLookupParams,
   AddressViewModel,
   CompanyRegisteredCountry,
-  ContactAddressModel
+  ContactAddressModel,
+  EuEoriRegisteredAddressModel
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 import uk.gov.hmrc.play.language.LanguageUtils
 import util.ViewSpec
@@ -61,10 +64,14 @@ class CheckYourDetailsSpec extends ViewSpec {
     )
   )
 
-  private val addContactAddressDetails = None
+  private val addContactAddressDetails = Some(YesNo(true))
 
   private val contactAddressDetail = Some(
     ContactAddressModel("flat 20", Some("street line 2"), "city", Some("region"), Some("HJ2 3HJ"), "FR")
+  )
+
+  private val euEoriRegisteredAddress = Some(
+    EuEoriRegisteredAddressModel("flat 20", "street line 2", Some(""), "FR")
   )
 
   private val address           = Some(AddressViewModel("Street", "City", Some("Postcode"), "GB"))
@@ -75,6 +82,7 @@ class CheckYourDetailsSpec extends ViewSpec {
   private val dateTime          = Some(LocalDate.now())
   private val nino              = Some(Nino("AB123456C"))
   private val nameDobMatchModel = Some(NameDobMatchModel("FName", None, "LName", LocalDate.parse("2003-04-08")))
+  private val euNameModel       = Some(NameModel("EUGivenName", "EUFamilyName"))
   private val registeredCountry = Some(CompanyRegisteredCountry("GB"))
   private val enLan             = Lang.forCode("en")
   private val cyLan             = Lang.forCode("cy")
@@ -518,6 +526,73 @@ class CheckYourDetailsSpec extends ViewSpec {
         address.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
 
       }
+
+      "user is during EU Company journey" in {
+        val page = doc(isEuCdsFlow = true, service = cdsService)
+
+        val email = page.body.getElementsByClass("review-tbl__email").get(0)
+        email.getElementsByClass("govuk-summary-list__key").text mustBe "Email address"
+        email.getElementsByClass("govuk-summary-list__value").text mustBe "email@example.com"
+
+        val eori = page.body.getElementsByClass("review-tbl__eori-number").get(0)
+        eori.getElementsByClass("govuk-summary-list__key").text mustBe "EORI number"
+        eori.getElementsByClass("govuk-summary-list__value").text mustBe "ZZ123456789112"
+
+        val whenEori = page.body.getElementsByClass("review-tbl__when-eori-issued").get(0)
+        whenEori.getElementsByClass("govuk-summary-list__value").text mustBe languageUtils.Dates.formatDate(
+          dateTime.get
+        )
+
+        val euRegAddr = page.body.getElementsByClass("review-tbl__org_address").get(0)
+        euRegAddr.getElementsByClass("govuk-summary-list__value").text must include("flat 20")
+        euRegAddr.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/cds/subscribe/eu-eori-registered-address/review"
+
+        val contactAddress = page.body.getElementsByClass("review-tbl__contact-address").get(0)
+        contactAddress.getElementsByClass("govuk-summary-list__value").text mustBe "Yes"
+
+        page.body.getElementsByClass("review-tbl__nino") mustBe empty
+        page.body.getElementsByClass("review-tbl__utr") mustBe empty
+
+        page.body.getElementById("declaration").text mustBe "Declaration"
+        page.body.select("ul.govuk-list--bullet li").size() mustBe 2
+        page.body.getElementById("disclaimer").text mustBe "By continuing, you agree that:"
+      }
+
+      "user is during EU Individual journey" in {
+        val page = doc(
+          isEuCdsFlow = true,
+          isIndividualSubscriptionFlow = true,
+          nameIdOrganisationDetails = None,
+          service = cdsService
+        )
+
+        val fullName = page.body.getElementsByClass("review-tbl__full-name").get(0)
+        fullName.getElementsByClass("govuk-summary-list__key").text mustBe "Full name"
+        fullName.getElementsByClass("govuk-summary-list__value").text mustBe "EUGivenName EUFamilyName"
+
+        val whenEori = page.body.getElementsByClass("review-tbl__when-eori-issued").get(0)
+        whenEori.getElementsByClass("govuk-summary-list__value").text mustBe languageUtils.Dates.formatDate(
+          dateTime.get
+        )
+
+        val euRegAddr = page.body.getElementsByClass("review-tbl__org_address").get(0)
+        euRegAddr.getElementsByClass("govuk-summary-list__value").text must include("flat 20")
+        euRegAddr.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/cds/subscribe/eu-eori-registered-address/review"
+
+        val contactAddress = page.body.getElementsByClass("review-tbl__contact-address").get(0)
+        contactAddress.getElementsByClass("govuk-summary-list__value").text mustBe "Yes"
+
+        page.body.getElementsByClass("review-tbl__nino") mustBe empty
+        page.body.getElementsByClass("review-tbl__utr") mustBe empty
+
+        page.body.getElementById("declaration").text mustBe "Declaration"
+        page.body.select("ul.govuk-list--bullet li").size() mustBe 2
+        page.body.getElementById("disclaimer").text mustBe "By continuing, you agree that:"
+      }
     }
 
     "not display address" when {
@@ -739,7 +814,7 @@ class CheckYourDetailsSpec extends ViewSpec {
           isThirdCountrySubscription = true
         )
 
-        page.body.getElementsByClass("review-tbl__contact-address") mustBe empty
+        page.body.getElementsByClass("review-tbl__contact-address").text mustBe empty
       }
     }
 
@@ -750,6 +825,17 @@ class CheckYourDetailsSpec extends ViewSpec {
         "disclaimer"
       ).text mustBe "By sending this application you confirm that the information you are providing is correct and complete."
       doc().body.getElementById("continue-button").text() mustBe "Confirm and send"
+    }
+
+    "not display EU-specific details for non-EU flows" in {
+      val page = doc(isEuCdsFlow = false)
+
+      page.body.getElementsByClass("review-tbl__when-eori-issued") mustBe empty
+      page.body.getElementsByClass("review-tbl__org_address") mustBe empty
+      page.body.getElementsByClass("review-tbl__contact-address") mustBe empty
+
+      page.body.select("ul.govuk-list--bullet li").size() mustBe 0
+      page.body.getElementById("disclaimer").text mustBe "By sending this application you confirm that the information you are providing is correct and complete."
     }
 
     "should display individual UTR" when {
@@ -780,14 +866,17 @@ class CheckYourDetailsSpec extends ViewSpec {
   def doc(
     isIndividualSubscriptionFlow: Boolean = false,
     customsId: Option[CustomsId] = utr,
+    isEuCdsFlow: Boolean = false,
     orgType: Option[CdsOrganisationType] = organisationType,
     nameDobMatchModel: Option[NameDobMatchModel] = nameDobMatchModel,
+    euNameModel: Option[NameModel] = euNameModel,
     isThirdCountrySubscription: Boolean = false,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg,
     existingEori: Option[ExistingEori] = None,
     companyRegisteredCountry: Option[CompanyRegisteredCountry] = None,
     addressLookupParams: Option[AddressLookupParams] = None,
-    language: Lang = enLan
+    language: Lang = enLan,
+    service: Service = atarService
   ): Document = {
 
     implicit val messages: Messages = MessagesImpl(language, messageApi)
@@ -797,6 +886,7 @@ class CheckYourDetailsSpec extends ViewSpec {
     val result = view(
       isThirdCountrySubscription,
       isIndividualSubscriptionFlow,
+      isEuCdsFlow,
       orgType,
       contactDetails,
       addContactAddressDetails,
@@ -807,12 +897,14 @@ class CheckYourDetailsSpec extends ViewSpec {
       nameIdOrganisationDetails,
       Some(NameOrganisationMatchModel("Org name")),
       nameDobMatchModel,
+      euNameModel,
       dateTime,
       customsId,
       companyRegisteredCountry,
       addressLookupParams,
       contactAddressDetail,
-      atarService
+      euEoriRegisteredAddress,
+      service = service
     )
     Jsoup.parse(contentAsString(result))
   }
