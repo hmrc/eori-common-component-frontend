@@ -26,8 +26,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
   ApplicationController,
   EnrolmentAlreadyExistsController
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WeNeedToMakeChecksController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.Sub02Controller
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, MissingGroupId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, CdsController, MissingGroupId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse.*
@@ -196,14 +197,14 @@ class RegisterWithEoriAndIdController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
       for {
         subscriptionDetails <- cache.subscriptionDetails
-        firstLetterOfEori   <- cache.getFirst2LettersEori
+        first2LettersOfEori <- cache.getFirst2LettersEori
         orgType   = subscriptionDetails.formData.organisationType
         customsId = subscriptionDetails.customsId
         _ <- cache.journeyCompleted
       } yield {
         val isUk = requestSessionData.selectedUserLocation.forall(_ == UserLocation.Uk)
         val isEuEori =
-          firstLetterOfEori.contains(EoriRegion.EU) && appConfig.euEoriEnabled && service.code == Service.cds.code
+          first2LettersOfEori.contains(EoriRegion.EU) && appConfig.euEoriEnabled && service.code == Service.cds.code
         val view = determineFailView(service, orgType, customsId.nonEmpty, isUk, isEuEori)
         Ok(view)
       }
@@ -336,22 +337,33 @@ class RegisterWithEoriAndIdController @Inject() (
   ): Future[Result] = {
     val internalId = InternalId(loggedInUser.internalId)
     val groupId    = GroupId(loggedInUser.groupId)
-    cdsSubscriber
-      .subscribeWithCachedDetails(service)
-      .flatMap {
-        case _: SubscriptionSuccessful =>
-          subscriptionDetailsService
-            .saveKeyIdentifiers(groupId, internalId, service)
-            .map(_ => Redirect(Sub02Controller.migrationEnd(service)))
-        case _: SubscriptionPending =>
-          subscriptionDetailsService
-            .saveKeyIdentifiers(groupId, internalId, service)
-            .map(_ => Redirect(RegisterWithEoriAndIdController.pending(service)))
-        case _: SubscriptionFailed =>
-          subscriptionDetailsService
-            .saveKeyIdentifiers(groupId, internalId, service)
-            .map(_ => Redirect(RegisterWithEoriAndIdController.fail(service)))
-      }
+    val cdsEuUserF: Future[Boolean] =
+      for {
+        first2LettersOpt <- cache.getFirst2LettersEori
+      } yield appConfig.euEoriEnabled && service.code == Service.cdsCode && first2LettersOpt.contains(EoriRegion.EU)
+
+    cdsEuUserF.flatMap { cdsEuUser =>
+      cdsSubscriber
+        .subscribeWithCachedDetails(service)
+        .flatMap {
+          case _: SubscriptionSuccessful =>
+            subscriptionDetailsService
+              .saveKeyIdentifiers(groupId, internalId, service)
+              .map(_ => Redirect(Sub02Controller.migrationEnd(service)))
+          case _: SubscriptionPending if cdsEuUser =>
+            subscriptionDetailsService
+              .saveKeyIdentifiers(groupId, internalId, service)
+              .map(_ => Redirect(WeNeedToMakeChecksController.displayPage(service)))
+          case _: SubscriptionPending =>
+            subscriptionDetailsService
+              .saveKeyIdentifiers(groupId, internalId, service)
+              .map(_ => Redirect(RegisterWithEoriAndIdController.pending(service)))
+          case _: SubscriptionFailed =>
+            subscriptionDetailsService
+              .saveKeyIdentifiers(groupId, internalId, service)
+              .map(_ => Redirect(RegisterWithEoriAndIdController.fail(service)))
+        }
+    }
   }
 
   private def onRegistrationPassCheckSubscriptionStatus(idType: String, id: String)(implicit
