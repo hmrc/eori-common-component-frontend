@@ -86,7 +86,7 @@ object SubscriptionForm {
             "XI"
           )) =>
         Invalid(ValidationError("ecc.eu-eori-error.not-gb-xi"))
-      case e if !formatInput(e).matches("^[A-Z]{2}[A-Z0-9]([A-Z0-9]{4,15})?$") =>
+      case e if !formatInput(e).matches("^[A-Z]{2}([A-Z0-9]+)$") =>
         Invalid(ValidationError("ecc.eu-eori-error.invalid-characters"))
       case _ => Valid
     }
