@@ -22,18 +22,20 @@ import play.api.data.validation._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.Mappings
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
 
 object ContactAddressForm {
   private val Length2 = 2
 
-  def contactAddressCreateForm(): Form[ContactAddressModel] =
+  def contactAddressCreateForm(isEuEoriEnabled: Boolean = false): Form[ContactAddressModel] =
     Form(
       mapping(
         "line-1"      -> text.verifying(validLine1),
         "line-2"      -> optional(text.verifying(validLine2)),
         "line-3"      -> text.verifying(validLine3),
         "line-4"      -> optional(text.verifying(validLine4)),
-        "postcode"    -> postcodeMapping,
+        "postcode"    -> (if (isEuEoriEnabled) optional(text.verifying(validPostcode)) else postcodeMapping),
         "countryCode" -> Mappings.mandatoryString("cds.matching-error.country.invalid")(s => s.length == Length2)
       )(ContactAddressModel.apply)(contactAddressModel => Some(Tuple.fromProductTyped(contactAddressModel)))
     )
