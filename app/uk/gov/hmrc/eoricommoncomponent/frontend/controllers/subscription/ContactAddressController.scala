@@ -37,6 +37,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 
 @Singleton
 class ContactAddressController @Inject() (
@@ -51,7 +52,8 @@ class ContactAddressController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def isEuEoriEnabled(service: Service): Boolean = appConfig.euEoriEnabled && service.code == Service.cds.code
+  def isEuEoriEnabled(service: Service): Boolean =
+    appConfig.euEoriEnabled && service.code == Service.cds.code && EoriRegion.EU == EoriRegion.EU
 
   def displayPage(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
@@ -69,11 +71,12 @@ class ContactAddressController @Inject() (
 
   private def populateOkView(contactAddress: Option[ContactAddressModel], isInReviewMode: Boolean, service: Service)(
     implicit request: Request[AnyContent]
-  ): Future[Result] = {
-    val euFlag    = isEuEoriEnabled(service)
-    lazy val form = contactAddress.fold(contactAddressCreateForm(euFlag))(contactAddressCreateForm(euFlag).fill(_))
-    populateCountriesToInclude(service, isInReviewMode, form, Ok)
-  }
+  ): Future[Result] =
+    sessionCache.getFirst2LettersEori.flatMap { optEoriRegion =>
+      val euFlag = appConfig.euEoriEnabled && service.code == Service.cds.code && optEoriRegion.contains(EoriRegion.EU)
+      lazy val form = contactAddress.fold(contactAddressCreateForm(euFlag))(contactAddressCreateForm(euFlag).fill(_))
+      populateCountriesToInclude(service, isInReviewMode, form, Ok)
+    }
 
   private def populateCountriesToInclude(
     service: Service,
@@ -98,23 +101,26 @@ class ContactAddressController @Inject() (
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
-      val euFlag = isEuEoriEnabled(service)
-      contactAddressCreateForm(euFlag).bindFromRequest()
-        .fold(
-          formWithErrors => populateCountriesToInclude(service, isInReviewMode, formWithErrors, BadRequest),
-          address =>
-            subscriptionDetailsService.cacheContactAddressDetails(address).map { _ =>
-              if (isInReviewMode)
-                Redirect(DetermineReviewPageController.determineRoute(service))
-              else
-                Redirect(
-                  subscriptionFlowManager
-                    .stepInformation(ContactAddressSubscriptionFlowPage)
-                    .nextPage
-                    .url(service)
-                )
-            }
-        )
+      sessionCache.getFirst2LettersEori.flatMap { optEoriRegion =>
+        val euFlag =
+          appConfig.euEoriEnabled && service.code == Service.cds.code && optEoriRegion.contains(EoriRegion.EU)
+        contactAddressCreateForm(euFlag).bindFromRequest()
+          .fold(
+            formWithErrors => populateCountriesToInclude(service, isInReviewMode, formWithErrors, BadRequest),
+            address =>
+              subscriptionDetailsService.cacheContactAddressDetails(address).map { _ =>
+                if (isInReviewMode)
+                  Redirect(DetermineReviewPageController.determineRoute(service))
+                else
+                  Redirect(
+                    subscriptionFlowManager
+                      .stepInformation(ContactAddressSubscriptionFlowPage)
+                      .nextPage
+                      .url(service)
+                  )
+              }
+          )
+      }
     }
 
 }
