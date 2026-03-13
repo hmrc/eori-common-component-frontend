@@ -73,8 +73,11 @@ class ContactAddressController @Inject() (
     implicit request: Request[AnyContent]
   ): Future[Result] =
     sessionCache.getFirst2LettersEori.flatMap { optEoriRegion =>
-      val euFlag = appConfig.euEoriEnabled && service.code == Service.cds.code && optEoriRegion.contains(EoriRegion.EU)
-      lazy val form = contactAddress.fold(contactAddressCreateForm(euFlag))(contactAddressCreateForm(euFlag).fill(_))
+      val isEuEoriEnabled =
+        appConfig.euEoriEnabled && service.code == Service.cds.code && optEoriRegion.contains(EoriRegion.EU)
+      lazy val form = contactAddress.fold(contactAddressCreateForm(isEuEoriEnabled))(
+        contactAddressCreateForm(isEuEoriEnabled).fill(_)
+      )
       populateCountriesToInclude(service, isInReviewMode, form, Ok)
     }
 
@@ -102,9 +105,9 @@ class ContactAddressController @Inject() (
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       sessionCache.getFirst2LettersEori.flatMap { optEoriRegion =>
-        val euFlag =
+        val isEuEoriEnabled =
           appConfig.euEoriEnabled && service.code == Service.cds.code && optEoriRegion.contains(EoriRegion.EU)
-        contactAddressCreateForm(euFlag).bindFromRequest()
+        contactAddressCreateForm(isEuEoriEnabled).bindFromRequest()
           .fold(
             formWithErrors => populateCountriesToInclude(service, isInReviewMode, formWithErrors, BadRequest),
             address =>
