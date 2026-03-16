@@ -39,6 +39,7 @@ import uk.gov.hmrc.play.language.LanguageUtils
 import util.ViewSpec
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class CheckYourDetailsSpec extends ViewSpec {
 
@@ -539,9 +540,8 @@ class CheckYourDetailsSpec extends ViewSpec {
         eori.getElementsByClass("govuk-summary-list__value").text mustBe "ZZ123456789112"
 
         val whenEori = page.body.getElementsByClass("review-tbl__when-eori-issued").get(0)
-        whenEori.getElementsByClass("govuk-summary-list__value").text mustBe languageUtils.Dates.formatDate(
-          dateTime.get
-        )
+        whenEori.getElementsByClass("govuk-summary-list__value").text mustBe
+          dateTime.get.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
 
         val euRegAddr = page.body.getElementsByClass("review-tbl__org_address").get(0)
         euRegAddr.getElementsByClass("govuk-summary-list__value").text must include("flat 20")
@@ -573,9 +573,8 @@ class CheckYourDetailsSpec extends ViewSpec {
         fullName.getElementsByClass("govuk-summary-list__value").text mustBe "EUGivenName EUFamilyName"
 
         val whenEori = page.body.getElementsByClass("review-tbl__when-eori-issued").get(0)
-        whenEori.getElementsByClass("govuk-summary-list__value").text mustBe languageUtils.Dates.formatDate(
-          dateTime.get
-        )
+        whenEori.getElementsByClass("govuk-summary-list__value").text mustBe
+          dateTime.get.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
 
         val euRegAddr = page.body.getElementsByClass("review-tbl__org_address").get(0)
         euRegAddr.getElementsByClass("govuk-summary-list__value").text must include("flat 20")

@@ -74,6 +74,10 @@
     languageUtils.Dates.formatDate(date)
 }
 
+@formatMonthYear(date: LocalDate) = @{
+    date.format(java.time.format.DateTimeFormatter.ofPattern("MMMM yyyy"))
+}
+
 @isSoleTrader = @{
     organisationType.contains(CdsOrganisationType.SoleTrader) || organisationType.contains(CdsOrganisationType.ThirdCountrySoleTrader)
 }
@@ -207,6 +211,15 @@
         Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service)), fieldName
     ))
 }
+
+@doeRowMonthYear(key: String, de: LocalDate, fieldName: String) = @{
+    Some(row(
+        key,
+        Some(Html(formatMonthYear(de))),
+        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhenEoriIssuedController.reviewForm(service)), fieldName
+    ))
+}
+
 @row(key: String, value: Option[Html], call: Option[Call] = None, fieldName: String = "") = @{
     SummaryListRow(
         key = Key(
@@ -246,7 +259,7 @@
                 )),
                 dateEstablished.flatMap { de =>
                     if(isEuCdsFlow)
-                        doeRow("cds.subscription.when-eori-issued.label", de, "review-tbl__when-eori-issued")
+                        doeRowMonthYear("cds.subscription.when-eori-issued.label", de, "review-tbl__when-eori-issued")
                     else None
                 },
                 euNameDetails.flatMap { nd => {
