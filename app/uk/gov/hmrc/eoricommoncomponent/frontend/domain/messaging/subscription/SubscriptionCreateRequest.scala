@@ -18,10 +18,10 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription
 
 import play.api.Logger
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.EstablishmentAddress.createEstablishmentAddress
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation.createContactInformation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{RequestCommon, RequestParameter}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, RequestCommon, RequestParameter}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
@@ -46,7 +46,8 @@ object SubscriptionCreateRequest {
   def apply(
     registration: RegistrationDetails,
     subscription: SubscriptionDetails,
-    service: Option[Service]
+    service: Option[Service],
+    isEuEori: Boolean = false
   ): SubscriptionCreateRequest =
     registration match {
       case RegistrationDetailsIndividual(Some(Eori(eori)), _, safeId, name, _, dob) =>
@@ -68,6 +69,18 @@ object SubscriptionCreateRequest {
           name,
           createRowAddress(subscription, registration),
           dateOfEstablishment,
+          CdsToEtmpOrganisationType(registration),
+          subscription,
+          service
+        )
+
+      case _ if isEuEori =>
+        mandatoryFieldsReq(
+          subscription.eoriNumber.get,
+          SafeId("XE0000123456789"), // TODO: Update this when we are able to retrieve registration.safeId,
+          subscription.name,
+          createEstablishmentAddress(Address(subscription.euEoriRegisteredAddress.get)),
+          subscription.dateEstablished.get,
           CdsToEtmpOrganisationType(registration),
           subscription,
           service

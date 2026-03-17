@@ -26,9 +26,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
   ApplicationController,
   EnrolmentAlreadyExistsController
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WeNeedToMakeChecksController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.Sub02Controller
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, CdsController, MissingGroupId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{
+  Sub02Controller,
+  WeNeedToMakeChecksController
+}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, MissingGroupId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse.*
@@ -36,7 +38,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubmissionCompleteData
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.cdsCode
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.*
@@ -87,17 +88,31 @@ class RegisterWithEoriAndIdController @Inject() (
           if (groupIdEnrolmentExists)
             Future.successful(Redirect(EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
           else
-            subscriptionDetailsService.cachedCustomsId.flatMap { cachedCustomsId =>
-              sendRequest(cachedCustomsId).flatMap {
-                case true if isRow && cachedCustomsId.isEmpty => handleREG01Response
-                case true                                     => handleREG06Response
-                case false =>
-                  logger.error("Reg01 BadRequest ROW")
-                  Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service)))
-              }
+            isEuEori.flatMap { isEuEoriFlow =>
+              if (isEuEoriFlow) {
+                cache.getEoriEu.flatMap { eori =>
+                  onRegistrationPassCheckSubscriptionStatus(CustomsId.eori, eori.get)
+                }
+              } else
+                subscriptionDetailsService.cachedCustomsId.flatMap { cachedCustomsId =>
+                  sendRequest(cachedCustomsId).flatMap {
+                    case true if isRow && cachedCustomsId.isEmpty =>
+                      handleREG01Response
+                    case true =>
+                      handleREG06Response
+                    case false =>
+                      logger.error("Reg01 BadRequest ROW")
+                      Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service)))
+                  }
+                }
             }
       }
     }
+
+  private def isEuEori(implicit service: Service, request: Request[AnyContent]): Future[Boolean] =
+    for {
+      first2LettersOfEori <- cache.getFirst2LettersEori
+    } yield first2LettersOfEori.contains(EoriRegion.EU) && appConfig.euEoriEnabled && service.code == Service.cdsCode
 
   private def sendRequest(cachedCustomsId: Option[CustomsId])(implicit
     request: Request[AnyContent],
@@ -197,23 +212,16 @@ class RegisterWithEoriAndIdController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
       for {
         subscriptionDetails <- cache.subscriptionDetails
-        first2LettersOfEori <- cache.getFirst2LettersEori
+        isEuEori            <- isEuEori(service, request)
         orgType   = subscriptionDetails.formData.organisationType
         customsId = subscriptionDetails.customsId
         _ <- cache.journeyCompleted
       } yield {
         val isUk = requestSessionData.selectedUserLocation.forall(_ == UserLocation.Uk)
-        val isEuEori =
-          first2LettersOfEori.contains(EoriRegion.EU) && appConfig.euEoriEnabled && service.code == Service.cds.code
         val view = determineFailView(service, orgType, customsId.nonEmpty, isUk, isEuEori)
         Ok(view)
       }
 
-    }
-
-  def euEoriApplicationUnsuccessful(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => (_: LoggedInUserWithEnrolments) =>
-      Future.successful(Ok(subscriptionOutcomeFailEuEoriView(service)))
     }
 
   def determineFailView(
@@ -337,12 +345,8 @@ class RegisterWithEoriAndIdController @Inject() (
   ): Future[Result] = {
     val internalId = InternalId(loggedInUser.internalId)
     val groupId    = GroupId(loggedInUser.groupId)
-    val cdsEuUserF: Future[Boolean] =
-      for {
-        first2LettersOpt <- cache.getFirst2LettersEori
-      } yield appConfig.euEoriEnabled && service.code == Service.cdsCode && first2LettersOpt.contains(EoriRegion.EU)
 
-    cdsEuUserF.flatMap { cdsEuUser =>
+    isEuEori(service, request).flatMap { cdsEuUser =>
       cdsSubscriber
         .subscribeWithCachedDetails(service)
         .flatMap {

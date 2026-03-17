@@ -17,19 +17,20 @@
 package unit.domain.messaging
 
 import base.UnitSpec
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   ContactInformation,
   SubscriptionCreateRequest,
   VatId
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{NameModel, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressViewModel,
   CompanyRegisteredCountry,
-  ContactAddressModel
+  ContactAddressModel,
+  EuEoriRegisteredAddressModel
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
@@ -44,10 +45,6 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
   private val cachedCity: String             = "Cached city"
   private val cachedPostCode: Option[String] = Some("Cached post code")
   private val cachedCountry: String          = "FR"
-
-  private val subscriptionDetails = SubscriptionDetails(addressDetails =
-    Some(AddressViewModel(cachedStreet, cachedCity, cachedPostCode, cachedCountry))
-  )
 
   private val reg06Street: String = "Reg06 street"
   private val reg06City: String   = "Reg06 city"
@@ -92,6 +89,24 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
     phone = Some(contactDetails.telephone),
     fax = None,
     email = emailAddress
+  )
+
+  private val subscriptionDetails = SubscriptionDetails(
+    contactDetails = Some(contactDetails),
+    addressDetails = Some(AddressViewModel(cachedStreet, cachedCity, cachedPostCode, cachedCountry)),
+    dateEstablished = Some(dateOfBirthOrEstablishment),
+    eoriNumber = Some(eori.id),
+    email = Some("test@example.com"),
+    nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel("orgname", "orgid")),
+    nameDetails = Some(NameMatchModel("Firstname Lastname")),
+    euNameDetails = Some(NameModel("Firstname", "Lastname")),
+    euEoriRegisteredAddress =
+      Some(EuEoriRegisteredAddressModel(
+        establishmentAddress.streetAndNumber,
+        establishmentAddress.city,
+        establishmentAddress.postalCode,
+        establishmentAddress.countryCode
+      ))
   )
 
   private def reg01ExpectedContactInformation(timeStamp: LocalDateTime) = ContactInformation(
@@ -291,6 +306,32 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
       requestDetails.typeOfPerson shouldBe Some("2")
       requestDetails.principalEconomicActivity shouldBe None
       requestDetails.serviceName shouldBe Some(atarService.enrolmentKey)
+    }
+
+    "correctly build request for organisation for EuEori with Contact Address" in {
+
+      val service             = Some(cdsService)
+      val registrationDetails = RegistrationDetailsOrganisation().copy(etmpOrganisationType = Some(CorporateBody))
+
+      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails, service, isEuEori = true)
+
+      val requestCommon  = request.requestCommon
+      val requestDetails = request.requestDetail
+
+      requestCommon.regime shouldBe "CDS"
+      requestDetails.SAFE shouldBe "XE0000123456789" // TODO: we should be checking safeId.id not the hardcoded. Replace this when we remove the hardcoded Safe ID.
+      requestDetails.EORINo shouldBe Some(eori.id)
+      requestDetails.CDSFullName shouldBe subscriptionDetails.name
+      requestDetails.CDSEstablishmentAddress shouldBe establishmentAddress
+      requestDetails.establishmentInTheCustomsTerritoryOfTheUnion shouldBe None
+      requestDetails.typeOfLegalEntity shouldBe Some("Corporate Body")
+      requestDetails.vatIDs shouldBe None
+      requestDetails.consentToDisclosureOfPersonalData shouldBe None
+      requestDetails.shortName shouldBe None
+      requestDetails.dateOfEstablishment shouldBe Some(dateOfBirthOrEstablishment)
+      requestDetails.typeOfPerson shouldBe Some("2")
+      requestDetails.principalEconomicActivity shouldBe None
+      requestDetails.serviceName shouldBe Some(cdsService.enrolmentKey)
     }
 
     "correctly build request based on the REG06 response" in {

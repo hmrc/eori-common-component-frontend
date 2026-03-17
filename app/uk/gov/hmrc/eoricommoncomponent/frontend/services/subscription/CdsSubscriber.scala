@@ -17,10 +17,13 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import play.api.i18n.Messages
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDetails, SubscriptionDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -35,7 +38,8 @@ class CdsSubscriber @Inject() (
   sessionCache: SessionCache,
   handleSubscriptionService: HandleSubscriptionService,
   subscriptionDetailsService: SubscriptionDetailsService,
-  requestSessionData: RequestSessionData
+  requestSessionData: RequestSessionData,
+  appConfig: AppConfig
 )(implicit ec: ExecutionContext) {
 
   def subscribeWithCachedDetails(
@@ -46,15 +50,43 @@ class CdsSubscriber @Inject() (
 
     val result =
       for {
+        isEori <- sessionCache.getFirst2LettersEori
+        isEuEori = isEori.contains(EoriRegion.EU) && appConfig.euEoriEnabled
         isRow    <- isRowF
         customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
-      } yield (isRow, customId) match {
-        case (true, Some(_)) => migrationEoriUK(service)  // Has NINO/UTR as identifier UK journey
-        case (true, None)    => migrationEoriROW(service) // ROW
-        case (false, _)      => migrationEoriUK(service)  // UK Journey
+      } yield (isEuEori, isRow, customId) match {
+        case (true, _, _) =>
+          migrationEoriEu(service) // EuEori
+        case (false, true, Some(_)) =>
+          migrationEoriUK(service) // Has NINO/UTR as identifier UK journey
+        case (false, true, None) =>
+          migrationEoriROW(service) // ROW
+        case (false, false, _) =>
+          migrationEoriUK(service) // UK Journey
       }
     result.flatMap(identity)
   }
+
+  private def migrationEoriEu(
+    service: Service
+  )(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[SubscriptionResult] =
+    for {
+      registrationDetails <- sessionCache.registrationDetails
+      subscriptionDetails <- sessionCache.subscriptionDetails
+      email               <- sessionCache.email
+      subscriptionResult <- subscriptionService.subscribeWithMandatoryOnly(
+        registrationDetails,
+        subscriptionDetails,
+        service,
+        isEuEori = true
+      )
+      _ <- onSubscriptionResultForEuEoriSubscribe(
+        subscriptionResult,
+        subscriptionDetails,
+        email,
+        service
+      )
+    } yield subscriptionResult
 
   private def migrationEoriUK(
     service: Service
@@ -189,6 +221,46 @@ class CdsSubscriber @Inject() (
         )
     }
   }
+
+  private def onSubscriptionResultForEuEoriSubscribe(
+    subscriptionResult: SubscriptionResult,
+    subDetails: SubscriptionDetails,
+    email: String,
+    service: Service
+  )(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Unit] =
+    val cdsFullName = subDetails.name
+    val contactName = subDetails.contactDetails.map(_.fullName)
+    subscriptionResult match {
+      case success: SubscriptionSuccessful =>
+        completeSubscription(
+          service,
+          cdsFullName,
+          Some(success.eori),
+          email,
+          SafeId("XE0000123456789"), // TODO: replace this when we are able to obtain a safe id.
+          contactName,
+          Some(cdsFullName),
+          success.processingDate,
+          success.formBundleId,
+          success.emailVerificationTimestamp
+        )
+
+      case pending: SubscriptionPending =>
+        completeSubscription(
+          service,
+          cdsFullName,
+          subDetails.eoriNumber.map(Eori.apply),
+          email,
+          SafeId("XE0000123456789"), // TODO: replace this when we are able to obtain a safe id.
+          contactName,
+          Some(cdsFullName),
+          pending.processingDate,
+          pending.formBundleId,
+          pending.emailVerificationTimestamp
+        )
+      case failed: SubscriptionFailed =>
+        sessionCache.saveSub02Outcome(Sub02Outcome(failed.processingDate, cdsFullName)).map(_ => (): Unit)
+    }
 
   private def completeSubscription(
     service: Service,

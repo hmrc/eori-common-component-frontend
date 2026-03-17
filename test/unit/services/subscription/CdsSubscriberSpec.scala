@@ -19,8 +19,8 @@ package unit.services.subscription
 import base.{Injector, UnitSpec}
 import common.support.testdata.TestData
 import common.support.testdata.subscription.SubscriptionContactDetailsBuilder
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq as meq, *}
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
@@ -31,22 +31,27 @@ import play.api.i18n.{Messages, MessagesApi, MessagesImpl}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request}
-import play.api.test.Helpers._
-import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
+import play.api.test.Helpers.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.{
+  AppConfig,
+  InternalAuthTokenInitialiser,
+  NoOpInternalAuthTokenInitialiser
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse.EoriAlreadyExists
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDetails, SubscriptionDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{NameModel, RecipientDetails, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.*
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.{LocalDate, LocalDateTime}
-import scala.concurrent.ExecutionContext.global
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures with BeforeAndAfterEach with Injector {
@@ -65,6 +70,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
   private val mockRegistrationDetails: RegistrationDetails = mock[RegistrationDetails]
   private val mockRequestSessionData                       = mock[RequestSessionData]
   private val mockSubscriptionDetailsService               = mock[SubscriptionDetailsService]
+  private val mockAppConfig                                = mock[AppConfig]
 
   implicit private val hc: HeaderCarrier                = mock[HeaderCarrier]
   implicit private val mockRequest: Request[AnyContent] = mock[Request[AnyContent]]
@@ -82,7 +88,9 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     contactDetails = Some(mockContactDetailsModel),
     eoriNumber = Some(eori),
     email = Some("test@example.com"),
-    nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel("orgname", "orgid"))
+    nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel("orgname", "orgid")),
+    nameDetails = Some(NameMatchModel("Firstname Lastname")),
+    euNameDetails = Some(NameModel("Firstname", "Lastname"))
   )
 
   private val registrationDetails =
@@ -102,7 +110,8 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     mockCdsFrontendDataCache,
     mockHandleSubscriptionService,
     mockSubscriptionDetailsService,
-    mockRequestSessionData
+    mockRequestSessionData,
+    mockAppConfig
   )(global)
 
   override protected def beforeEach(): Unit = {
@@ -111,6 +120,8 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     when(mockRegistrationDetails.sapNumber).thenReturn(TaxPayerId("some-SAP-number"))
     when(mockContactDetailsModel.contactDetails).thenReturn(contactDetails)
     when(mockSubscriptionDetailsService.cachedCustomsId).thenReturn(Future.successful(None))
+    when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.GB)))
+    when(mockAppConfig.euEoriEnabled).thenReturn(false)
   }
 
   override protected def afterEach(): Unit = {
@@ -121,6 +132,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     reset(mockHandleSubscriptionService)
     reset(mockRequestSessionData)
     reset(mockRegistrationDetails)
+    reset(mockAppConfig)
 
     super.afterEach()
   }
@@ -191,7 +203,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
       mockSuccessfulWithMandatoryOnly(subscriptionDetails.copy(email = Some(expectedEmail)))
       when(
         mockSubscriptionService
-          .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], any[Service])(
+          .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], any[Service], any[Boolean])(
             any[HeaderCarrier]
           )
       ).thenReturn(
@@ -218,7 +230,73 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           )
 
           verify(mockSubscriptionService)
-            .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], meq(atarService))(
+            .subscribeWithMandatoryOnly(
+              any[RegistrationDetails],
+              any[SubscriptionDetails],
+              meq(atarService),
+              any[Boolean]
+            )(
+              any[HeaderCarrier]
+            )
+
+          verify(mockHandleSubscriptionService)
+            .handleSubscription(
+              meq(formBundleId),
+              any[RecipientDetails],
+              any[TaxPayerId],
+              meq(Some(Eori(eori))),
+              meq(Some(emailVerificationTimestamp)),
+              any[SafeId]
+            )(any[HeaderCarrier])
+      }
+    }
+
+    "call SubscriptionService when there is a cache hit when user journey type is SubscriptionPending for Eu Eori Journey" in {
+      val expectedEmail = "email@address.fromCache"
+      when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(UserLocation.Eu))
+      when(mockCdsFrontendDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(expectedEmail))
+      when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(true))
+      when(mockSubscriptionDetailsService.cachedCustomsId).thenReturn(Future.successful(None))
+      mockSuccessfulWithMandatoryOnly(subscriptionDetails.copy(email = Some(expectedEmail)))
+      when(
+        mockSubscriptionService
+          .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], any[Service], any[Boolean])(
+            any[HeaderCarrier]
+          )
+      ).thenReturn(
+        Future
+          .successful(SubscriptionPending(formBundleId, processingDate, Some(emailVerificationTimestamp)))
+      )
+      when(
+        mockHandleSubscriptionService.handleSubscription(
+          anyString,
+          any[RecipientDetails],
+          any[TaxPayerId],
+          any[Option[Eori]],
+          any[Option[LocalDateTime]],
+          any[SafeId]
+        )(any[HeaderCarrier])
+      ).thenReturn(Future.successful(()))
+
+      when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.EU)))
+      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
+      whenReady(cdsSubscriber.subscribeWithCachedDetails(cdsService)) {
+        subscriptionResult =>
+          subscriptionResult shouldBe SubscriptionPending(
+            formBundleId,
+            processingDate,
+            Some(emailVerificationTimestamp)
+          )
+
+          verify(mockSubscriptionService)
+            .subscribeWithMandatoryOnly(
+              any[RegistrationDetails],
+              any[SubscriptionDetails],
+              meq(cdsService),
+              any[Boolean]
+            )(
               any[HeaderCarrier]
             )
 
@@ -320,6 +398,72 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
               meq(Some(emailVerificationTimestamp)),
               any[SafeId]
             )(any[HeaderCarrier])
+      }
+    }
+
+    "call handle-subscription service when subscription successful when Journey is Subscribe for Eu Eori" in {
+      mockSuccessfulExistingRegistration(stubRegisterWithEoriAndIdResponseWithContactDetails, subscriptionDetails)
+      val expectedEmail = "test@example.com"
+      when(mockCdsFrontendDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(expectedEmail))
+
+      val expectedRecipient =
+        RecipientDetails(cdsService, expectedEmail, "Full Name", Some("orgname"), Some(processingDate))
+
+      when(mockCdsFrontendDataCache.registrationDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(mockRegistrationDetails)
+      )
+
+      when(mockCdsFrontendDataCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(subscriptionDetails)
+      )
+
+      when(
+        mockSubscriptionService
+          .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], any[Service], any[Boolean])(
+            any[HeaderCarrier]
+          )
+      ).thenReturn(
+        Future
+          .successful(SubscriptionSuccessful(
+            Eori(eori),
+            formBundleId,
+            processingDate,
+            Some(emailVerificationTimestamp)
+          ))
+      )
+
+      when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(true))
+
+      when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.EU)))
+      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+      when(mockContactDetailsModel.fullName).thenReturn("Full Name")
+
+      whenReady(cdsSubscriber.subscribeWithCachedDetails(cdsService)) {
+        result =>
+          result shouldBe SubscriptionSuccessful(
+            Eori(eori),
+            formBundleId,
+            processingDate,
+            Some(emailVerificationTimestamp)
+          )
+
+          val inOrder = org.mockito.Mockito.inOrder(mockCdsFrontendDataCache, mockHandleSubscriptionService)
+          inOrder
+            .verify(mockCdsFrontendDataCache)
+            .saveSub02Outcome(meq(Sub02Outcome(processingDate, "orgname", Some(eori))))(meq(mockRequest))
+
+          inOrder
+            .verify(mockHandleSubscriptionService)
+            .handleSubscription(
+              meq(formBundleId),
+              meq(expectedRecipient),
+              any[TaxPayerId],
+              meq(Some(Eori(eori))),
+              meq(Some(emailVerificationTimestamp)),
+              any[SafeId]
+            )(any[HeaderCarrier])
+
       }
     }
 
@@ -436,7 +580,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
 
     when(
       mockSubscriptionService
-        .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], any[Service])(
+        .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], any[Service], any[Boolean])(
           any[HeaderCarrier]
         )
     ).thenReturn(
@@ -546,7 +690,12 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         )
 
         verify(mockSubscriptionService)
-          .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], meq(atarService))(
+          .subscribeWithMandatoryOnly(
+            any[RegistrationDetails],
+            any[SubscriptionDetails],
+            meq(atarService),
+            any[Boolean]
+          )(
             any[HeaderCarrier]
           )
 
@@ -626,7 +775,124 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     }
   }
 
-  "When Subscription Status returns  Subscription Failed for UK journey" in {
+  "call SubscriptionService when there is a cache hit when user journey type is Subscribe and ContactDetails Missing Subscribe for Eu Eori Journey" in {
+    val expectedEmail = "email@address.fromCache"
+    when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(UserLocation.Eu))
+    when(mockCdsFrontendDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(expectedEmail))
+    when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[Request[AnyContent]]))
+      .thenReturn(Future.successful(true))
+    when(mockSubscriptionDetailsService.cachedCustomsId).thenReturn(Future.successful(None))
+    mockSuccessfulWithMandatoryOnly(subscriptionDetails.copy(email = Some(expectedEmail)))
+    when(
+      mockHandleSubscriptionService.handleSubscription(
+        anyString,
+        any[RecipientDetails],
+        any[TaxPayerId],
+        any[Option[Eori]],
+        any[Option[LocalDateTime]],
+        any[SafeId]
+      )(any[HeaderCarrier])
+    ).thenReturn(Future.successful(()))
+
+    when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.EU)))
+    when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
+    whenReady(cdsSubscriber.subscribeWithCachedDetails(cdsService)) {
+      subscriptionResult =>
+        subscriptionResult shouldBe SubscriptionSuccessful(
+          Eori(eori),
+          formBundleId,
+          processingDate,
+          Some(emailVerificationTimestamp)
+        )
+
+        verify(mockSubscriptionService)
+          .subscribeWithMandatoryOnly(
+            any[RegistrationDetails],
+            any[SubscriptionDetails],
+            meq(cdsService),
+            any[Boolean]
+          )(
+            any[HeaderCarrier]
+          )
+
+        verify(mockHandleSubscriptionService)
+          .handleSubscription(
+            meq(formBundleId),
+            any[RecipientDetails],
+            any[TaxPayerId],
+            meq(Some(Eori(eori))),
+            meq(Some(emailVerificationTimestamp)),
+            any[SafeId]
+          )(any[HeaderCarrier])
+    }
+  }
+
+  "call SubscriptionService when there is a cache hit when user journey type is SubscriptionPending for EU Eori users with Safe ID" in {
+    val expectedEmail = "email@address.fromCache"
+    when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(UserLocation.Eu))
+    when(mockCdsFrontendDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(expectedEmail))
+    when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[Request[AnyContent]]))
+      .thenReturn(Future.successful(true))
+    when(mockSubscriptionDetailsService.cachedCustomsId).thenReturn(Future.successful(Some(SafeId("XE0000123456789"))))
+    mockSuccessfulExistingRegistration(
+      stubRegisterWithEoriAndIdResponse,
+      subscriptionDetails.copy(email = Some(expectedEmail))
+    )
+    when(
+      mockSubscriptionService
+        .existingReg(any[RegisterWithEoriAndIdResponse], any[SubscriptionDetails], any[String], any[Service])(
+          any[HeaderCarrier]
+        )
+    ).thenReturn(
+      Future
+        .successful(SubscriptionPending(formBundleId, processingDate, Some(emailVerificationTimestamp)))
+    )
+    when(
+      mockHandleSubscriptionService.handleSubscription(
+        anyString,
+        any[RecipientDetails],
+        any[TaxPayerId],
+        any[Option[Eori]],
+        any[Option[LocalDateTime]],
+        any[SafeId]
+      )(any[HeaderCarrier])
+    ).thenReturn(Future.successful(()))
+    val inOrder =
+      org.mockito.Mockito.inOrder(
+        mockCdsFrontendDataCache,
+        mockSubscriptionService,
+        mockCdsFrontendDataCache,
+        mockHandleSubscriptionService
+      )
+
+    whenReady(cdsSubscriber.subscribeWithCachedDetails(cdsService)) {
+      subscriptionResult =>
+        subscriptionResult shouldBe SubscriptionPending(formBundleId, processingDate, Some(emailVerificationTimestamp))
+        inOrder.verify(mockCdsFrontendDataCache).registerWithEoriAndIdResponse(any[Request[AnyContent]])
+        inOrder
+          .verify(mockSubscriptionService)
+          .existingReg(
+            meq(stubRegisterWithEoriAndIdResponse),
+            any[SubscriptionDetails],
+            meq(expectedEmail),
+            meq(cdsService)
+          )(any[HeaderCarrier])
+        inOrder.verify(mockCdsFrontendDataCache).saveSub02Outcome(any())(any())
+        inOrder
+          .verify(mockHandleSubscriptionService)
+          .handleSubscription(
+            meq(formBundleId),
+            meq(RecipientDetails(cdsService, expectedEmail, "", Some("New trading"), Some(processingDate))),
+            any[TaxPayerId],
+            meq(Some(Eori(eori))),
+            meq(Some(emailVerificationTimestamp)),
+            any[SafeId]
+          )(any[HeaderCarrier])
+    }
+  }
+
+  "When Subscription Status returns Subscription Failed for UK journey" in {
     val expectedEmail = "email@address.fromCache"
     when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(UserLocation.ThirdCountry))
     when(mockCdsFrontendDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(expectedEmail))
@@ -683,7 +949,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     mockSuccessfulWithMandatoryOnly(subscriptionDetails.copy(email = Some(expectedEmail)))
     when(
       mockSubscriptionService
-        .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], any[Service])(
+        .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], any[Service], any[Boolean])(
           any[HeaderCarrier]
         )
     ).thenReturn(
@@ -706,7 +972,60 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         subscriptionResult shouldBe SubscriptionFailed(EoriAlreadyExists, processingDate)
 
         verify(mockSubscriptionService)
-          .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], meq(atarService))(
+          .subscribeWithMandatoryOnly(
+            any[RegistrationDetails],
+            any[SubscriptionDetails],
+            meq(atarService),
+            any[Boolean]
+          )(
+            any[HeaderCarrier]
+          )
+
+    }
+  }
+
+  "When Subscription Status returns  Subscription Failed for Eu Eori Journey" in {
+    val expectedEmail = "email@address.fromCache"
+    when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(UserLocation.Eu))
+    when(mockCdsFrontendDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(expectedEmail))
+    when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[Request[AnyContent]]))
+      .thenReturn(Future.successful(true))
+    when(mockSubscriptionDetailsService.cachedCustomsId).thenReturn(Future.successful(None))
+    mockSuccessfulWithMandatoryOnly(subscriptionDetails.copy(email = Some(expectedEmail)))
+    when(
+      mockSubscriptionService
+        .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], any[Service], any[Boolean])(
+          any[HeaderCarrier]
+        )
+    ).thenReturn(
+      Future
+        .successful(SubscriptionFailed(EoriAlreadyExists, processingDate))
+    )
+    when(
+      mockHandleSubscriptionService.handleSubscription(
+        anyString,
+        any[RecipientDetails],
+        any[TaxPayerId],
+        any[Option[Eori]],
+        any[Option[LocalDateTime]],
+        any[SafeId]
+      )(any[HeaderCarrier])
+    ).thenReturn(Future.successful(()))
+
+    when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.EU)))
+    when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
+    whenReady(cdsSubscriber.subscribeWithCachedDetails(cdsService)) {
+      subscriptionResult =>
+        subscriptionResult shouldBe SubscriptionFailed(EoriAlreadyExists, processingDate)
+
+        verify(mockSubscriptionService)
+          .subscribeWithMandatoryOnly(
+            any[RegistrationDetails],
+            any[SubscriptionDetails],
+            meq(cdsService),
+            any[Boolean]
+          )(
             any[HeaderCarrier]
           )
 

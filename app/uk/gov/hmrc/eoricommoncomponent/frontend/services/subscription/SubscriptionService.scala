@@ -18,10 +18,10 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServiceParam
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.http.HeaderCarrier
@@ -38,9 +38,10 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector)(im
   def subscribeWithMandatoryOnly(
     registration: RegistrationDetails,
     subscription: SubscriptionDetails,
-    service: Service
+    service: Service,
+    isEuEori: Boolean = false
   )(implicit hc: HeaderCarrier): Future[SubscriptionResult] = {
-    val request = SubscriptionRequest(SubscriptionCreateRequest(registration, subscription, Some(service)))
+    val request = SubscriptionRequest(SubscriptionCreateRequest(registration, subscription, Some(service), isEuEori))
     subscribeWithConnector(request)
   }
 
