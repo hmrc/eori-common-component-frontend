@@ -23,10 +23,11 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, Text}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.play.language.LanguageUtils
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.DateFormatter
 @import views.html.helper._
 
 @import java.time.LocalDate
-@this(layout_di: layout, languageUtils: LanguageUtils, govukSummaryList: GovukSummaryList, govukButton: GovukButton)
+@this(layout_di: layout, languageUtils: LanguageUtils, govukSummaryList: GovukSummaryList, govukButton: GovukButton, dateFormatter: DateFormatter)
 
 @(isThirdCountrySubscription: Boolean,
         isIndividualSubscriptionFlow: Boolean,
@@ -75,7 +76,7 @@
 }
 
 @formatMonthYear(date: LocalDate) = @{
-    date.format(java.time.format.DateTimeFormatter.ofPattern("MMMM yyyy"))
+    dateFormatter.monthYearFormat(date)    
 }
 
 @isSoleTrader = @{
