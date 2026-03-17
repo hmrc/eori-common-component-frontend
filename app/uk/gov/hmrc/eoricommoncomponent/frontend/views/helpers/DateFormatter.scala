@@ -23,10 +23,19 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import scala.util.Try
+import com.ibm.icu.util.ULocale
+import com.ibm.icu.text.SimpleDateFormat
 
 class DateFormatter @Inject() (languageUtils: LanguageUtils) {
 
   val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy")
+
+  def monthYearFormat(date: LocalDate)(implicit messages: Messages): String =
+    val uLocale   = new ULocale(messages.lang.code)
+    val validLang = ULocale.getAvailableLocales.contains(uLocale)
+    val locale    = if (validLang) uLocale else ULocale.getDefault
+    val sdf       = new SimpleDateFormat("MMMM yyyy", locale)
+    sdf.format(date.atStartOfDay(java.time.ZoneOffset.UTC).toInstant.toEpochMilli)
 
   def format(dateString: String)(implicit messages: Messages): String =
     Try(languageUtils.Dates.formatDate(LocalDate.parse(dateString, dateFormatter)))
