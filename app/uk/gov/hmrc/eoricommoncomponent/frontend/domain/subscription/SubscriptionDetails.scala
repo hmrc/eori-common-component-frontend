@@ -55,7 +55,7 @@ case class SubscriptionDetails(
     nameIdOrganisationDetails.map(_.name) orElse nameOrganisationDetails.map(_.name) orElse nameDobDetails.map(
       _.name
     ) orElse nameDetails
-      .map(_.name) getOrElse {
+      .map(_.name) orElse euNameDetails.map(euName => s"${euName.givenName} ${euName.familyName}") getOrElse {
       // $COVERAGE-OFF$
       logger.error("name is missing from subscriptionDetails")
       // $COVERAGE-ON$

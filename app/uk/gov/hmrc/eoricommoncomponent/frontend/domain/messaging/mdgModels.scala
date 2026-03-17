@@ -17,11 +17,14 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging
 
 import play.api.Logging
-import play.api.libs.json._
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+import play.api.libs.json.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressViewModel,
+  EuEoriRegisteredAddressModel
+}
 
+import java.time.*
 import java.time.format.DateTimeFormatter
-import java.time._
 
 case class Address(
   addressLine1: String,
@@ -50,6 +53,16 @@ object Address {
       addressLine4,
       postalCode.filter(_.nonEmpty),
       countryCode.toUpperCase()
+    ) {}
+
+  def apply(euEoriAddress: EuEoriRegisteredAddressModel): Address =
+    new Address(
+      euEoriAddress.lineOne,
+      None,
+      Some(euEoriAddress.lineThree),
+      None,
+      euEoriAddress.postcode,
+      euEoriAddress.country
     ) {}
 
   def apply(address: AddressViewModel): Address =

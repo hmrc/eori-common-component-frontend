@@ -42,7 +42,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SubscriptionDetails
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion.{EU, GB}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
@@ -196,6 +195,8 @@ class RegisterWithEoriAndIdControllerSpec
       .thenReturn(Future.successful(false))
     when(mockCache.journeyCompleted(any[Request[AnyContent]]))
       .thenReturn(Future.successful(true))
+    when(mockAppConfig.euEoriEnabled).thenReturn(false)
+    when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.GB)))
   }
 
   private def assertCleanedSession(result: Future[Result]): Unit = {
@@ -310,6 +311,108 @@ class RegisterWithEoriAndIdControllerSpec
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result).value shouldBe Sub02Controller
           .migrationEnd(atarService)
+          .url
+      }
+    }
+
+    "create a subscription for organisation with an EuEori" in {
+      when(
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
+      ).thenReturn(
+        Future.successful(
+          SubscriptionSuccessful(
+            Eori("EORI-Number"),
+            formBundleIdResponse,
+            processingDateResponse,
+            Some(emailVerificationTimestamp)
+          )
+        )
+      )
+      when(
+        mockReg06Service
+          .sendOrganisationRequest(any(), any[HeaderCarrier], any())
+      ).thenReturn(Future.successful(true))
+      when(mockCache.registrationDetails(any[Request[_]]))
+        .thenReturn(Future.successful(organisationRegistrationDetails))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
+        .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
+      when(
+        mockSubscriptionStatusService
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
+      ).thenReturn(Future.successful(NewSubscription))
+      when(
+        mockSubscriptionDetailsService
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
+      ).thenReturn(Future.successful(()))
+      when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.EU)))
+      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+      when(mockCache.getEoriEu(any)).thenReturn(Future(Option("EU1234567890")))
+
+      when(mockSubscriptionStatusService.getStatus(any, any)(any(), any(), any())).thenReturn(
+        Future.successful(NewSubscription)
+      )
+
+      regExistingEoriCDS() { result =>
+        status(result) shouldBe SEE_OTHER
+        header(LOCATION, result).value shouldBe Sub02Controller
+          .migrationEnd(cdsService)
+          .url
+      }
+    }
+
+    "create a subscription for sole trader with an EuEori" in {
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
+      when(mockCache.registrationDetails(any[Request[_]]))
+        .thenReturn(Future.successful(individualRegistrationDetails))
+      when(mockReg06Service.sendIndividualRequest(any(), any[HeaderCarrier], any())).thenReturn(Future.successful(true))
+      when(
+        mockSubscriptionStatusService
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
+      ).thenReturn(Future.successful(NewSubscription))
+      when(mockRequestSessionData.userSelectedOrganisationType(any()))
+        .thenReturn(Some(CdsOrganisationType.SoleTrader))
+      when(
+        mockSubscriptionDetailsService
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
+      ).thenReturn(Future.successful(()))
+
+      when(
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
+      ).thenReturn(
+        Future.successful(
+          SubscriptionSuccessful(
+            Eori("EORI-Number"),
+            formBundleIdResponse,
+            processingDateResponse,
+            Some(emailVerificationTimestamp)
+          )
+        )
+      )
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
+        .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
+      when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.EU)))
+      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+      when(mockCache.getEoriEu(any)).thenReturn(Future(Option("EU1234567890")))
+
+      when(mockSubscriptionStatusService.getStatus(any, any)(any(), any(), any())).thenReturn(
+        Future.successful(NewSubscription)
+      )
+
+      regExistingEoriCDS() { result =>
+        assertCleanedSession(result)
+
+        status(result) shouldBe SEE_OTHER
+        header(LOCATION, result).value shouldBe Sub02Controller
+          .migrationEnd(cdsService)
           .url
       }
     }
@@ -571,11 +674,13 @@ class RegisterWithEoriAndIdControllerSpec
           .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
 
-      when(mockSubscriptionStatusService.getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())).thenReturn(
+      // TODO: Replace the getStatus parameters with meq("SAFE"), meq("SomeSafeId") when we are able to retreive SafeIds for EU EORI
+      when(mockSubscriptionStatusService.getStatus(any, any)(any(), any(), any())).thenReturn(
         Future.successful(NewSubscription)
       )
 
       when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.EU)))
+      when(mockCache.getEoriEu(any)).thenReturn(Future(Option("EU1234567890")))
 
       regExistingEoriCDS() { result =>
         assertCleanedSession(result)
