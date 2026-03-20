@@ -38,13 +38,19 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, Respo
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   FormData,
+  OrganisationFlow,
+  RowOrganisationFlow,
   SubmissionCompleteData,
   SubscriptionDetails
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{
+  MatchingService,
+  Reg06Service,
+  RegisterWithoutIdService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.*
@@ -71,6 +77,7 @@ class RegisterWithEoriAndIdControllerSpec
   private val mockCdsSubscriber              = mock[CdsSubscriber]
   private val mockSubscriptionStatusService  = mock[SubscriptionStatusService]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
+  private val mockRegisterWithoutIdService   = mock[RegisterWithoutIdService]
   private val mockSubscriptionDetails        = mock[SubscriptionDetails]
   private val mockSub01Outcome               = mock[Sub01Outcome]
   private val groupEnrolmentExtractor        = mock[GroupEnrolmentExtractor]
@@ -100,6 +107,7 @@ class RegisterWithEoriAndIdControllerSpec
     mockCdsSubscriber,
     mockSubscriptionStatusService,
     mockSubscriptionDetailsService,
+    mockRegisterWithoutIdService,
     mcc,
     sub01OutcomeProcessingView,
     sub01OutcomeRejectedView,
@@ -163,6 +171,27 @@ class RegisterWithEoriAndIdControllerSpec
         responseData = Some(responseData)
       )
     RegisterWithEoriAndIdResponse(responseCommon, Some(registerWithEoriAndIdResponseDetail))
+  }
+
+  private def stubRegisterWithoutIDResponse(outcomeType: String = "PASS"): RegisterWithoutIDResponse = {
+    val processingDate = LocalDateTime.now()
+    val responseCommon =
+      ResponseCommon(status = "OK", processingDate = processingDate)
+    val trader               = Trader(fullName = "New trading", shortName = "nt")
+    val establishmentAddress = EstablishmentAddress(streetAndNumber = "new street", city = "Paris", countryCode = "FR")
+    val responseData: ResponseData = ResponseData(
+      SAFEID = "SomeSafeId",
+      trader = trader,
+      establishmentAddress = establishmentAddress,
+      hasInternetPublication = true,
+      startDate = "2018-01-01"
+    )
+    val registerWithoutIdResponseDetail =
+      RegisterWithoutIdResponseDetail(
+        SAFEID = "SomeSafeId",
+        ARN = Some("SomeARN")
+      )
+    RegisterWithoutIDResponse(responseCommon, Some(registerWithoutIdResponseDetail))
   }
 
   private def stubHandleErrorCodeResponse(statusText: String): RegisterWithEoriAndIdResponse = {
@@ -341,6 +370,7 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
+      when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(OrganisationFlow)
       when(
         mockSubscriptionStatusService
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
@@ -352,6 +382,15 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.EU)))
       when(mockAppConfig.euEoriEnabled).thenReturn(true)
       when(mockCache.getEoriEu(any)).thenReturn(Future(Option("EU1234567890")))
+
+      when(mockCache.subscriptionDetails(any[Request[_]])).thenReturn(
+        Future.successful(SubscriptionDetails(formData =
+          FormData(organisationType = Some(CdsOrganisationType.EUOrganisation))
+        ))
+      )
+      when(mockRegisterWithoutIdService.registerOrganisation(any(), any(), any())(any(), any())).thenReturn(
+        Future.successful(stubRegisterWithoutIDResponse())
+      )
 
       when(mockSubscriptionStatusService.getStatus(any, any)(any(), any(), any())).thenReturn(
         Future.successful(NewSubscription)
@@ -402,6 +441,18 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.EU)))
       when(mockAppConfig.euEoriEnabled).thenReturn(true)
       when(mockCache.getEoriEu(any)).thenReturn(Future(Option("EU1234567890")))
+
+      when(mockCache.subscriptionDetails(any[Request[_]])).thenReturn(
+        Future.successful(SubscriptionDetails(formData =
+          FormData(organisationType = Some(CdsOrganisationType.SoleTrader))
+        ))
+      )
+      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
+        uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SoleTraderFlow
+      )
+      when(mockRegisterWithoutIdService.registerIndividual(any(), any(), any())(any(), any())).thenReturn(
+        Future.successful(stubRegisterWithoutIDResponse())
+      )
 
       when(mockSubscriptionStatusService.getStatus(any, any)(any(), any(), any())).thenReturn(
         Future.successful(NewSubscription)
@@ -681,6 +732,15 @@ class RegisterWithEoriAndIdControllerSpec
 
       when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.EU)))
       when(mockCache.getEoriEu(any)).thenReturn(Future(Option("EU1234567890")))
+
+      when(mockCache.subscriptionDetails(any[Request[_]])).thenReturn(
+        Future.successful(SubscriptionDetails(formData =
+          FormData(organisationType = Some(CdsOrganisationType.Company))
+        ))
+      )
+      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
+        uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.OrganisationFlow
+      )
 
       regExistingEoriCDS() { result =>
         assertCleanedSession(result)
