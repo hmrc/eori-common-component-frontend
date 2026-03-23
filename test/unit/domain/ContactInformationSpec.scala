@@ -33,7 +33,7 @@ class ContactInformationSpec extends UnitSpec {
     val contactDetails = ContactDetailsModel(
       "Full name",
       "email",
-      "01234123123",
+      Some("01234123123"),
       None,
       useAddressFromRegistrationDetails = false,
       Some("street"),
@@ -63,7 +63,7 @@ class ContactInformationSpec extends UnitSpec {
         ContactDetailsModel(
           "Full name",
           "email",
-          "",
+          None,
           None,
           useAddressFromRegistrationDetails = false,
           Some("street"),
@@ -91,7 +91,7 @@ class ContactInformationSpec extends UnitSpec {
       val contactDetailsTest = ContactDetails(
         "fullName",
         "email@email.email",
-        "00000000000",
+        Some("00000000000"),
         Some("fax"),
         "Street",
         "city",
@@ -113,7 +113,7 @@ class ContactInformationSpec extends UnitSpec {
     "populate contact information from contact address and email where telephone is None" in {
 
       val contactDetailsTest =
-        ContactDetails("fullName", "email@email.email", "", Some("fax"), "Street", "city", Some("postcode"), "UK")
+        ContactDetails("fullName", "email@email.email", None, Some("fax"), "Street", "city", Some("postcode"), "UK")
       val contactInfo = ContactInformation.createContactInformation(contactDetailsTest)
       contactInfo.personOfContact shouldBe Some("fullName")
       contactInfo.emailAddress shouldBe Some("email@email.email")
@@ -123,7 +123,7 @@ class ContactInformationSpec extends UnitSpec {
       contactInfo.city shouldBe Some("city")
       contactInfo.postalCode shouldBe Some("postcode")
       contactInfo.countryCode shouldBe Some("UK")
-      contactInfo.telephoneNumber shouldBe Some("")
+      contactInfo.telephoneNumber shouldBe None
 
     }
 
@@ -143,7 +143,7 @@ class ContactInformationSpec extends UnitSpec {
       val contactDetailsNoTell = ContactDetailsModel(
         "Full name",
         "email",
-        "",
+        None,
         None,
         useAddressFromRegistrationDetails = false,
         Some("street"),

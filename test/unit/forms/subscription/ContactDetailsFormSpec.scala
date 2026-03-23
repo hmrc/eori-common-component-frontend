@@ -118,7 +118,7 @@ class ContactDetailsFormSpec extends UnitSpec {
       boundForm.errors shouldBe Seq.empty
 
       boundForm.value.get.fullName shouldBe "Full name"
-      boundForm.value.get.telephone shouldBe "01234123123"
+      boundForm.value.get.telephone shouldBe Some("01234123123")
     }
   }
 }

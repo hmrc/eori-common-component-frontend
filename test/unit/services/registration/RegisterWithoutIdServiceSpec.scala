@@ -70,7 +70,7 @@ class RegisterWithoutIdServiceSpec extends UnitSpec with MockitoSugar with Befor
       val contact = ContactDetailsModel(
         fullName = "Contact",
         emailAddress = "a@b.com",
-        telephone = "111",
+        telephone = Some("111"),
         fax = None,
         useAddressFromRegistrationDetails = true,
         street = None,
@@ -139,7 +139,7 @@ class RegisterWithoutIdServiceSpec extends UnitSpec with MockitoSugar with Befor
       val contact = ContactDetailsModel(
         fullName = "Contact",
         emailAddress = "a@b.com",
-        telephone = "111",
+        telephone = Some("111"),
         fax = None,
         useAddressFromRegistrationDetails = true,
         street = None,

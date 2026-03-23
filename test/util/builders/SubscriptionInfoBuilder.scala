@@ -38,7 +38,7 @@ object SubscriptionInfoBuilder {
   val contactCity                  = "city name"
   val contactPostalCode            = "SE28 1AA"
   val contactCountry               = "ZZ"
-  val telephoneNumber              = "01632961234"
+  val telephoneNumber              = Some("01632961234")
   val faxNumber                    = "01632961235"
   val emailAddress                 = "john.doe@example.com"
   val dateOfEstablishmentFormatted = "31 December 2015"
@@ -77,7 +77,7 @@ object SubscriptionInfoBuilder {
     city = Some(contactCity),
     postalCode = Some(contactPostalCode),
     countryCode = Some(contactCountry),
-    telephoneNumber = Some(telephoneNumber),
+    telephoneNumber = telephoneNumber,
     faxNumber = Some(faxNumber),
     emailAddress = Some(emailAddress)
   )

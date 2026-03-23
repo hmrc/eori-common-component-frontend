@@ -24,7 +24,7 @@ class ContactDetailsModelSpec extends UnitSpec {
   val contactDetails = ContactDetailsModel(
     "Full name",
     "email",
-    "01234123123",
+    Some("01234123123"),
     None,
     useAddressFromRegistrationDetails = false,
     Some("street"),
