@@ -39,7 +39,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubmissionCo
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{
+  MatchingService,
+  Reg06Service,
+  RegisterWithoutIdService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.*
@@ -58,6 +62,7 @@ class RegisterWithEoriAndIdController @Inject() (
   cdsSubscriber: CdsSubscriber,
   subscriptionStatusService: SubscriptionStatusService,
   subscriptionDetailsService: SubscriptionDetailsService,
+  registerWithoutIdService: RegisterWithoutIdService,
   mcc: MessagesControllerComponents,
   sub01OutcomeProcessingView: sub01_outcome_processing,
   sub01OutcomeRejectedView: sub01_outcome_rejected,
@@ -90,8 +95,14 @@ class RegisterWithEoriAndIdController @Inject() (
           else
             isEuEori.flatMap { isEuEoriFlow =>
               if (isEuEoriFlow) {
-                cache.getEoriEu.flatMap { eori =>
-                  onRegistrationPassCheckSubscriptionStatus(CustomsId.eori, eori.get)
+                (for {
+                  _      <- sendEuEoriRequest(request, loggedInUser, service)
+                  eori   <- cache.getEoriEu
+                  result <- onRegistrationPassCheckSubscriptionStatus(CustomsId.eori, eori.get)
+                } yield result).recover {
+                  case e: Throwable =>
+                    logger.error(s"Error during EU EORI registration: ${e.getMessage}", e)
+                    Redirect(RegisterWithEoriAndIdController.fail(service))
                 }
               } else
                 subscriptionDetailsService.cachedCustomsId.flatMap { cachedCustomsId =>
@@ -113,6 +124,29 @@ class RegisterWithEoriAndIdController @Inject() (
     for {
       first2LettersOfEori <- cache.getFirst2LettersEori
     } yield first2LettersOfEori.contains(EoriRegion.EU) && appConfig.euEoriEnabled && service.code == Service.cdsCode
+
+  private def sendEuEoriRequest(implicit
+    request: Request[AnyContent],
+    loggedInUser: LoggedInUserWithEnrolments,
+    service: Service
+  ): Future[RegisterWithoutIDResponse] =
+    for {
+      registrationDetails <- cache.registrationDetails
+      subscriptionDetails <- cache.subscriptionDetails
+      orgType = subscriptionDetails.formData.organisationType
+      regResponse <- if (requestSessionData.userSubscriptionFlow.isIndividualFlow)
+        registerWithoutIdService.registerIndividual(
+          subscriptionDetails,
+          loggedInUser,
+          orgType
+        )
+      else
+        registerWithoutIdService.registerOrganisation(
+          subscriptionDetails,
+          loggedInUser,
+          orgType
+        )
+    } yield regResponse
 
   private def sendRequest(cachedCustomsId: Option[CustomsId])(implicit
     request: Request[AnyContent],
