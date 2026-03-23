@@ -79,7 +79,7 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
       when(mockSubscriptionDetailsService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
       when(mockSubscriptionDetailsService.cacheEoriNumber(any())(any())).thenReturn(Future.successful((): Unit))
 
-      val result: Future[Result] = controller.submit(cdsService)(
+      val result: Future[Result] = controller.submit(cdsService, false)(
         SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, Map("eori-number" -> "FR123456789012"))
       )
 
@@ -90,7 +90,7 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
     "Display the correct error when nothing is entered" in {
       when(mockSubscriptionDetailsService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
 
-      val result: Future[Result] = controller.submit(cdsService)(
+      val result: Future[Result] = controller.submit(cdsService, false)(
         SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, Map("eori-number" -> ""))
       )
 
@@ -102,7 +102,7 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
     "Display the correct error when user enters EORI starting with GB" in {
       when(mockSubscriptionDetailsService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
 
-      val result: Future[Result] = controller.submit(cdsService)(
+      val result: Future[Result] = controller.submit(cdsService, false)(
         SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, Map("eori-number" -> "GB123456789012"))
       )
 
@@ -114,7 +114,7 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
     "Display the correct error when user enters EORI starting with XI" in {
       when(mockSubscriptionDetailsService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
 
-      val result: Future[Result] = controller.submit(cdsService)(
+      val result: Future[Result] = controller.submit(cdsService, false)(
         SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, Map("eori-number" -> "XI123456789012"))
       )
 
@@ -126,7 +126,7 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
     "Display the correct error when user enters an EORI that does not have two letters at the start" in {
       when(mockSubscriptionDetailsService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
 
-      val result: Future[Result] = controller.submit(cdsService)(
+      val result: Future[Result] = controller.submit(cdsService, false)(
         SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, Map("eori-number" -> "123456789012"))
       )
 
@@ -138,7 +138,7 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
     "Display the correct error when user enters an EORI that is too short" in {
       when(mockSubscriptionDetailsService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
 
-      val result: Future[Result] = controller.submit(cdsService)(
+      val result: Future[Result] = controller.submit(cdsService, false)(
         SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, Map("eori-number" -> "FR"))
       )
 
@@ -150,7 +150,7 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
     "Display the correct error when user enters an EORI that is too long" in {
       when(mockSubscriptionDetailsService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
 
-      val result: Future[Result] = controller.submit(cdsService)(
+      val result: Future[Result] = controller.submit(cdsService, false)(
         SessionBuilder.buildRequestWithSessionAndFormValues(
           defaultUserId,
           Map("eori-number" -> "FR12345678901234567890")
@@ -165,7 +165,7 @@ class WhatIsYourEoriEUControllerSpec extends ControllerSpec with AuthActionMock 
     "Display the correct error when user enters an EORI that has invalid characters" in {
       when(mockSubscriptionDetailsService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
 
-      val result: Future[Result] = controller.submit(cdsService)(
+      val result: Future[Result] = controller.submit(cdsService, false)(
         SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, Map("eori-number" -> "FR1234567-89012"))
       )
 

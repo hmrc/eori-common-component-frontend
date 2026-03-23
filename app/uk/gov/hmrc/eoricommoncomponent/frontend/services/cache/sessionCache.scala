@@ -74,7 +74,7 @@ object CachedData {
   val addressLookupParamsKey               = "addressLookupParams"
   val completed                            = "completed"
   val first2LettersEori                    = "first2LettersEori"
-  val addContactAddressKey                 = "addContactAddress"
+  val addContactAddressKey                 = "addContactAddressDetails"
   val cachedGBEoriNumberKey                = "cachedGBEoriNumber"
   val cachedEUEoriNumberKey                = "cachedEUEoriNumber"
   implicit val format: OFormat[CachedData] = Json.format[CachedData]

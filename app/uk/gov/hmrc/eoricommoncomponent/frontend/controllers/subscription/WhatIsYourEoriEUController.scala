@@ -43,15 +43,19 @@ class WhatIsYourEoriEUController @Inject() (
 
   val form: Form[EoriNumberViewModel] = SubscriptionForm.eoriNumberEuForm
 
-  def form(service: Service): Action[AnyContent] =
+  def form(service: Service): Action[AnyContent] = displayForm(service, false)
+
+  def reviewForm(service: Service): Action[AnyContent] = displayForm(service, true)
+
+  private def displayForm(service: Service, reviewMode: Boolean) =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       sessionCache.getEoriEu.map { eori =>
         val cachedEori = EoriNumberViewModel(eori.getOrElse(""))
-        Ok(whatIsYourEoriEuView(form.fill(cachedEori), false, service))
+        Ok(whatIsYourEoriEuView(form.fill(cachedEori), reviewMode, service))
       }
     }
 
-  def submit(service: Service): Action[AnyContent] =
+  def submit(service: Service, reviewMode: Boolean): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       form.bindFromRequest().fold(
         formWithErrors =>
@@ -63,7 +67,11 @@ class WhatIsYourEoriEUController @Inject() (
         formData =>
           sessionCache.saveEUEoriNumber(formData.eoriNumber)
           subscriptionDetailsHolderService.cacheEoriNumber(formData.eoriNumber).map { _ =>
-            Redirect(routes.WhenEoriIssuedController.createForm(service))
+            if (reviewMode) {
+              Redirect(DetermineReviewPageController.determineRoute(service))
+            } else {
+              Redirect(routes.WhenEoriIssuedController.createForm(service))
+            }
           }
       )
     }

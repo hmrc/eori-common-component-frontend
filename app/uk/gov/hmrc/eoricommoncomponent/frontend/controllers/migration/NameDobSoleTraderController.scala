@@ -20,6 +20,7 @@ import play.api.mvc.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -153,12 +154,16 @@ class NameDobSoleTraderController @Inject() (
         subscriptionDetailsHolderService
           .saveEuNameDetails(formData)
           .map { _ =>
-            Redirect(
-              subscriptionFlowManager
-                .stepInformation(NameDobDetailsSubscriptionFlowPage)
-                .nextPage
-                .url(service)
-            )
+            if (isInReviewMode) {
+              Redirect(DetermineReviewPageController.determineRoute(service))
+            } else {
+              Redirect(
+                subscriptionFlowManager
+                  .stepInformation(NameDobDetailsSubscriptionFlowPage)
+                  .nextPage
+                  .url(service)
+              )
+            }
           }
     )
 

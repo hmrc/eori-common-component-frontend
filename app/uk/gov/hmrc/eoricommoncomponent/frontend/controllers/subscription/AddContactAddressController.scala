@@ -25,9 +25,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.add_contact_address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddContactAddressSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.{
-  CheckYourDetailsController => CheckYourDetailsRoutes
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.CheckYourDetailsController as CheckYourDetailsRoutes
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +35,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.Subscripti
 class AddContactAddressController @Inject() (
   authAction: AuthAction,
   mcc: MessagesControllerComponents,
-  sessionCache: SessionCache,
   subscriptionDetailsService: SubscriptionDetailsService,
   subscriptionFlowManager: SubscriptionFlowManager,
   addContactAddressView: add_contact_address
@@ -45,29 +43,37 @@ class AddContactAddressController @Inject() (
 
   def form(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
-      sessionCache.getAddContactAddress.map { addContactAddress =>
-        Ok(addContactAddressView(confirmAddContactAddressYesNoAnswerForm(), addContactAddress, isInReviewMode, service))
+      subscriptionDetailsService.cachedAddressContactDetails().map { addContactAddress =>
+        val form = addContactAddress.map(yesNo => confirmAddContactAddressYesNoAnswerForm().fill(yesNo)).getOrElse(
+          confirmAddContactAddressYesNoAnswerForm()
+        )
+        Ok(addContactAddressView(form, addContactAddress, isInReviewMode, service))
       }
     }
 
-  def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean = false, service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       confirmAddContactAddressYesNoAnswerForm().bindFromRequest().fold(
         formWithErrors =>
           Future(BadRequest(addContactAddressView(formWithErrors, None, isInReviewMode, service))),
         addContactAddress =>
           subscriptionDetailsService.cacheAddContactAddressDetails(addContactAddress).flatMap { _ =>
-            if (addContactAddress.isYes) {
-              Future.successful(Redirect(
-                subscriptionFlowManager
-                  .stepInformation(AddContactAddressSubscriptionFlowPage)
-                  .nextPage
-                  .url(service)
-              ))
-            } else {
+            if (addContactAddress.isNo) {
               subscriptionDetailsService.clearContactAddress().map { _ =>
                 Redirect(CheckYourDetailsRoutes.reviewDetails(service))
               }
+            } else {
+              val url =
+                if (isInReviewMode) {
+                  Redirect(DetermineReviewPageController.determineRoute(service))
+                } else {
+                  Redirect(subscriptionFlowManager
+                    .stepInformation(AddContactAddressSubscriptionFlowPage)
+                    .nextPage
+                    .url(service))
+                }
+
+              Future.successful(url)
             }
           }
       )

@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
@@ -57,7 +57,7 @@
 
     @errorSummary(confirmAddContactAddressYesNoAnswerForm.errors, focusOverrides = Map(YesNo.yesNoAnswer -> YesNo.answerTrue))
 
-    @helpers.form(AddContactAddressController.submit( service), "confirmAddContactAddressYesNoAnswerForm") {
+    @helpers.form(routes.AddContactAddressController.submit(isInReviewMode, service), "confirmAddContactAddressYesNoAnswerForm") {
         @CSRF.formField
 
         @inputRadioGroup(

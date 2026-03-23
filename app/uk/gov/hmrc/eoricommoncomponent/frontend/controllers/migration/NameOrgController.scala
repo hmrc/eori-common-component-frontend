@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 
-import play.api.mvc._
+import play.api.mvc.*
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameOrganisationForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
@@ -41,7 +42,8 @@ class NameOrgController @Inject() (
   subscriptionFlowManager: SubscriptionFlowManager,
   mcc: MessagesControllerComponents,
   nameOrgView: nameOrg,
-  subscriptionDetailsService: SubscriptionDetailsService
+  subscriptionDetailsService: SubscriptionDetailsService,
+  appConfig: AppConfig
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -83,14 +85,15 @@ class NameOrgController @Inject() (
     for {
       _             <- subscriptionDetailsService.cacheNameDetails(formData)
       nameIdDetails <- subscriptionDetailsService.cachedNameIdDetails
-    } yield (nameIdDetails, inReviewMode) match {
-      case (Some(details), true) =>
+    } yield (appConfig.euEoriEnabled, nameIdDetails, inReviewMode) match {
+      case (true, _, true) => Future.successful(Redirect(DetermineReviewPageController.determineRoute(service)))
+      case (false, Some(details), true) =>
         subscriptionDetailsService
           .cacheNameIdDetails(NameIdOrganisationMatchModel(formData.name, details.id))
           .map { _ =>
             Redirect(DetermineReviewPageController.determineRoute(service))
           }
-      case (_, _) =>
+      case (_, _, _) =>
         Future.successful(
           Redirect(
             subscriptionFlowManager

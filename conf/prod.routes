@@ -44,8 +44,10 @@ POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your
 GET         /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori-gb/review         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriGBController.reviewForm(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori-gb/review         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriGBController.submit(isInReviewMode: Boolean = true, service: Service)
 
-GET         /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori-eu                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriEUController.form(service: Service)
-POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori-eu                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriEUController.submit(service: Service)
+GET         /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori-eu                       @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriEUController.form(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori-eu                       @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriEUController.submit(service: Service, reviewMode: Boolean = false)
+GET         /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori-eu/review                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriEUController.reviewForm(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori-eu/review                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriEUController.submit(service: Service, reviewMode: Boolean = true)
 
 GET         /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori/unable-to-use-id      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.EoriUnableToUseController.displayPage(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori/unable-to-use-id      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.EoriUnableToUseController.submit(service: Service)
@@ -153,7 +155,7 @@ GET         /customs-enrolment-services/:service/subscribe/contact-details/revie
 POST        /customs-enrolment-services/:service/subscribe/contact-details/review                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactDetailsController.submit(isInReviewMode:Boolean = true, service: Service)
 
 GET         /customs-enrolment-services/:service/subscribe/add-contact-address                         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.AddContactAddressController.form(isInReviewMode: Boolean, service: Service)
-POST        /customs-enrolment-services/:service/subscribe/add-contact-address                         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.AddContactAddressController.submit(isInReviewMode: Boolean = false, service: Service)
+POST        /customs-enrolment-services/:service/subscribe/add-contact-address                         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.AddContactAddressController.submit(isInReviewMode: Boolean, service: Service)
 
 GET         /customs-enrolment-services/:service/subscribe/row-country                                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CompanyRegisteredCountryController.displayPage(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/row-country/review                          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CompanyRegisteredCountryController.reviewPage(service: Service)
