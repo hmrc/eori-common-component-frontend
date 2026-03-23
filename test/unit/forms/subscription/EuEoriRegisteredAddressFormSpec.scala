@@ -165,7 +165,7 @@ class EuEoriRegisteredAddressFormSpec extends UnitSpec with ScalaCheckPropertyCh
 
     "validate postcode" should {
 
-      val max    = 35
+      val max    = 9
       val prefix = "eu.eori.registered.address.postcode"
 
       "accept valid input" in {
