@@ -33,7 +33,7 @@ object ContactAddressForm {
         "line-2"      -> optional(text.verifying(validLine2)),
         "line-3"      -> text.verifying(validLine3),
         "line-4"      -> optional(text.verifying(validLine4)),
-        "postcode"    -> (if (isEuEoriEnabled) optional(text.verifying(validPostcode)) else postcodeMapping),
+        "postcode" -> (if (isEuEoriEnabled) euEoriPostcodeMapping else postcodeMapping),
         "countryCode" -> Mappings.mandatoryString("cds.matching-error.country.invalid")(s => s.length == Length2)
       )(ContactAddressModel.apply)(contactAddressModel => Some(Tuple.fromProductTyped(contactAddressModel)))
     )

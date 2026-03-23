@@ -52,9 +52,6 @@ class ContactAddressController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def isEuEoriEnabled(service: Service): Boolean =
-    appConfig.euEoriEnabled && service.code == Service.cds.code && EoriRegion.EU == EoriRegion.EU
-
   def displayPage(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
       subscriptionBusinessService.contactAddress.flatMap {

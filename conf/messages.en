@@ -1571,7 +1571,7 @@ eu.eori.registered.address.line-1.error.invalid-chars=Street and number must onl
 eu.eori.registered.address.line-3.error.empty=Enter a town or city
 eu.eori.registered.address.line-3.error.too-long=Town or city must be 35 characters or less
 eu.eori.registered.address.line-3.error.invalid-chars=Town or city must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces
-eu.eori.registered.address.postcode.error.too-long=Postal code must be 35 characters or less
+eu.eori.registered.address.postcode.error.too-long=Postal code must be 9 characters or less
 eu.eori.registered.address.postcode.error.invalid-chars=Postal code must only include letters a to z, numbers, apostrophes, full stops, ampersands, hyphens and spaces
 eu.eori.registered.address.country.error.empty=Enter a country
 

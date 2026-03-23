@@ -41,6 +41,13 @@ object FormValidation {
       wrapped = MandatoryOptionalMapping(text.verifying(validPostcode)),
       elseValue = (key, data) => data.get(key)
     ).transform[Option[String]](_.map(_.filterNot(_.isWhitespace)), identity).verifying(lift(postcodeMax(9)))
+  
+  def euEoriPostcodeMapping: Mapping[Option[String]] =
+    ConditionalMapping(
+      condition = isAnyOf("countryCode", postCodeMandatoryCountryCodes),
+      wrapped = MandatoryOptionalMapping(text),
+      elseValue = (key, data) => data.get(key)
+    ).transform[Option[String]](_.map(_.filterNot(_.isWhitespace)), identity).verifying(lift(postcodeMax(9)))
 
   def validPostcode: Constraint[String] =
     Constraint {
