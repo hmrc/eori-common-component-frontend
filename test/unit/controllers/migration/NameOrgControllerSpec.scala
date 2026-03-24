@@ -18,12 +18,13 @@ package unit.controllers.migration
 
 import common.pages.matching.OrganisationNamePage
 import common.pages.subscription.EnterYourBusinessAddress
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.{eq as meq, *}
+import org.mockito.Mockito.*
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.mvc.{AnyContent, Request, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameOrgController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlowInfo, SubscriptionPage}
@@ -56,6 +57,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
   private val mockSubscriptionDetailsService  = mock[SubscriptionDetailsService]
   private val mockSubscriptionFlowInfo        = mock[SubscriptionFlowInfo]
   private val mockSubscriptionPage            = mock[SubscriptionPage]
+  private val mockAppConfig                   = mock[AppConfig]
 
   private val nameOrgView = instanceOf[nameOrg]
 
@@ -71,7 +73,8 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     mockSubscriptionFlowManager,
     mcc,
     nameOrgView,
-    mockSubscriptionDetailsService
+    mockSubscriptionDetailsService,
+    mockAppConfig
   )
 
   override def beforeEach(): Unit = {

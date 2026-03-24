@@ -191,4 +191,10 @@ class SubscriptionDetailsService @Inject() (
   def cachedRegisteredCountry()(implicit request: Request[_]): Future[Option[CompanyRegisteredCountry]] =
     sessionCache.subscriptionDetails.map(_.registeredCompany)
 
+  def cachedAddressContactDetails()(implicit request: Request[_]): Future[Option[YesNo]] =
+    sessionCache.subscriptionDetails.map(_.addContactAddressDetails)
+
+  def cachedContactDetails()(implicit request: Request[_]): Future[Option[ContactAddressModel]] =
+    sessionCache.subscriptionDetails.map(_.contactAddress)
+
 }

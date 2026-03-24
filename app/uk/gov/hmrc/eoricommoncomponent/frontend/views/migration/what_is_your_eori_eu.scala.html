@@ -34,7 +34,7 @@
 
         @errorSummary(eoriNumberEuForm.errors)
 
-        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriEUController.submit(service), "eoriNumberEuForm") {
+        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriEUController.submit(service, isInReviewMode), "eoriNumberEuForm") {
             @CSRF.formField
 
         @h1(messages("ecc.subscription.enter-eu-eori-number.heading"))

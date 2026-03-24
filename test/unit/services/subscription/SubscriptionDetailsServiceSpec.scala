@@ -564,4 +564,29 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
   }
 
+  "Calling cachedContactDetails" should {
+    "return contact address details" in {
+      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(SubscriptionDetails(contactAddress =
+          Some(ContactAddressModel("line 1", None, "line 3", None, None, "France"))
+        ))
+      )
+      await(subscriptionDetailsHolderService.cachedContactDetails()) shouldBe Some(ContactAddressModel(
+        "line 1",
+        None,
+        "line 3",
+        None,
+        None,
+        "France"
+      ))
+    }
+
+    "return None when no contact address details available" in {
+      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(SubscriptionDetails())
+      )
+      await(subscriptionDetailsHolderService.cachedContactDetails()) shouldBe None
+    }
+  }
+
 }

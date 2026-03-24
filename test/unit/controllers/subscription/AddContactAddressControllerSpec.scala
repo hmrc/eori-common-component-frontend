@@ -16,22 +16,23 @@
 
 package unit.controllers.subscription
 
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{Request, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
   AddContactAddressController,
   SubscriptionFlowManager
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{UserLocationDetails, YesNo}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   ContactAddressSubscriptionFlowPage,
+  ReviewDetailsPageSubscription,
   SubscriptionFlowInfo
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.add_contact_address
 import unit.controllers.CdsPage
@@ -50,7 +51,6 @@ class AddContactAddressControllerSpec extends ControllerSpec with BeforeAndAfter
 
   private val mockAuthConnector              = mock[AuthConnector]
   private val mockAuthAction                 = authAction(mockAuthConnector)
-  private val mockSessionCache               = mock[SessionCache]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val mockSubscriptionFlowManager    = mock[SubscriptionFlowManager]
 
@@ -59,7 +59,6 @@ class AddContactAddressControllerSpec extends ControllerSpec with BeforeAndAfter
   private val controller = new AddContactAddressController(
     mockAuthAction,
     mcc,
-    mockSessionCache,
     mockSubscriptionDetailsService,
     mockSubscriptionFlowManager,
     addContactAddressView
@@ -68,11 +67,8 @@ class AddContactAddressControllerSpec extends ControllerSpec with BeforeAndAfter
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(mockSessionCache.getAddContactAddress(any[Request[_]]))
+    when(mockSubscriptionDetailsService.cachedAddressContactDetails()(any[Request[_]]))
       .thenReturn(Future.successful(None))
-
-    when(mockSessionCache.userLocation(any[Request[_]]))
-      .thenReturn(Future.successful(UserLocationDetails(None)))
 
     when(mockSubscriptionDetailsService.cacheAddContactAddressDetails(any())(any()))
       .thenReturn(Future.successful(()))
@@ -85,7 +81,7 @@ class AddContactAddressControllerSpec extends ControllerSpec with BeforeAndAfter
   }
 
   override def afterEach(): Unit = {
-    reset(mockSubscriptionFlowManager, mockSubscriptionDetailsService, mockSessionCache)
+    reset(mockSubscriptionFlowManager, mockSubscriptionDetailsService)
     super.afterEach()
   }
 
@@ -153,7 +149,18 @@ class AddContactAddressControllerSpec extends ControllerSpec with BeforeAndAfter
       }
     }
 
-    "submit correctly in review mode when Yes selected" in {
+    "submit correctly in review mode when Yes selected & was previously selected" in {
+      when(mockSubscriptionDetailsService.cachedContactDetails()(any[Request[_]])).thenReturn(Future.successful(
+        Some(ContactAddressModel("line 1", None, "line 3", None, None, "France"))
+      ))
+      submitForm(Map(yesNoInputName -> answerYes), isInReviewMode = true) { result =>
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value should endWith(ReviewDetailsPageSubscription.url(cdsService))
+      }
+    }
+
+    "submit correctly in review mode when Yes selected but was not previously selected" in {
+      when(mockSubscriptionDetailsService.cachedContactDetails()(any[Request[_]])).thenReturn(Future.successful(None))
       submitForm(Map(yesNoInputName -> answerYes), isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value should endWith(ContactAddressSubscriptionFlowPage.url(cdsService))
