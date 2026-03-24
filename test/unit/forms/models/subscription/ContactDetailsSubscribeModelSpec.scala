@@ -28,7 +28,7 @@ class ContactDetailsSubscribeModelSpec extends UnitSpec {
 
       val email     = "john.doe@example.com"
       val fullName  = "Full name"
-      val telephone = "01234123123"
+      val telephone = Some("01234123123")
 
       val contactDetailsSubscribeModel = ContactDetailsSubscribeModel(fullName, telephone)
 
@@ -50,7 +50,7 @@ class ContactDetailsSubscribeModelSpec extends UnitSpec {
     "correctly build contact details subscribe model based on contact details model" in {
 
       val fullName  = "Full name"
-      val telephone = "01234123123"
+      val telephone = Some("01234123123")
 
       val contactDetails = ContactDetailsModel(
         fullName = fullName,

@@ -72,7 +72,7 @@ object ContactInformation extends CommonHeader {
       city = Some(dashForEmpty(contactDetails.city)),
       postalCode = contactDetails.postcode.filter(_.nonEmpty),
       countryCode = Some(contactDetails.countryCode),
-      telephoneNumber = Some(contactDetails.telephone),
+      telephoneNumber = contactDetails.telephone,
       faxNumber = contactDetails.fax,
       emailAddress = Some(contactDetails.emailAddress)
     )
@@ -88,7 +88,7 @@ object ContactInformation extends CommonHeader {
           city = Some(fourLineAddress.city),
           postalCode = fourLineAddress.postcode,
           countryCode = Some(fourLineAddress.countryCode),
-          telephoneNumber = if (contactDetails.telephone.isBlank) None else Some(contactDetails.telephone),
+          telephoneNumber = contactDetails.telephone,
           faxNumber = None,
           emailAddress = Some(contactDetails.emailAddress)
         )
@@ -101,7 +101,7 @@ object ContactInformation extends CommonHeader {
           city = None,
           postalCode = None,
           countryCode = None,
-          telephoneNumber = if (contactDetails.telephone.isBlank) None else Some(contactDetails.telephone),
+          telephoneNumber = contactDetails.telephone,
           faxNumber = None,
           emailAddress = Some(contactDetails.emailAddress)
         )

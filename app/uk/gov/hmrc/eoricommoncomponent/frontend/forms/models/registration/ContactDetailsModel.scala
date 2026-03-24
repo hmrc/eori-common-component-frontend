@@ -22,7 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetai
 case class ContactDetailsModel(
   fullName: String,
   emailAddress: String,
-  telephone: String,
+  telephone: Option[String],
   fax: Option[String],
   useAddressFromRegistrationDetails: Boolean = true,
   street: Option[String],

@@ -25,9 +25,12 @@ object ContactDetailsForm {
 
   def form(): Form[ContactDetailsSubscribeModel] =
     Form(
-      mapping("full-name" -> text.verifying(validFullName), "telephone" -> text.verifying(validPhone))(
-        (fullName, telephone) => ContactDetailsSubscribeModel(fullName.trim, telephone.trim)
-      )(contactDetailsSubscribeModel => Some(Tuple.fromProductTyped(contactDetailsSubscribeModel)))
+      mapping(
+        "full-name" -> text.transform[String](_.trim, identity).verifying(validFullName),
+        "telephone" -> optional(text.transform[String](_.trim, identity).verifying(validPhone))
+      )((fullName, telephone) => ContactDetailsSubscribeModel(fullName, telephone))(contactDetailsSubscribeModel =>
+        Some(Tuple.fromProductTyped(contactDetailsSubscribeModel))
+      )
     )
 
   private val validFullName: Constraint[String] =
