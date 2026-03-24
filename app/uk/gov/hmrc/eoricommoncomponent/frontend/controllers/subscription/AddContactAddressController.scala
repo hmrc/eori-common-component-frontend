@@ -22,9 +22,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddContactAddressForm.confirmAddContactAddressYesNoAnswerForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.add_contact_address
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddContactAddressSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  AddContactAddressSubscriptionFlowPage,
+  ContactAddressSubscriptionFlowPage
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.CheckYourDetailsController as CheckYourDetailsRoutes
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 
@@ -63,17 +65,21 @@ class AddContactAddressController @Inject() (
                 Redirect(CheckYourDetailsRoutes.reviewDetails(service))
               }
             } else {
-              val url =
-                if (isInReviewMode) {
-                  Redirect(DetermineReviewPageController.determineRoute(service))
-                } else {
-                  Redirect(subscriptionFlowManager
-                    .stepInformation(AddContactAddressSubscriptionFlowPage)
-                    .nextPage
-                    .url(service))
+              if (isInReviewMode) {
+                subscriptionDetailsService.cachedContactDetails().flatMap {
+                  case Some(_) => Future.successful(Redirect(DetermineReviewPageController.determineRoute(service)))
+                  case None =>
+                    Future.successful(Redirect(subscriptionFlowManager
+                      .stepInformation(ContactAddressSubscriptionFlowPage)
+                      .nextPage
+                      .url(service)))
                 }
-
-              Future.successful(url)
+              } else {
+                Future.successful(Redirect(subscriptionFlowManager
+                  .stepInformation(AddContactAddressSubscriptionFlowPage)
+                  .nextPage
+                  .url(service)))
+              }
             }
           }
       )

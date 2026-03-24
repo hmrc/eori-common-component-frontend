@@ -32,6 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   ReviewDetailsPageSubscription,
   SubscriptionFlowInfo
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.add_contact_address
 import unit.controllers.CdsPage
@@ -148,10 +149,21 @@ class AddContactAddressControllerSpec extends ControllerSpec with BeforeAndAfter
       }
     }
 
-    "submit correctly in review mode when Yes selected" in {
+    "submit correctly in review mode when Yes selected & was previously selected" in {
+      when(mockSubscriptionDetailsService.cachedContactDetails()(any[Request[_]])).thenReturn(Future.successful(
+        Some(ContactAddressModel("line 1", None, "line 3", None, None, "France"))
+      ))
       submitForm(Map(yesNoInputName -> answerYes), isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value should endWith(ReviewDetailsPageSubscription.url(cdsService))
+      }
+    }
+
+    "submit correctly in review mode when Yes selected but was not previously selected" in {
+      when(mockSubscriptionDetailsService.cachedContactDetails()(any[Request[_]])).thenReturn(Future.successful(None))
+      submitForm(Map(yesNoInputName -> answerYes), isInReviewMode = true) { result =>
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value should endWith(ContactAddressSubscriptionFlowPage.url(cdsService))
       }
     }
   }

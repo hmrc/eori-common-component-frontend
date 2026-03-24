@@ -100,15 +100,12 @@ class ContactAddressController @Inject() (
           formWithErrors => populateCountriesToInclude(service, isInReviewMode, formWithErrors, BadRequest),
           address =>
             subscriptionDetailsService.cacheContactAddressDetails(address).map { _ =>
-              if (isInReviewMode)
-                Redirect(DetermineReviewPageController.determineRoute(service))
-              else
-                Redirect(
-                  subscriptionFlowManager
-                    .stepInformation(ContactAddressSubscriptionFlowPage)
-                    .nextPage
-                    .url(service)
-                )
+              Redirect(
+                subscriptionFlowManager
+                  .stepInformation(ContactAddressSubscriptionFlowPage)
+                  .nextPage
+                  .url(service)
+              )
             }
         )
     }
