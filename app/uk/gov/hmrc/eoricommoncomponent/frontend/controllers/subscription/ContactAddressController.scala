@@ -37,6 +37,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 
 @Singleton
 class ContactAddressController @Inject() (
@@ -67,10 +68,15 @@ class ContactAddressController @Inject() (
 
   private def populateOkView(contactAddress: Option[ContactAddressModel], isInReviewMode: Boolean, service: Service)(
     implicit request: Request[AnyContent]
-  ): Future[Result] = {
-    lazy val form = contactAddress.fold(contactAddressCreateForm())(contactAddressCreateForm().fill(_))
-    populateCountriesToInclude(service, isInReviewMode, form, Ok)
-  }
+  ): Future[Result] =
+    sessionCache.getFirst2LettersEori.flatMap { optEoriRegion =>
+      val isEuEoriEnabled =
+        appConfig.euEoriEnabled && service.code == Service.cds.code && optEoriRegion.contains(EoriRegion.EU)
+      lazy val form = contactAddress.fold(contactAddressCreateForm(isEuEoriEnabled))(
+        contactAddressCreateForm(isEuEoriEnabled).fill(_)
+      )
+      populateCountriesToInclude(service, isInReviewMode, form, Ok)
+    }
 
   private def populateCountriesToInclude(
     service: Service,
@@ -95,22 +101,26 @@ class ContactAddressController @Inject() (
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
-      contactAddressCreateForm().bindFromRequest()
-        .fold(
-          formWithErrors => populateCountriesToInclude(service, isInReviewMode, formWithErrors, BadRequest),
-          address =>
-            subscriptionDetailsService.cacheContactAddressDetails(address).map { _ =>
-              if (isInReviewMode)
-                Redirect(DetermineReviewPageController.determineRoute(service))
-              else
-                Redirect(
-                  subscriptionFlowManager
-                    .stepInformation(ContactAddressSubscriptionFlowPage)
-                    .nextPage
-                    .url(service)
-                )
-            }
-        )
+      sessionCache.getFirst2LettersEori.flatMap { optEoriRegion =>
+        val isEuEoriEnabled =
+          appConfig.euEoriEnabled && service.code == Service.cds.code && optEoriRegion.contains(EoriRegion.EU)
+        contactAddressCreateForm(isEuEoriEnabled).bindFromRequest()
+          .fold(
+            formWithErrors => populateCountriesToInclude(service, isInReviewMode, formWithErrors, BadRequest),
+            address =>
+              subscriptionDetailsService.cacheContactAddressDetails(address).map { _ =>
+                if (isInReviewMode)
+                  Redirect(DetermineReviewPageController.determineRoute(service))
+                else
+                  Redirect(
+                    subscriptionFlowManager
+                      .stepInformation(ContactAddressSubscriptionFlowPage)
+                      .nextPage
+                      .url(service)
+                  )
+              }
+          )
+      }
     }
 
 }

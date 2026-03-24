@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms
 
-import play.api.data.Forms.text
+import play.api.data.Forms.*
 import play.api.data.Mapping
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.lift
@@ -41,6 +41,11 @@ object FormValidation {
       wrapped = MandatoryOptionalMapping(text.verifying(validPostcode)),
       elseValue = (key, data) => data.get(key)
     ).transform[Option[String]](_.map(_.filterNot(_.isWhitespace)), identity).verifying(lift(postcodeMax(9)))
+
+  def euEoriPostcodeMapping: Mapping[Option[String]] =
+    optional(text)
+      .transform[Option[String]](_.map(_.filterNot(_.isWhitespace)), identity)
+      .verifying(lift(postcodeMax(9)))
 
   def validPostcode: Constraint[String] =
     Constraint {
