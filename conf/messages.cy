@@ -1413,7 +1413,7 @@ eu.eori.registered.address.line-1.error.invalid-chars=Mae’n rhaid i’r stryd 
 eu.eori.registered.address.line-3.error.empty=Nodwch dref neu ddinas
 eu.eori.registered.address.line-3.error.too-long=Mae’n rhaid i’r dref neu’r ddinas fod yn 35 o gymeriadau neu lai
 eu.eori.registered.address.line-3.error.invalid-chars=Mae’n rhaid i’r dref neu’r ddinas gynnwys y llythrennau a i z, rhifau, collnodau, atalnodau llawn, ampersandau, cysylltnodau a bylchau yn unig
-eu.eori.registered.address.postcode.error.too-long=Mae’n rhaid i’r cod post fod yn 35 o gymeriadau neu lai
+eu.eori.registered.address.postcode.error.too-long=Mae’n rhaid i’r cod post fod yn 9 o gymeriadau neu lai
 eu.eori.registered.address.postcode.error.invalid-chars=Mae’n rhaid i’r cod post gynnwys y llythrennau a i z, rhifau, collnodau, atalnodau llawn, ampersandau, cysylltnodau a bylchau yn unig
 eu.eori.registered.address.country.error.empty=Nodwch wlad
 

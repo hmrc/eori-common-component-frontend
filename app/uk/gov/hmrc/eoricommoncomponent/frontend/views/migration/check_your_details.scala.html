@@ -173,7 +173,7 @@
 
 @contactDetailHtml(cd: ContactDetailsModel) = {
 @helpers.noMarginParagraph(cd.fullName)
-@helpers.noMarginParagraph(cd.telephone)
+@cd.telephone.map(telephone => helpers.noMarginParagraph(telephone))
 }
 
 @contactAddressHtml(cd: ContactAddressModel) = {

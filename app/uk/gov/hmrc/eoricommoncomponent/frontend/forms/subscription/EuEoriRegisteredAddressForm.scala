@@ -33,7 +33,7 @@ object EuEoriRegisteredAddressForm {
       mapping(
         "line-1"   -> text.verifying(addressLine("line-1", 70)),
         "line-3"   -> text.verifying(addressLine("line-3", 35)),
-        "postcode" -> optional(text.verifying(addressLine("postcode", 35))),
+        "postcode" -> optional(text.verifying(addressLine("postcode", 9))),
         "countryCode" -> Mappings.mandatoryString("eu.eori.registered.address.country.error.empty")(s =>
           s.length == Length2
         )

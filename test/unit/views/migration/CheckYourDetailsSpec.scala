@@ -55,7 +55,7 @@ class CheckYourDetailsSpec extends ViewSpec {
     ContactDetailsModel(
       "John Doe",
       "email@example.com",
-      "11111111111",
+      Some("11111111111"),
       None,
       useAddressFromRegistrationDetails = false,
       None,
