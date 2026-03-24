@@ -53,7 +53,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RegisterWithEoriAndIdController @Inject() (
+class RegistrationController @Inject() (
   authAction: AuthAction,
   requestSessionData: RequestSessionData,
   cache: SessionCache,
@@ -102,7 +102,7 @@ class RegisterWithEoriAndIdController @Inject() (
                 } yield result).recover {
                   case e: Throwable =>
                     logger.error(s"Error during EU EORI registration: ${e.getMessage}", e)
-                    Redirect(RegisterWithEoriAndIdController.fail(service))
+                    Redirect(RegistrationController.fail(service))
                 }
               } else
                 subscriptionDetailsService.cachedCustomsId.flatMap { cachedCustomsId =>
@@ -113,7 +113,7 @@ class RegisterWithEoriAndIdController @Inject() (
                       handleREG06Response
                     case false =>
                       logger.error("Reg01 BadRequest ROW")
-                      Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service)))
+                      Future.successful(Redirect(RegistrationController.fail(service)))
                   }
                 }
             }
@@ -192,10 +192,10 @@ class RegisterWithEoriAndIdController @Inject() (
           onRegistrationPassCheckSubscriptionStatus(idType = "SAFE", id = safeId)
         case Some("DEFERRED") =>
           notifyRcmService.notifyRcm(service).map { _ =>
-            Redirect(RegisterWithEoriAndIdController.pending(service))
+            Redirect(RegistrationController.pending(service))
           }
         case Some("FAIL") =>
-          Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service)))
+          Future.successful(Redirect(RegistrationController.fail(service)))
         case None =>
           handleErrorCodes(service, resp)
         case _ =>
@@ -358,16 +358,16 @@ class RegisterWithEoriAndIdController @Inject() (
     statusText match {
       case _ if statusText.exists(_.equalsIgnoreCase(EoriAlreadyLinked)) =>
         logger.warn("Reg06 EoriAlreadyLinked")
-        Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked(service)))
+        Future.successful(Redirect(RegistrationController.eoriAlreadyLinked(service)))
       case _ if statusText.exists(_.equalsIgnoreCase(IDLinkedWithEori)) =>
         logger.warn("Reg06 IDLinkedWithEori")
-        Future.successful(Redirect(RegisterWithEoriAndIdController.idAlreadyLinked(service)))
+        Future.successful(Redirect(RegistrationController.idAlreadyLinked(service)))
       case _ if statusText.exists(_.equalsIgnoreCase(RejectedPreviouslyAndRetry)) =>
         logger.warn("REG06 Rejected previously")
-        Future.successful(Redirect(RegisterWithEoriAndIdController.rejectedPreviously(service)))
+        Future.successful(Redirect(RegistrationController.rejectedPreviously(service)))
       case _ if statusText.exists(_.equalsIgnoreCase(RequestCouldNotBeProcessed)) =>
         logger.warn("REG06 Request could not be processed")
-        Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service)))
+        Future.successful(Redirect(RegistrationController.fail(service)))
       case _ => Future.successful(InternalServerError(errorTemplateView(service)))
     }
   }
@@ -395,11 +395,11 @@ class RegisterWithEoriAndIdController @Inject() (
           case _: SubscriptionPending =>
             subscriptionDetailsService
               .saveKeyIdentifiers(groupId, internalId, service)
-              .map(_ => Redirect(RegisterWithEoriAndIdController.pending(service)))
+              .map(_ => Redirect(RegistrationController.pending(service)))
           case _: SubscriptionFailed =>
             subscriptionDetailsService
               .saveKeyIdentifiers(groupId, internalId, service)
-              .map(_ => Redirect(RegisterWithEoriAndIdController.fail(service)))
+              .map(_ => Redirect(RegistrationController.fail(service)))
         }
     }
   }
@@ -414,7 +414,7 @@ class RegisterWithEoriAndIdController @Inject() (
       case NewSubscription | SubscriptionRejected =>
         onSuccessfulSubscriptionStatusSubscribe(service)
       case SubscriptionProcessing =>
-        Future.successful(Redirect(RegisterWithEoriAndIdController.processing(service)))
+        Future.successful(Redirect(RegistrationController.processing(service)))
       case SubscriptionExists => Future.successful(Redirect(SubscriptionRecoveryController.complete(service)))
     }
 

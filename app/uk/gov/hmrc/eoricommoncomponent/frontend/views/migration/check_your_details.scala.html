@@ -414,7 +414,7 @@
         }
 
         <div class="govuk-form-group">
-            @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RegisterWithEoriAndIdController.registerWithEoriAndId(service)) {
+            @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RegistrationController.registerWithEoriAndId(service)) {
                 @CSRF.formField
 
                 @govukButton(Button(

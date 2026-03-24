@@ -28,7 +28,7 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegistrationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.*
@@ -64,8 +64,7 @@ import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegisterWithEoriAndIdControllerSpec
-    extends ControllerSpec with BeforeAndAfterEach with AuthActionMock with CSRFTest {
+class RegistrationControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock with CSRFTest {
 
   private val mockAuthConnector              = mock[AuthConnector]
   private val mockAuthAction                 = authAction(mockAuthConnector)
@@ -98,7 +97,7 @@ class RegisterWithEoriAndIdControllerSpec
   private val subscriptionOutcomeFailRowView               = instanceOf[subscription_outcome_fail_row]
   private val subscriptionOutcomeFailEuEoriView            = instanceOf[subscription_outcome_fail_eu_eori]
 
-  private val controller = new RegisterWithEoriAndIdController(
+  private val controller = new RegistrationController(
     mockAuthAction,
     mockRequestSessionData,
     mockCache,
@@ -691,7 +690,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .pending(atarService)
           .url
       }
@@ -761,7 +760,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .fail(atarService)
           .url
       }
@@ -798,7 +797,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .pending(atarService)
           .url
         verify(mockNotifyRcmService)
@@ -840,7 +839,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .fail(atarService)
           .url
       }
@@ -878,7 +877,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .processing(atarService)
           .url
         verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
@@ -962,7 +961,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .fail(atarService)
           .url
       }
@@ -1004,7 +1003,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEoriCDS() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .fail(cdsService)
           .url
       }
@@ -1038,7 +1037,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .eoriAlreadyLinked(atarService)
           .url
       }
@@ -1072,7 +1071,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .eoriAlreadyLinked(atarService)
           .url
       }
@@ -1106,7 +1105,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .idAlreadyLinked(atarService)
           .url
       }
@@ -1140,7 +1139,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .idAlreadyLinked(atarService)
           .url
       }
@@ -1177,7 +1176,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .rejectedPreviously(atarService)
           .url
       }
@@ -1214,7 +1213,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .rejectedPreviously(atarService)
           .url
       }
@@ -1251,7 +1250,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .fail(atarService)
           .url
       }
@@ -1288,7 +1287,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegistrationController
           .fail(atarService)
           .url
       }
