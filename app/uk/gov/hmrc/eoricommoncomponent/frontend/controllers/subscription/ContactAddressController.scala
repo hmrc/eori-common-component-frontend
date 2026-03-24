@@ -109,12 +109,12 @@ class ContactAddressController @Inject() (
             formWithErrors => populateCountriesToInclude(service, isInReviewMode, formWithErrors, BadRequest),
             address =>
               subscriptionDetailsService.cacheContactAddressDetails(address).map { _ =>
-                  Redirect(
-                    subscriptionFlowManager
-                      .stepInformation(ContactAddressSubscriptionFlowPage)
-                      .nextPage
-                      .url(service)
-                  )
+                Redirect(
+                  subscriptionFlowManager
+                    .stepInformation(ContactAddressSubscriptionFlowPage)
+                    .nextPage
+                    .url(service)
+                )
               }
           )
       }
