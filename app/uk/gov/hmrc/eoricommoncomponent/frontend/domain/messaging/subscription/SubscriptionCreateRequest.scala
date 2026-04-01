@@ -77,7 +77,7 @@ object SubscriptionCreateRequest {
       case _ if isEuEori =>
         mandatoryFieldsReq(
           subscription.eoriNumber.get,
-          SafeId("XE0000123456789"), // TODO: Update this when we are able to retrieve registration.safeId,
+          registration.safeId,
           subscription.name,
           createEstablishmentAddress(Address(subscription.euEoriRegisteredAddress.get)),
           subscription.dateEstablished.get,

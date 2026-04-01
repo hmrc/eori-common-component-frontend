@@ -83,6 +83,7 @@ class CdsSubscriber @Inject() (
       _ <- onSubscriptionResultForEuEoriSubscribe(
         subscriptionResult,
         subscriptionDetails,
+        registrationDetails,
         email,
         service
       )
@@ -225,6 +226,7 @@ class CdsSubscriber @Inject() (
   private def onSubscriptionResultForEuEoriSubscribe(
     subscriptionResult: SubscriptionResult,
     subDetails: SubscriptionDetails,
+    regDetails: RegistrationDetails,
     email: String,
     service: Service
   )(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Unit] =
@@ -237,7 +239,7 @@ class CdsSubscriber @Inject() (
           cdsFullName,
           Some(success.eori),
           email,
-          SafeId("XE0000123456789"), // TODO: replace this when we are able to obtain a safe id.
+          regDetails.safeId,
           contactName,
           Some(cdsFullName),
           success.processingDate,
@@ -251,7 +253,7 @@ class CdsSubscriber @Inject() (
           cdsFullName,
           subDetails.eoriNumber.map(Eori.apply),
           email,
-          SafeId("XE0000123456789"), // TODO: replace this when we are able to obtain a safe id.
+          regDetails.safeId,
           contactName,
           Some(cdsFullName),
           pending.processingDate,

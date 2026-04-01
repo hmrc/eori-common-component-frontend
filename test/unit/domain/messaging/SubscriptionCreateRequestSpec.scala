@@ -310,8 +310,9 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
 
     "correctly build request for organisation for EuEori with Contact Address" in {
 
-      val service             = Some(cdsService)
-      val registrationDetails = RegistrationDetailsOrganisation().copy(etmpOrganisationType = Some(CorporateBody))
+      val service = Some(cdsService)
+      val registrationDetails =
+        RegistrationDetailsOrganisation().copy(etmpOrganisationType = Some(CorporateBody), safeId = safeId)
 
       val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails, service, isEuEori = true)
 
@@ -319,7 +320,7 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
       val requestDetails = request.requestDetail
 
       requestCommon.regime shouldBe "CDS"
-      requestDetails.SAFE shouldBe "XE0000123456789" // TODO: we should be checking safeId.id not the hardcoded. Replace this when we remove the hardcoded Safe ID.
+      requestDetails.SAFE shouldBe safeId.id
       requestDetails.EORINo shouldBe Some(eori.id)
       requestDetails.CDSFullName shouldBe subscriptionDetails.name
       requestDetails.CDSEstablishmentAddress shouldBe establishmentAddress

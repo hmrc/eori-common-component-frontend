@@ -96,9 +96,14 @@ class RegistrationController @Inject() (
             isEuEori.flatMap { isEuEoriFlow =>
               if (isEuEoriFlow) {
                 (for {
-                  _      <- sendEuEoriRequest(request, loggedInUser, service)
-                  eori   <- cache.getEoriEu
-                  result <- onRegistrationPassCheckSubscriptionStatus(CustomsId.eori, eori.get)
+                  registerWithoutIDResponse <- sendEuEoriRequest(request, loggedInUser, service)
+                  result <- registerWithoutIDResponse.responseDetail match {
+                    case Some(detail) =>
+                      onRegistrationPassCheckSubscriptionStatus(idType = CustomsId.SAFE, detail.SAFEID)
+                    case None =>
+                      logger.error(s"Error during EU EORI registration: REG02 returned None")
+                      Future.failed(new Exception("No response detail available from REG02"))
+                  }
                 } yield result).recover {
                   case e: Throwable =>
                     logger.error(s"Error during EU EORI registration: ${e.getMessage}", e)
@@ -189,7 +194,7 @@ class RegistrationController @Inject() (
           val safeId = resp.responseDetail
             .flatMap(_.responseData.map(x => x.SAFEID))
             .getOrElse(throw new IllegalStateException("SafeId can't be none"))
-          onRegistrationPassCheckSubscriptionStatus(idType = "SAFE", id = safeId)
+          onRegistrationPassCheckSubscriptionStatus(idType = CustomsId.SAFE, id = safeId)
         case Some("DEFERRED") =>
           notifyRcmService.notifyRcm(service).map { _ =>
             Redirect(RegistrationController.pending(service))

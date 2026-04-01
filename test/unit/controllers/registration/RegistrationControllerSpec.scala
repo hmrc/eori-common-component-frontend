@@ -682,7 +682,7 @@ class RegistrationControllerSpec extends ControllerSpec with BeforeAndAfterEach 
 
       when(
         mockSubscriptionStatusService
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
+          .getStatus(any, any)(any(), any(), any())
       ).thenReturn(Future.successful(NewSubscription))
 
       when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.GB)))
@@ -724,7 +724,6 @@ class RegistrationControllerSpec extends ControllerSpec with BeforeAndAfterEach 
           .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
 
-      // TODO: Replace the getStatus parameters with meq("SAFE"), meq("SomeSafeId") when we are able to retreive SafeIds for EU EORI
       when(mockSubscriptionStatusService.getStatus(any, any)(any(), any(), any())).thenReturn(
         Future.successful(NewSubscription)
       )
