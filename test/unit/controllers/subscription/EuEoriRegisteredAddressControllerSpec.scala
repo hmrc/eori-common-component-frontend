@@ -277,7 +277,6 @@ class EuEoriRegisteredAddressControllerSpec
       submitForm(mandatoryFields) { result =>
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("next-page-url")
-        Console.println(redirectLocation(result))
       }
     }
   }

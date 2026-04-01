@@ -93,6 +93,7 @@ object CustomsId extends Logging {
   val eori       = "eori"
   val nino       = "nino"
   val safeId     = "safeId"
+  val SAFE       = "SAFE"
   val taxPayerId = "taxPayerId"
   val taxPayerID = "taxPayerID"
 

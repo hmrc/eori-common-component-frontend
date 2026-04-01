@@ -438,6 +438,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
       when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.EU)))
       when(mockAppConfig.euEoriEnabled).thenReturn(true)
       when(mockContactDetailsModel.fullName).thenReturn("Full Name")
+      when(mockRegistrationDetails.safeId).thenReturn(SafeId("SafeID"))
 
       whenReady(cdsSubscriber.subscribeWithCachedDetails(cdsService)) {
         result =>
