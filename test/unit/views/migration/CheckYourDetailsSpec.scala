@@ -311,7 +311,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         ) mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
 
         val contactDetails = page.body.getElementsByClass("review-tbl__contact-details").get(0)
-        contactDetails.getElementsByClass("govuk-summary-list__key").text mustBe "Cyswllt"
+        contactDetails.getElementsByClass("govuk-summary-list__key").text mustBe "Manylion cyswllt"
         contactDetails.getElementsByClass("govuk-summary-list__value").text mustBe "John Doe 11111111111"
         contactDetails.getElementsByTag("a").attr(
           "href"

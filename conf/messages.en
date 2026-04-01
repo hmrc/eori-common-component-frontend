@@ -536,7 +536,7 @@ ecc.subscription.information.titleAndHeading.cds=Subscribe to the Customs Declar
 #What is your EORI EU
 ecc.subscription.enter-eu-eori-number.page.title=What is your EORI number?
 ecc.subscription.enter-eu-eori-number.heading=What is your EORI number?
-ecc.subscription.enter-eu-eori-number.hint=Your EORI number is 2 letters followed by upto 15 characters, like FR12345678901, ESX1234567X or NL12345678.
+ecc.subscription.enter-eu-eori-number.hint=Your EORI number is 2 letters followed by up to 15 characters, like FR12345678901, ESX1234567X or NL12345678.
 
 ecc.eu-eori-error.isEmpty=Enter your EORI number
 ecc.eu-eori-error.not-gb-xi=EORI number must not start with GB or XI
