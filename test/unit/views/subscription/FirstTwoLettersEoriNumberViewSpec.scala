@@ -41,11 +41,11 @@ class FirstTwoLettersEoriNumberViewSpec extends ViewSpec {
   "What are the first 2 letters of you EORI number page" should {
 
     "Display the correct title" in {
-      doc.title must startWith("What are the first two letters of your EORI number?")
+      doc.title must startWith("What are the first 2 letters of your EORI number?")
     }
 
     "Have the correct H1 text" in {
-      doc.body.getElementsByTag("h1").text() mustBe "What are the first two letters of your EORI number?"
+      doc.body.getElementsByTag("h1").text() mustBe "What are the first 2 letters of your EORI number?"
     }
 
     "Hide the legend of the radio buttons" in {
@@ -59,11 +59,11 @@ class FirstTwoLettersEoriNumberViewSpec extends ViewSpec {
     "Show details link" in {
       doc.body().getElementsByClass(
         "govuk-details__summary-text"
-      ).text() mustBe "I do not have an EORI number starting with GB"
+      ).text() mustBe "I do not have an EORI number"
 
       doc.select(".govuk-details__text p").eachText().asScala.toSeq mustBe Seq(
         "You need an EORI number to use this online service.",
-        "If your organisation is based in UK, you should apply for both a subscription and an EORI number starting with GB.",
+        "If your organisation is based in the UK, you should apply for both a subscription and an EORI number starting with GB.",
         "If your organisation is based in a country in the EU, you should apply for an EORI number in that country."
       )
     }
