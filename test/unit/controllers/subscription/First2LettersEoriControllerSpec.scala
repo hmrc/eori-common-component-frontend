@@ -69,10 +69,10 @@ class First2LettersEoriControllerSpec extends ControllerSpec with AuthActionMock
       // Then
       status(result) shouldBe BAD_REQUEST
       CdsPage(contentAsString(result))
-        .getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Select the first two letters of your EORI number"
+        .getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Select the first 2 letters of your EORI number"
     }
 
-    "Display the 'What are the first two letters of your EORI number?' page" in {
+    "Display the 'What are the first 2 letters of your EORI number?' page" in {
       // Given When
       when(mockSessionCache.getFirst2LettersEori(any())).thenReturn(Future.successful(None))
 
@@ -80,7 +80,7 @@ class First2LettersEoriControllerSpec extends ControllerSpec with AuthActionMock
 
       // Then
       status(result) shouldBe OK
-      CdsPage(contentAsString(result)).title() should startWith("What are the first two letters of your EORI number?")
+      CdsPage(contentAsString(result)).title() should startWith("What are the first 2 letters of your EORI number?")
     }
 
     "Redirect to eori page when GB is selected" in {

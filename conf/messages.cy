@@ -1476,6 +1476,7 @@ cds.subscription.first-2-letters-eori.page-error = Dewiswch y 2 lythyren gyntaf 
 cds.subscription.first-2-letters-eori.radio.gb = GB
 cds.subscription.first-2-letters-eori.radio.eu = 2 lythyren arall, fel DE, ES neu FR
 cds.subscription.first-2-letters-eori.radio.hint.text = Mae rhif EORI yn 2 lythyren ac yna hyd at 15 cymeriad, fel GB123456123456, ESX1234567X neu NL12345678.
+cds.subscription.first-2-letters-eori.detail.summary = Nid oes gennyf rif EORI
 cds.subscription.first-2-letters-eori.detail.para1 = Mae angen rhif EORI arnoch i ddefnyddio’r gwasanaeth ar-lein hwn.
 cds.subscription.first-2-letters-eori.detail.para2 = Os yw’ch sefydliad wedi’i leoli yn y DU, <a href="https://www.tax.service.gov.uk/customs-registration-services/cds/register" class="govuk-link" target="_blank" rel="noopener noreferrer">dylech wneud cais am danysgrifiad a rhif EORI sy’n dechrau gyda GB</a>.
 cds.subscription.first-2-letters-eori.detail.para3 = Os yw’ch sefydliad wedi’i leoli mewn gwlad yn yr UE, dylech wneud cais am rif EORI yn y wlad honno.
