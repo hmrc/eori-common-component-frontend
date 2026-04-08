@@ -42,7 +42,7 @@ class RegisterWithoutIdConnector @Inject() (httpClient: HttpClientV2, appConfig:
   def register(request: RegisterWithoutIDRequest)(implicit hc: HeaderCarrier): Future[RegisterWithoutIDResponse] = {
 
     // $COVERAGE-OFF$
-    logger.info(s"Register: $url, body: $request and hc: $hc")
+    logger.debug(s"Register: $url, body: $request and hc: $hc")
     // $COVERAGE-ON$
 
     val httpRequest = httpClient
@@ -52,7 +52,7 @@ class RegisterWithoutIdConnector @Inject() (httpClient: HttpClientV2, appConfig:
 
     httpRequest.execute[RegisterWithoutIdResponseHolder] map { response =>
       // $COVERAGE-OFF$
-      logger.info(s"Register: responseCommon: ${response.registerWithoutIDResponse.responseCommon}")
+      logger.debug(s"Register: responseCommon: ${response.registerWithoutIDResponse.responseCommon}")
       // $COVERAGE-ON$
 
       auditCall(url.toString, request, response)
