@@ -247,7 +247,7 @@ class WhatIsYourEoriGBControllerSpec extends ControllerSpec with AuthActionMock 
         val eoriCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe "/customs-enrolment-services/cds/subscribe/matching/organisation-type"
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/cds/subscribe/matching/user-location"
 
         verify(mockSubscriptionDetailsService).cacheEoriNumber(eoriCaptor.capture())(any())
 
@@ -267,7 +267,7 @@ class WhatIsYourEoriGBControllerSpec extends ControllerSpec with AuthActionMock 
         val eoriCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get shouldBe "/customs-enrolment-services/cds/subscribe/matching/organisation-type"
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/cds/subscribe/matching/user-location"
 
         verify(mockSubscriptionDetailsService).cacheEoriNumber(eoriCaptor.capture())(any())
 

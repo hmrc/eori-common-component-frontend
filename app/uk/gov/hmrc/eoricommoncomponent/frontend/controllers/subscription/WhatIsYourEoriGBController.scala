@@ -57,7 +57,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 
 @Singleton
@@ -142,9 +142,7 @@ class WhatIsYourEoriGBController @Inject() (
           )
         case _ =>
           if (isInReviewMode) Redirect(DetermineReviewPageController.determineRoute(service))
-          else Redirect(OrganisationTypeController.form(service)).withSession(
-            requestSessionData.sessionWithUserLocationAdded(UserLocation.Uk)
-          )
+          else Redirect(UserLocationController.form(service))
       }
     }
   }
