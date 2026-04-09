@@ -40,6 +40,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 
 class SubscriptionFlowManagerSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec {
@@ -320,7 +321,9 @@ class SubscriptionFlowManagerEucrEnabledSpec
       .thenReturn(mockSession)
     when(mockCdsFrontendDataCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[Request[_]]))
       .thenReturn(Future.successful(true))
-    when(mockAppConfig.euEoriEnabled).thenReturn(true) // flag ON
+    when(mockAppConfig.euEoriEnabled).thenReturn(true)
+    when(mockCdsFrontendDataCache.getFirst2LettersEori(mockRequest))
+      .thenReturn(Future.successful(Some(EoriRegion.EU)))
   }
 
   "First Page with EUCR enabled" should {
@@ -344,7 +347,7 @@ class SubscriptionFlowManagerEucrEnabledSpec
       )(mockRequest)
     }
 
-    "start RowIndividualFlowEUCR when org type is Individual, ROW, no customsId, and service is CDS" in {
+    "start RowIndividualFlowEUCR when org type is Individual, ROW, no customsId, first2Letters is EU and service is CDS" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
       when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
@@ -362,6 +365,8 @@ class SubscriptionFlowManagerEucrEnabledSpec
     }
 
     "fall back to RowOrganisationFlow (non-EUCR) when service is NOT CDS even with flag on" in {
+      when(mockCdsFrontendDataCache.getFirst2LettersEori(mockRequest))
+        .thenReturn(Future.successful(None))
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
       when(mockCdsFrontendDataCache.registrationDetails(mockRequest))

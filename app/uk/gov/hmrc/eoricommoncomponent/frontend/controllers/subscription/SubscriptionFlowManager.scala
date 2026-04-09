@@ -32,6 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants.ONE
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriPrefixForm.EoriRegion
 
 case class SubscriptionFlowConfig(
   pageBeforeFirstFlowPage: SubscriptionPage,
@@ -66,8 +67,15 @@ class SubscriptionFlowManager @Inject() (
 
   private val logger = Logger(this.getClass)
 
-  def euEoriEnabled(service: Service): Boolean =
-    if (appConfig.euEoriEnabled && service.code == Service.cds.code) true else false
+  def euEoriEnabled(service: Service)(implicit request: Request[_]): Future[Boolean] =
+    if (appConfig.euEoriEnabled && service.code == Service.cds.code) {
+      cdsFrontendDataCache.getFirst2LettersEori map {
+        case Some(EoriRegion.EU) => true
+        case _                   => false
+      }
+    } else {
+      Future.successful(false)
+    }
 
   def currentSubscriptionFlow(implicit request: Request[AnyContent]): SubscriptionFlow =
     requestSessionData.userSubscriptionFlow
@@ -81,18 +89,20 @@ class SubscriptionFlowManager @Inject() (
     service: Service
   )(implicit request: Request[AnyContent]): Future[(SubscriptionPage, Session)] = {
     val maybePreviousPageUrl = previousPage.map(page => page.url(service))
-    cdsFrontendDataCache.registrationDetails map { registrationDetails =>
-      val flow       = selectFlow(registrationDetails, cdsOrganisationType, service)
-      val flowConfig = SubscriptionFlows.flows(flow)
+    cdsFrontendDataCache.registrationDetails flatMap { registrationDetails =>
+      selectFlow(registrationDetails, cdsOrganisationType, service) map { flow =>
 
-      logger.info(s"select Subscription flow: ${flow.name}")
-      (
-        flowConfig.pagesInOrder.head,
-        requestSessionData.storeUserSubscriptionFlow(
-          flow,
-          flowConfig.determinePageBeforeSubscriptionFlow(maybePreviousPageUrl).url(service)
+        val flowConfig = SubscriptionFlows.flows(flow)
+
+        logger.info(s"select Subscription flow: ${flow.name}")
+        (
+          flowConfig.pagesInOrder.head,
+          requestSessionData.storeUserSubscriptionFlow(
+            flow,
+            flowConfig.determinePageBeforeSubscriptionFlow(maybePreviousPageUrl).url(service)
+          )
         )
-      )
+      }
     }
   }
 
@@ -100,27 +110,27 @@ class SubscriptionFlowManager @Inject() (
     registrationDetails: RegistrationDetails,
     orgType: CdsOrganisationType,
     service: Service
-  )(implicit request: Request[AnyContent]): SubscriptionFlow = {
-    val isRow  = UserLocation.isRow(requestSessionData)
-    val isEUCr = euEoriEnabled(service)
-
-    val subscribePrefix = (isRow, registrationDetails.customsId, isEUCr) match {
-      case (true, None, true)  => "migration-eori-row-utrNino-enabled-eucr-"
-      case (true, None, false) => "migration-eori-row-utrNino-enabled-"
-      case (true, _, _)        => "migration-eori-row-"
-      case _                   => "migration-eori-"
-    }
-
-    val selectedFlow: SubscriptionFlow =
-      registrationDetails match {
-        case _: RegistrationDetailsOrganisation =>
-          SubscriptionFlow(subscribePrefix + "Organisation")
-        case _: RegistrationDetailsIndividual =>
-          SubscriptionFlow(subscribePrefix + "Individual")
-        case _ => throw DataUnavailableException("RegistrationDetails is not available in cache")
+  )(implicit request: Request[AnyContent]): Future[SubscriptionFlow] = {
+    val isRow = UserLocation.isRow(requestSessionData)
+    euEoriEnabled(service) map { isEUCr =>
+      val subscribePrefix = (isRow, registrationDetails.customsId, isEUCr) match {
+        case (true, None, true)  => "migration-eori-row-utrNino-enabled-eucr-"
+        case (true, None, false) => "migration-eori-row-utrNino-enabled-"
+        case (true, _, _)        => "migration-eori-row-"
+        case _                   => "migration-eori-"
       }
 
-    SubscriptionFlows.flows.keys.find(_.name == (subscribePrefix + orgType.id)).getOrElse(selectedFlow)
+      val selectedFlow: SubscriptionFlow =
+        registrationDetails match {
+          case _: RegistrationDetailsOrganisation =>
+            SubscriptionFlow(subscribePrefix + "Organisation")
+          case _: RegistrationDetailsIndividual =>
+            SubscriptionFlow(subscribePrefix + "Individual")
+          case _ => throw DataUnavailableException("RegistrationDetails is not available in cache")
+        }
+
+      SubscriptionFlows.flows.keys.find(_.name == (subscribePrefix + orgType.id)).getOrElse(selectedFlow)
+    }
   }
 
 }
