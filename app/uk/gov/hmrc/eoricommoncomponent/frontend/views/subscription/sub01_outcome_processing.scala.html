@@ -29,7 +29,7 @@
         @govukPanel(Panel(
             title = HtmlContent(headingForProcessing(orgName)),
             content = HtmlContent(p(messages("cds.subscription.outcomes.in-processing.received", dateFormatter.format(processedDate)), Some("processed-date"), "govuk-!-font-size-36")))
-        ))
+        )
         <div id="what-happens-next">
             @h2(messages("cds.subscription.outcomes.steps.next"))
             @p(messages("cds.sub01.outcome.processing.we-are-processing", shortName), Some("processing-para"))
