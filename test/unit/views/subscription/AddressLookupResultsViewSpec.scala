@@ -35,6 +35,8 @@ class AddressLookupResultsViewSpec extends ViewSpec {
     Seq(AddressLookup("Line 1", "City", "BB11 1BB", "GB"), AddressLookup("Line 1", "City2", "BB11 1BC", "GB"))
 
   private val form = AddressResultsForm.form(allowedAddress.map(_.dropDownView))
+  private val selectedAddressForm =
+    AddressResultsForm.form(allowedAddress.map(_.dropDownView)).fill(AddressResultsForm("Line 1, City2, BB11 1BC"))
 
   private val formWithError =
     AddressResultsForm.form(allowedAddress.map(_.dropDownView)).bind(Map("address" -> "invalid"))
@@ -111,6 +113,15 @@ class AddressLookupResultsViewSpec extends ViewSpec {
 
       manualAddressLink.text() mustBe "Enter your address manually"
       manualAddressLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
+    }
+
+    "pre-select the cached address when the form is filled" in {
+
+      val selectedDoc =
+        Jsoup.parse(contentAsString(view(selectedAddressForm, allowedAddress, isInReviewMode = true, atarService)))
+
+      selectedDoc.getElementById("address").hasAttr("checked") mustBe false
+      selectedDoc.getElementById("addressId-1").hasAttr("checked") mustBe true
     }
 
     "display Continue button" in {

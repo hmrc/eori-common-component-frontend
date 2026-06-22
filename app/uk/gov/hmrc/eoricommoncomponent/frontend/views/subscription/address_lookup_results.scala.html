@@ -53,7 +53,7 @@
             content = HtmlContent(address.dropDownView),
             value = Some(address.dropDownView),
             id = if (index == 0) Some("address") else Some(s"addressId-$index"),
-            checked = addressResultsForm(s"${address.dropDownView}").value.isDefined
+            checked = addressResultsForm("address").value.contains(address.dropDownView)
         )
     }
 }
