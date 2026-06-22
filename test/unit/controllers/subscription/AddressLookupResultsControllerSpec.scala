@@ -135,7 +135,10 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         verify(mockAddressLookupResultsPage).apply(any(), any(), ArgumentMatchers.eq(true), any())(any(), any())
 
         val formCaptor = ArgumentCaptor.forClass(classOf[Form[AddressResultsForm]])
-        verify(mockAddressLookupResultsPage).apply(formCaptor.capture(), any(), ArgumentMatchers.eq(true), any())(any(), any())
+        verify(mockAddressLookupResultsPage).apply(formCaptor.capture(), any(), ArgumentMatchers.eq(true), any())(
+          any(),
+          any()
+        )
         formCaptor.getValue.apply("address").value shouldBe Some(addressLookup.dropDownView)
       }
 

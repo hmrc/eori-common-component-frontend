@@ -35,6 +35,7 @@ class AddressLookupResultsViewSpec extends ViewSpec {
     Seq(AddressLookup("Line 1", "City", "BB11 1BB", "GB"), AddressLookup("Line 1", "City2", "BB11 1BC", "GB"))
 
   private val form = AddressResultsForm.form(allowedAddress.map(_.dropDownView))
+
   private val selectedAddressForm =
     AddressResultsForm.form(allowedAddress.map(_.dropDownView)).fill(AddressResultsForm("Line 1, City2, BB11 1BC"))
 
