@@ -19,7 +19,9 @@ package unit.controllers.subscription
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
+import org.mockito.ArgumentCaptor
 import org.scalatest.BeforeAndAfterEach
+import play.api.data.Form
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -30,10 +32,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  AddressDetails,
   ReviewDetailsPageSubscription,
   SubscriptionFlowInfo
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressResultsForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.{
   AddressLookup,
   AddressLookupFailure,
@@ -48,6 +52,8 @@ import util.builders.AuthBuilder.withAuthorisedUser
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 
 class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterEach {
 
@@ -113,6 +119,12 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
       "display review page method is invoked, address lookup params are in cache and connector returns addresses" in {
 
         when(mockSessionCache.addressLookupParams(any())).thenReturn(Future.successful(Some(addressLookupParams)))
+        when(mockSessionCache.subscriptionDetails(any()))
+          .thenReturn(
+            Future.successful(
+              SubscriptionDetails(addressDetails = Some(AddressViewModel("line1", "city", Some("postcode"), "GB")))
+            )
+          )
         when(mockAddressLookupConnector.lookup(any(), any())(any()))
           .thenReturn(Future.successful(AddressLookupSuccess(Seq(addressLookup))))
         when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.Company))
@@ -121,6 +133,13 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
 
         status(result) shouldBe OK
         verify(mockAddressLookupResultsPage).apply(any(), any(), ArgumentMatchers.eq(true), any())(any(), any())
+
+        val formCaptor = ArgumentCaptor.forClass(classOf[Form[AddressResultsForm]])
+        verify(mockAddressLookupResultsPage).apply(formCaptor.capture(), any(), ArgumentMatchers.eq(true), any())(
+          any(),
+          any()
+        )
+        formCaptor.getValue.apply("address").value shouldBe Some(addressLookup.dropDownView)
       }
 
       "display page with results" when {

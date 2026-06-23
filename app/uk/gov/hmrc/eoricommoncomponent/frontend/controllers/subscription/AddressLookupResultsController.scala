@@ -26,6 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineRevi
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AddressLookupErrorController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddressDetailsSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressLookupParams, AddressResultsForm}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.{
@@ -73,11 +74,9 @@ class AddressLookupResultsController @Inject() (
           addressLookupParams.line1
         ).flatMap {
           case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
-            Future.successful(
-              Ok(
-                prepareView(AddressResultsForm.form(addresses.map(_.dropDownView)), addresses, isInReviewMode, service)
-              )
-            )
+            formForAddresses(addresses, isInReviewMode).map { form =>
+              Ok(prepareView(form, addresses, isInReviewMode, service))
+            }
           case AddressLookupSuccess(_) if addressLookupParams.line1.exists(_.nonEmpty) =>
             repeatQueryWithoutLine1(addressLookupParams, service, isInReviewMode)
           case AddressLookupSuccess(_) =>
@@ -97,6 +96,32 @@ class AddressLookupResultsController @Inject() (
   )(implicit request: Request[AnyContent]): HtmlFormat.Appendable =
     addressLookupResultsPage(form, addresses, isInReviewMode, service)
 
+  private def formForAddresses(
+    addresses: Seq[AddressLookup],
+    isInReviewMode: Boolean
+  )(implicit request: Request[AnyContent]): Future[Form[AddressResultsForm]] = {
+    val addressesList = addresses.map(_.dropDownView)
+    val blankForm     = AddressResultsForm.form(addressesList)
+
+    if (isInReviewMode)
+      sessionCache.subscriptionDetails.map { subscriptionDetails =>
+        subscriptionDetails.addressDetails
+          .flatMap(selectedAddressValue)
+          .filter(addressesList.contains)
+          .fold(blankForm)(selectedAddress => blankForm.fill(AddressResultsForm(selectedAddress)))
+      }
+    else Future.successful(blankForm)
+  }
+
+  private def selectedAddressValue(address: AddressViewModel): Option[String] = {
+    val parts = List(Some(address.street), Some(address.city), address.postcode)
+      .flatten
+      .map(_.trim)
+      .filter(_.nonEmpty)
+
+    Option.when(parts.nonEmpty)(parts.mkString(", "))
+  }
+
   private def repeatQueryWithoutLine1(
     addressLookupParams: AddressLookupParams,
     service: Service,
@@ -106,8 +131,10 @@ class AddressLookupResultsController @Inject() (
 
     addressLookupConnector.lookup(addressLookupParamsWithoutLine1.postcode.replaceAll(" ", ""), None).flatMap {
       case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
-        sessionCache.saveAddressLookupParams(addressLookupParamsWithoutLine1).map { _ =>
-          Ok(prepareView(AddressResultsForm.form(addresses.map(_.dropDownView)), addresses, isInReviewMode, service))
+        sessionCache.saveAddressLookupParams(addressLookupParamsWithoutLine1).flatMap { _ =>
+          formForAddresses(addresses, isInReviewMode).map { form =>
+            Ok(prepareView(form, addresses, isInReviewMode, service))
+          }
         }
       case AddressLookupSuccess(_) => Future.successful(redirectToNoResultsPage(service, isInReviewMode))
       case AddressLookupFailure    => throw AddressLookupException
