@@ -18,23 +18,17 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import play.api.Logger
 import play.api.http.HeaderNames.AUTHORIZATION
-import play.api.libs.json.Json
+import play.api.libs.json.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
-  SubscriptionDisplayResponse,
-  SubscriptionDisplayResponseHolder
-}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{
-  SubscriptionDisplay,
-  SubscriptionDisplayResult,
-  SubscriptionDisplaySubmitted
-}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{SubscriptionDisplayResponse, SubscriptionDisplayResponseBusinessErrorWrapper, SubscriptionDisplayResponseHolder}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{SubscriptionDisplay, SubscriptionDisplayResult, SubscriptionDisplaySubmitted}
+import uk.gov.hmrc.http.*
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 
-import java.net.{URL, URLEncoder}
+import java.net.{URI, URL, URLEncoder}
+import java.time.LocalDateTime.ofInstant
+import java.time.ZoneId.of
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
@@ -47,23 +41,36 @@ class SUB09SubscriptionDisplayConnector @Inject() (httpClient: HttpClientV2, app
   private val logger  = Logger(this.getClass)
   private val baseUrl = s"${appConfig.getServiceUrl("subscription-display")}"
 
+  private type Subscription09Response =
+    SubscriptionDisplayResponseHolder | SubscriptionDisplayResponseBusinessErrorWrapper
+
+  given Reads[Subscription09Response] with
+
+    def reads(json: JsValue): JsResult[Subscription09Response] =
+      json.validate[SubscriptionDisplayResponseHolder]
+        .orElse(json.validate[SubscriptionDisplayResponseBusinessErrorWrapper])
+
   def subscriptionDisplay(sub09Request: Seq[(String, String)], originatingService: String)(implicit
     hc: HeaderCarrier
   ): Future[Either[EoriHttpResponse, SubscriptionDisplayResponse]] = {
 
-    val url = new URL(s"$baseUrl?${makeQueryString(sub09Request)}")
+    val url = URI.create(s"$baseUrl?${makeQueryString(sub09Request)}").toURL
 
     logRequest(sub09Request, hc, url)
 
-    val httpRequest = httpClient
+    val httpRequest: RequestBuilder = httpClient
       .get(url)
       .transform(_.addHttpHeaders(sub09Request: _*))
       .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
 
-    httpRequest.execute[SubscriptionDisplayResponseHolder] map { resp =>
-      logResponse(resp)
-      auditCall(url.toString, sub09Request, originatingService, resp)
-      Right(resp.subscriptionDisplayResponse)
+    httpRequest.execute[Subscription09Response] map {
+      case sub09DispRespHolder: SubscriptionDisplayResponseHolder =>
+        logResponse(sub09DispRespHolder)
+        auditCall(url.toString, sub09Request, originatingService, sub09DispRespHolder)
+        Right(sub09DispRespHolder.subscriptionDisplayResponse)
+      case businessErrorWrapper: SubscriptionDisplayResponseBusinessErrorWrapper =>
+        logBusinessErrorResponse(url, businessErrorWrapper)
+        Left(BusinessErrorResponse)
     } recover {
       case NonFatal(e) =>
         logError(url, e)
@@ -84,6 +91,13 @@ class SUB09SubscriptionDisplayConnector @Inject() (httpClient: HttpClientV2, app
   // $COVERAGE-OFF$
   private def logError(url: URL, e: Throwable): Unit =
     logger.error(s"SubscriptionDisplay SUB09 failed. url: $url, error: $e")
+  // $COVERAGE-ON$
+
+  // $COVERAGE-OFF$
+  private def logBusinessErrorResponse(url: URL, error: SubscriptionDisplayResponseBusinessErrorWrapper): Unit =
+    logger.error(s"SubscriptionDisplay SUB09 failed. url: $url," +
+      s"error: ${error.subscriptionDisplayResponse.responseCommon.statusText}, " +
+      s"processing date: ${ofInstant(error.subscriptionDisplayResponse.responseCommon.processingDate, of("Europe/London"))}")
   // $COVERAGE-ON$
 
   private def auditCall(

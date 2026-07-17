@@ -24,16 +24,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.mvc.Http.Status.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
-  EoriHttpResponse,
-  SUB09SubscriptionDisplayConnector,
-  ServiceUnavailableResponse
-}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
-  ContactInformation,
-  SubscriptionDisplayResponse,
-  SubscriptionDisplayResponseHolder
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{BusinessErrorResponse, EoriHttpResponse, SUB09SubscriptionDisplayConnector, ServiceUnavailableResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{ContactInformation, SubscriptionDisplayResponse, SubscriptionDisplayResponseHolder}
 import uk.gov.hmrc.http.*
 import util.externalservices.ExternalServicesConfig.*
 import util.externalservices.SubscriptionDisplayMessagingService
@@ -133,6 +125,14 @@ class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with Sc
 
       whenReady(connector.subscriptionDisplay(reqTaxPayerId, "atar")) { response =>
         response mustBe Left(ServiceUnavailableResponse)
+      }
+    }
+
+    "return error when business error returned from downstream" in {
+      SubscriptionDisplayMessagingService.returnBusinessErrorWhenReceiveRequest(requestEori, requestAcknowledgementReference)
+
+      whenReady(connector.subscriptionDisplay(reqEori, "atar")) { response =>
+        response mustBe Left(BusinessErrorResponse)
       }
     }
   }

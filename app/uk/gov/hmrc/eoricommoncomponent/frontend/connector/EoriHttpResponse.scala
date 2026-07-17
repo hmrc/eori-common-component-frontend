@@ -19,3 +19,5 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 sealed trait EoriHttpResponse
 
 case object ServiceUnavailableResponse extends EoriHttpResponse
+
+case object BusinessErrorResponse extends EoriHttpResponse
