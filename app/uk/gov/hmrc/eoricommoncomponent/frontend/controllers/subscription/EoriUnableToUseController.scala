@@ -43,7 +43,7 @@ class EoriUnableToUseController @Inject() (
     extends CdsController(mcc) {
 
   private def eoriInputRedirect(service: Service) =
-    if (appConfig.euEoriEnabled && service.code == "cds")
+    if (service.code == "cds")
       Redirect(routes.WhatIsYourEoriGBController.createForm(service))
     else
       Redirect(routes.WhatIsYourEoriController.createForm(service))

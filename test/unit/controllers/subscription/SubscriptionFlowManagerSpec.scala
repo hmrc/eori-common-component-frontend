@@ -321,7 +321,6 @@ class SubscriptionFlowManagerEucrEnabledSpec
       .thenReturn(mockSession)
     when(mockCdsFrontendDataCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[Request[_]]))
       .thenReturn(Future.successful(true))
-    when(mockAppConfig.euEoriEnabled).thenReturn(true)
     when(mockCdsFrontendDataCache.getFirst2LettersEori(mockRequest))
       .thenReturn(Future.successful(Some(EoriRegion.EU)))
   }

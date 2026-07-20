@@ -91,7 +91,6 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   override def beforeEach(): Unit = {
     when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
       .thenReturn(Future.successful(Some(emailStatus)))
-    when(mockAppConfig.euEoriEnabled).thenReturn(false)
   }
 
   override def afterEach(): Unit = {
@@ -185,7 +184,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "redirect to 'What are the first 2 letters of your EORI number?'" in {
-      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
       withAuthorisedUser(defaultUserId, mockAuthConnector)
 
       val result: Future[Result] =

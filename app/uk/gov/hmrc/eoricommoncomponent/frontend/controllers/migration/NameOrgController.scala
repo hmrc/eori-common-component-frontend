@@ -85,15 +85,9 @@ class NameOrgController @Inject() (
     for {
       _             <- subscriptionDetailsService.cacheNameDetails(formData)
       nameIdDetails <- subscriptionDetailsService.cachedNameIdDetails
-    } yield (appConfig.euEoriEnabled, nameIdDetails, inReviewMode) match {
-      case (true, _, true) => Future.successful(Redirect(DetermineReviewPageController.determineRoute(service)))
-      case (false, Some(details), true) =>
-        subscriptionDetailsService
-          .cacheNameIdDetails(NameIdOrganisationMatchModel(formData.name, details.id))
-          .map { _ =>
-            Redirect(DetermineReviewPageController.determineRoute(service))
-          }
-      case (_, _, _) =>
+    } yield (nameIdDetails, inReviewMode) match {
+      case (_, true) => Future.successful(Redirect(DetermineReviewPageController.determineRoute(service)))
+      case (_, _) =>
         Future.successful(
           Redirect(
             subscriptionFlowManager

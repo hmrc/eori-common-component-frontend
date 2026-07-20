@@ -68,7 +68,7 @@ class SubscriptionFlowManager @Inject() (
   private val logger = Logger(this.getClass)
 
   def euEoriEnabled(service: Service)(implicit request: Request[_]): Future[Boolean] =
-    if (appConfig.euEoriEnabled && service.code == Service.cds.code) {
+    if (service.code == Service.cds.code) {
       cdsFrontendDataCache.getFirst2LettersEori map {
         case Some(EoriRegion.EU) => true
         case _                   => false
