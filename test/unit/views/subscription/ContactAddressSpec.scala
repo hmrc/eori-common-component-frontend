@@ -71,7 +71,6 @@ class ContactAddressSpec extends ViewSpec {
       atarService
     )))
 
-
   "Contact address view" should {
 
     "display correct title" in {

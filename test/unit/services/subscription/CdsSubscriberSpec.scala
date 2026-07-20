@@ -281,7 +281,6 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
 
       when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.EU)))
 
-
       whenReady(cdsSubscriber.subscribeWithCachedDetails(cdsService)) {
         subscriptionResult =>
           subscriptionResult shouldBe SubscriptionPending(
@@ -797,7 +796,6 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
 
     when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.EU)))
 
-
     whenReady(cdsSubscriber.subscribeWithCachedDetails(cdsService)) {
       subscriptionResult =>
         subscriptionResult shouldBe SubscriptionSuccessful(
@@ -1014,7 +1012,6 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     ).thenReturn(Future.successful(()))
 
     when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.EU)))
-
 
     whenReady(cdsSubscriber.subscribeWithCachedDetails(cdsService)) {
       subscriptionResult =>

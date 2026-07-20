@@ -109,7 +109,6 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.SoleTrader))
     when(mockRequestSessionData.selectedUserLocationWithIslands(any())).thenReturn(Some(UserLocation.Eu))
 
-
     registerSaveNameDobDetailsMockSuccess()
     mockFunctionWithRegistrationDetails(mockRegistrationDetails)
 
