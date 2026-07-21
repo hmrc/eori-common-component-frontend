@@ -66,7 +66,7 @@ class NameDobSoleTraderController @Inject() (
   def createForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
       implicit request => (_: LoggedInUserWithEnrolments) =>
-        if (appConfig.euEoriEnabled && service.code == cdsCode) {
+        if (service.code == cdsCode) {
           cdsFrontendDataCache.getFirst2LettersEori flatMap {
             case Some(EoriRegion.EU) =>
               cdsFrontendDataCache.subscriptionDetails.map { sd =>
@@ -88,7 +88,7 @@ class NameDobSoleTraderController @Inject() (
   def reviewForm(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) {
       implicit request => (_: LoggedInUserWithEnrolments) =>
-        if (appConfig.euEoriEnabled && service.code == cdsCode) {
+        if (service.code == cdsCode) {
           cdsFrontendDataCache.getFirst2LettersEori flatMap {
             case Some(EoriRegion.EU) =>
               cdsFrontendDataCache.subscriptionDetails.map { sd =>
@@ -109,7 +109,7 @@ class NameDobSoleTraderController @Inject() (
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => (_: LoggedInUserWithEnrolments) =>
-      if (appConfig.euEoriEnabled && service.code == cdsCode) {
+      if (service.code == cdsCode) {
         cdsFrontendDataCache.getFirst2LettersEori.flatMap {
           case Some(EoriRegion.EU) => handleEnterNameForm(service, isInReviewMode)
           case _                   => handleEnterNameDobForm(service, isInReviewMode)

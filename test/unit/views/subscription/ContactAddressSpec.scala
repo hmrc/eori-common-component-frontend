@@ -39,7 +39,7 @@ class ContactAddressSpec extends ViewSpec {
   private val formWithError = form.bind(Map("line-1" -> "", "line-3" -> "", "countryCode" -> ""))
 
   private val doc: Document =
-    Jsoup.parse(contentAsString(view(form, countries, picker, None, false, isInReviewMode = false, atarService)))
+    Jsoup.parse(contentAsString(view(form, countries, picker, None, isInReviewMode = false, atarService)))
 
   private val docWithErrorSummary: Document =
     Jsoup.parse(contentAsString(view(
@@ -47,7 +47,6 @@ class ContactAddressSpec extends ViewSpec {
       countries,
       picker,
       None,
-      false,
       isInReviewMode = false,
       atarService
     )))
@@ -58,7 +57,6 @@ class ContactAddressSpec extends ViewSpec {
       countries,
       picker,
       Some(EU),
-      true,
       isInReviewMode = false,
       atarService
     )))
@@ -69,18 +67,6 @@ class ContactAddressSpec extends ViewSpec {
       countries,
       picker,
       Some(GB),
-      true,
-      isInReviewMode = false,
-      atarService
-    )))
-
-  private val docWithEUEoriPrefixAndFeatureDisabled: Document =
-    Jsoup.parse(contentAsString(view(
-      formWithError,
-      countries,
-      picker,
-      Some(EU),
-      false,
       isInReviewMode = false,
       atarService
     )))
@@ -132,10 +118,6 @@ class ContactAddressSpec extends ViewSpec {
     "display different postcode label for EU EORI Prefix" in {
       docWithEUEoriPrefixAndFeatureEnabled.body().getElementsByClass("postcode").text() mustBe "Postal code (optional)"
       docWithGBEoriPrefixAndFeatureEnabled.body().getElementsByClass("postcode").text() mustBe "Postcode (optional)"
-    }
-
-    "display current postcode label when EU EORI feature disabled" in {
-      docWithEUEoriPrefixAndFeatureDisabled.body().getElementsByClass("postcode").text() mustBe "Postcode (optional)"
     }
   }
 }

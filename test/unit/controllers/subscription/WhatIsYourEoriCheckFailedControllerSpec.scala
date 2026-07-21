@@ -63,7 +63,7 @@ class WhatIsYourEoriCheckFailedControllerSpec extends ControllerSpec with AuthAc
     super.beforeEach()
 
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(whatIsYourEoriCheckFailedView.apply(any(), any(), any())(any(), any())).thenReturn(
+    when(whatIsYourEoriCheckFailedView.apply(any(), any())(any(), any())).thenReturn(
       HtmlFormat.empty
     )
     when(mockSubscriptionDetailsService.cachedEoriNumber(any())).thenReturn(Future.successful(Some(eori)))
@@ -85,7 +85,7 @@ class WhatIsYourEoriCheckFailedControllerSpec extends ControllerSpec with AuthAc
       val eoriCaptor: ArgumentCaptor[String] =
         ArgumentCaptor.forClass(classOf[String])
 
-      verify(whatIsYourEoriCheckFailedView).apply(eoriCaptor.capture(), any(), any())(
+      verify(whatIsYourEoriCheckFailedView).apply(eoriCaptor.capture(), any())(
         any(),
         any()
       )
@@ -107,7 +107,7 @@ class WhatIsYourEoriCheckFailedControllerSpec extends ControllerSpec with AuthAc
   "what_is_your_eori_check_failed " should {
 
     def doc(service: Service = atarService): Document =
-      Jsoup.parse(contentAsString(view(eori, service, mockAppConfig.euEoriEnabled)(getRequest, messages)))
+      Jsoup.parse(contentAsString(view(eori, service)(getRequest, messages)))
 
     "have the correct title " in {
       doc().title() should startWith(messages("ecc.subscription.eori-number-invalid"))

@@ -223,7 +223,7 @@ class RegistrationControllerSpec extends ControllerSpec with BeforeAndAfterEach 
       .thenReturn(Future.successful(false))
     when(mockCache.journeyCompleted(any[Request[AnyContent]]))
       .thenReturn(Future.successful(true))
-    when(mockAppConfig.euEoriEnabled).thenReturn(false)
+
     when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.GB)))
   }
 
@@ -379,7 +379,7 @@ class RegistrationControllerSpec extends ControllerSpec with BeforeAndAfterEach 
           .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
       when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.EU)))
-      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
       when(mockCache.getEoriEu(any)).thenReturn(Future(Option("EU1234567890")))
 
       when(mockCache.subscriptionDetails(any[Request[_]])).thenReturn(
@@ -438,7 +438,7 @@ class RegistrationControllerSpec extends ControllerSpec with BeforeAndAfterEach 
       when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
       when(mockCache.getFirst2LettersEori(any)).thenReturn(Future(Option(EoriRegion.EU)))
-      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
       when(mockCache.getEoriEu(any)).thenReturn(Future(Option("EU1234567890")))
 
       when(mockCache.subscriptionDetails(any[Request[_]])).thenReturn(
@@ -697,7 +697,7 @@ class RegistrationControllerSpec extends ControllerSpec with BeforeAndAfterEach 
     }
 
     "redirect to 'we need to make more checks' when subscription for organisation returns status as WORKLIST within SubscriptionPending" in {
-      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
       when(
         mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
           any[HeaderCarrier],
@@ -1499,7 +1499,7 @@ class RegistrationControllerSpec extends ControllerSpec with BeforeAndAfterEach 
       when(mockCache.subscriptionDetails(any[Request[_]]))
         .thenReturn(Future.successful(subscriptionDetails))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
-      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
       when(mockCache.getFirst2LettersEori(any())).thenReturn(Future(Some(EoriRegion.EU)))
 
       invokeFailForEuEori() { result =>

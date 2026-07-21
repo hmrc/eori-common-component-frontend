@@ -108,7 +108,6 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.SoleTrader))
     when(mockRequestSessionData.selectedUserLocationWithIslands(any())).thenReturn(Some(UserLocation.Eu))
-    when(mockAppConfig.euEoriEnabled).thenReturn(false)
 
     registerSaveNameDobDetailsMockSuccess()
     mockFunctionWithRegistrationDetails(mockRegistrationDetails)
@@ -353,7 +352,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       ))
         .thenReturn(subscriptionFlowStepInfo)
       withAuthorisedUser(defaultUserId, mockAuthConnector)
-      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
       when(mockCdsFrontendDataCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(EU)))
       when(mockSubscriptionDetailsHolderService.saveEuNameDetails(any())(any())).thenReturn(Future.unit)
       val form = Map("given-name" -> "Alain", "family-name" -> "Lemoine")
@@ -756,7 +755,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
-    when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
     when(mockCdsFrontendDataCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(region)))
     when(mockCdsFrontendDataCache.subscriptionDetails(any())).thenReturn(Future.successful(subscriptionDetails))
 
@@ -783,7 +782,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
-    when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
     when(mockCdsFrontendDataCache.getFirst2LettersEori(any())).thenReturn(Future.successful(Some(region)))
     when(mockCdsFrontendDataCache.subscriptionDetails(any())).thenReturn(
       Future.successful(SubscriptionDetails(euNameDetails = Some(NameModel("Alain", "Lemoine"))))

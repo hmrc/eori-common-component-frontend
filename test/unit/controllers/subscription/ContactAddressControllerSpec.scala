@@ -103,7 +103,7 @@ class ContactAddressControllerSpec
     super.beforeEach()
 
     when(mockSubscriptionBusinessService.contactAddress(any[Request[_]])).thenReturn(Future.successful(None))
-    when(mockAppConfig.euEoriEnabled).thenReturn(false)
+
     when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]])).thenReturn(Future.successful(None))
     when(mockCdsFrontendDataCache.getFirst2LettersEori(any[Request[_]])).thenReturn(Future.successful(None))
     registerSaveDetailsMockSuccess()

@@ -121,7 +121,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     when(mockContactDetailsModel.contactDetails).thenReturn(contactDetails)
     when(mockSubscriptionDetailsService.cachedCustomsId).thenReturn(Future.successful(None))
     when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.GB)))
-    when(mockAppConfig.euEoriEnabled).thenReturn(false)
+
   }
 
   override protected def afterEach(): Unit = {
@@ -280,7 +280,6 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
       ).thenReturn(Future.successful(()))
 
       when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.EU)))
-      when(mockAppConfig.euEoriEnabled).thenReturn(true)
 
       whenReady(cdsSubscriber.subscribeWithCachedDetails(cdsService)) {
         subscriptionResult =>
@@ -436,7 +435,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         .thenReturn(Future.successful(true))
 
       when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.EU)))
-      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
       when(mockContactDetailsModel.fullName).thenReturn("Full Name")
       when(mockRegistrationDetails.safeId).thenReturn(SafeId("SafeID"))
 
@@ -796,7 +795,6 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     ).thenReturn(Future.successful(()))
 
     when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.EU)))
-    when(mockAppConfig.euEoriEnabled).thenReturn(true)
 
     whenReady(cdsSubscriber.subscribeWithCachedDetails(cdsService)) {
       subscriptionResult =>
@@ -1014,7 +1012,6 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     ).thenReturn(Future.successful(()))
 
     when(mockCdsFrontendDataCache.getFirst2LettersEori(any)).thenReturn(Future(Some(EoriRegion.EU)))
-    when(mockAppConfig.euEoriEnabled).thenReturn(true)
 
     whenReady(cdsSubscriber.subscribeWithCachedDetails(cdsService)) {
       subscriptionResult =>

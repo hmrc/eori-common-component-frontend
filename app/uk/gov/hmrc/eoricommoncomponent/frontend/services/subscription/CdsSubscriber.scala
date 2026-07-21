@@ -51,7 +51,7 @@ class CdsSubscriber @Inject() (
     val result =
       for {
         isEori <- sessionCache.getFirst2LettersEori
-        isEuEori = isEori.contains(EoriRegion.EU) && appConfig.euEoriEnabled
+        isEuEori = isEori.contains(EoriRegion.EU)
         isRow    <- isRowF
         customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
       } yield (isEuEori, isRow, customId) match {

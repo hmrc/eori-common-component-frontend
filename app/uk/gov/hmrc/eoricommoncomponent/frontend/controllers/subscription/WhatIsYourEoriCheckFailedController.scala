@@ -41,11 +41,10 @@ class WhatIsYourEoriCheckFailedController @Inject() (
   def displayPage(service: Service): Action[AnyContent] =
     authAction.enrolledUserWithSessionAction(service) { implicit request => _ =>
       subscriptionDetailsHolderService.cachedEoriNumber.map { eori =>
-        val isEuEoriEnabled = appConfig.euEoriEnabled && service.code == Service.cds.code
+        val isEuEoriEnabled = service.code == Service.cds.code
         Ok(whatIsYourEoriCheckFailedPage(
           eori.getOrElse(throw DataUnavailableException("Eori is not cached")),
-          service,
-          isEuEoriEnabled
+          service
         ))
       }
     }

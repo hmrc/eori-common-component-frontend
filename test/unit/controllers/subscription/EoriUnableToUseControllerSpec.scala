@@ -62,7 +62,6 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
 
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     when(eoriUnableToUsePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockAppConfig.euEoriEnabled).thenReturn(false)
   }
 
   override protected def afterEach(): Unit = {
@@ -161,7 +160,7 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
       }
 
       "feature flag is turned on and on cds service" in {
-        when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
         when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(
           Future.successful(Some("GB123456789123"))
         )
@@ -175,7 +174,7 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
       }
 
       "enrolment in use method returns empty and feature flag on cds" in {
-        when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
         when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(
           Future.successful(Some("GB123456789123"))
         )
@@ -188,7 +187,7 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
       }
 
       "eori is not available for display page and feature flag on cds" in {
-        when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
         when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
 
         val result = controller.displayPage(cdsService)(FakeRequest("GET", ""))

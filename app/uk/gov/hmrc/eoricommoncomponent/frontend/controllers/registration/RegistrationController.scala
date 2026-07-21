@@ -128,7 +128,7 @@ class RegistrationController @Inject() (
   private def isEuEori(implicit service: Service, request: Request[AnyContent]): Future[Boolean] =
     for {
       first2LettersOfEori <- cache.getFirst2LettersEori
-    } yield first2LettersOfEori.contains(EoriRegion.EU) && appConfig.euEoriEnabled && service.code == Service.cdsCode
+    } yield first2LettersOfEori.contains(EoriRegion.EU) && service.code == Service.cdsCode
 
   private def sendEuEoriRequest(implicit
     request: Request[AnyContent],

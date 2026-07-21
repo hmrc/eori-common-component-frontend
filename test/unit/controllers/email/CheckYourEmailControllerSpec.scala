@@ -88,11 +88,9 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   val data: Map[String, JsValue] = Map(internalId -> jsonValue)
   val unit: Unit                 = ()
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
       .thenReturn(Future.successful(Some(emailStatus)))
-    when(mockAppConfig.euEoriEnabled).thenReturn(false)
-  }
 
   override def afterEach(): Unit = {
     Mockito.reset(mockSave4LaterService)
@@ -185,7 +183,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "redirect to 'What are the first 2 letters of your EORI number?'" in {
-      when(mockAppConfig.euEoriEnabled).thenReturn(true)
+
       withAuthorisedUser(defaultUserId, mockAuthConnector)
 
       val result: Future[Result] =

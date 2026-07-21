@@ -26,11 +26,11 @@
 
 @this(layout_di: layout, govukButton: GovukButton, inputText: helpers.inputText, errorSummary: helpers.errorSummary, countryField: helpers.countryField)
 
-@(addressForm: Form[ContactAddressModel], countries: List[Country], countriesInCountryPicker: CountriesInCountryPicker, optEoriRegion: Option[EoriRegion], euEoriEnabled: Boolean, isInReviewMode: Boolean, service: Service)(implicit request: Request[AnyContent], messages: Messages)
+@(addressForm: Form[ContactAddressModel], countries: List[Country], countriesInCountryPicker: CountriesInCountryPicker, optEoriRegion: Option[EoriRegion], isInReviewMode: Boolean, service: Service)(implicit request: Request[AnyContent], messages: Messages)
 
 @postCodeLabel = @{
     optEoriRegion
-        .filter(region => region == EU && euEoriEnabled)
+        .filter(region => region == EU)
         .map(_ => "contact-address.postal-code-optional")
         .getOrElse {
             countriesInCountryPicker match {
