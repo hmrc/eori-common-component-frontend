@@ -105,4 +105,37 @@ object SubscriptionDisplayMessagingService {
         )
     )
 
+  val businessErrorResponse: String =
+    """
+      |{
+      |  "subscriptionDisplayResponse": {
+      |    "responseCommon": {
+      |      "status": "OK",
+      |      "statusText": "005 - No Form Bundle found",
+      |      "processingDate": "2026-02-24T11:54:02Z",
+      |      "returnParameters": [
+      |        {
+      |          "paramName": "POSITION",
+      |          "paramValue": "FAIL"
+      |        }
+      |      ]
+      |    }
+      |  }
+      |}
+      |""".stripMargin
+
+  def returnBusinessErrorWhenReceiveRequest(
+    id: String,
+    requestAcknowledgementReference: String
+  ): Unit =
+    stubFor(
+      get(urlEqualTo(subscriptionPath(id, requestAcknowledgementReference)))
+        .willReturn(
+          aResponse()
+            .withStatus(OK)
+            .withBody(businessErrorResponse)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
+    )
+
 }
