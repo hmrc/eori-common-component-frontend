@@ -21,8 +21,16 @@ import play.api.http.HeaderNames.AUTHORIZATION
 import play.api.libs.json.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{SubscriptionDisplayResponse, SubscriptionDisplayResponseBusinessErrorWrapper, SubscriptionDisplayResponseHolder}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{SubscriptionDisplay, SubscriptionDisplayResult, SubscriptionDisplaySubmitted}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
+  SubscriptionDisplayResponse,
+  SubscriptionDisplayResponseBusinessErrorWrapper,
+  SubscriptionDisplayResponseHolder
+}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{
+  SubscriptionDisplay,
+  SubscriptionDisplayResult,
+  SubscriptionDisplaySubmitted
+}
 import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 

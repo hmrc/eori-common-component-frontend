@@ -104,7 +104,7 @@ object SubscriptionDisplayMessagingService {
             .withHeader(CONTENT_TYPE, JSON)
         )
     )
-    
+
   val businessErrorResponse: String =
     """
       |{
@@ -125,9 +125,9 @@ object SubscriptionDisplayMessagingService {
       |""".stripMargin
 
   def returnBusinessErrorWhenReceiveRequest(
-                                                   id: String,
-                                                   requestAcknowledgementReference: String,
-                                                 ): Unit =
+    id: String,
+    requestAcknowledgementReference: String
+  ): Unit =
     stubFor(
       get(urlEqualTo(subscriptionPath(id, requestAcknowledgementReference)))
         .willReturn(
@@ -137,4 +137,5 @@ object SubscriptionDisplayMessagingService {
             .withHeader(CONTENT_TYPE, JSON)
         )
     )
+
 }
