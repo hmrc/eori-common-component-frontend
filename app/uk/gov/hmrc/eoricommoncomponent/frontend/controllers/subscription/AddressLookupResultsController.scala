@@ -73,7 +73,8 @@ class AddressLookupResultsController @Inject() (
           addressLookupParams.postcode.replaceAll(" ", ""),
           addressLookupParams.line1
         ).flatMap {
-          case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
+          case AddressLookupSuccess(rawAddresses) if rawAddresses.nonEmpty && rawAddresses.forall(_.nonEmpty) =>
+            val addresses = rawAddresses.distinctBy(_.dropDownView)
             formForAddresses(addresses, isInReviewMode).map { form =>
               Ok(prepareView(form, addresses, isInReviewMode, service))
             }
@@ -130,7 +131,8 @@ class AddressLookupResultsController @Inject() (
     val addressLookupParamsWithoutLine1 = AddressLookupParams(addressLookupParams.postcode, None, skippedLine1 = true)
 
     addressLookupConnector.lookup(addressLookupParamsWithoutLine1.postcode.replaceAll(" ", ""), None).flatMap {
-      case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
+      case AddressLookupSuccess(rawAddresses) if rawAddresses.nonEmpty && rawAddresses.forall(_.nonEmpty) =>
+        val addresses = rawAddresses.distinctBy(_.dropDownView)
         sessionCache.saveAddressLookupParams(addressLookupParamsWithoutLine1).flatMap { _ =>
           formForAddresses(addresses, isInReviewMode).map { form =>
             Ok(prepareView(form, addresses, isInReviewMode, service))
@@ -149,7 +151,8 @@ class AddressLookupResultsController @Inject() (
             addressLookupParams.postcode.replaceAll(" ", ""),
             addressLookupParams.line1
           ).flatMap {
-            case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
+            case AddressLookupSuccess(rawAddresses) if rawAddresses.nonEmpty && rawAddresses.forall(_.nonEmpty) =>
+              val addresses     = rawAddresses.distinctBy(_.dropDownView)
               val addressesMap  = addresses.map(address => address.dropDownView -> address).toMap
               val addressesList = addressesMap.keys.toSeq
               AddressResultsForm.form(addressesList).bindFromRequest().fold(
