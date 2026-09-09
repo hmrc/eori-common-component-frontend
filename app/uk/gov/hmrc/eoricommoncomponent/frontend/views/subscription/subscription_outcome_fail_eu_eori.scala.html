@@ -26,7 +26,7 @@
 
 @(service: Service)(implicit request: Request[_], messages: Messages)
 
-@layout_di(messages("cds.eu-eori.outcome.unsuccessful.h1"), displayBackLink = false, service = service) {
+@layout_di(messages("cds.eu-eori.outcome.unsuccessful.h1"), displayBackLink = false, displayUserResearchBanner = true, service = service) {
     <div>
 
         @h1(messages("cds.eu-eori.outcome.unsuccessful.h1"))
