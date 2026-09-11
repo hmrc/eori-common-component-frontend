@@ -51,6 +51,20 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
       appConfig.findLostUtr()(msg) shouldBe "https://www.gov.uk/dod-o-hyd-i-utr-sydd-ar-goll"
     }
 
+    "have the user research banner disabled by default" in {
+      appConfig.userResearchBannerEnabled shouldBe false
+    }
+
+    "have userResearchBannerUrl defined for English" in {
+      val msg: Messages = MessagesImpl(Lang("en"), messagesApi).messages
+      appConfig.userResearchBannerUrl()(msg) shouldBe "https://banner-en"
+    }
+
+    "have userResearchBannerUrl defined for Welsh" in {
+      val msg: Messages = MessagesImpl(Lang("cy"), messagesApi).messages
+      appConfig.userResearchBannerUrl()(msg) shouldBe "https://banner-cy"
+    }
+
     "have allowlistReferrers defined" in {
       appConfig.allowlistReferrers shouldBe Seq.empty[String]
     }

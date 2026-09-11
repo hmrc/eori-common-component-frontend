@@ -78,8 +78,13 @@ class AppConfig @Inject() (
   val addTeamMembers: String                             = config.get[String]("external-url.add-team-members")
   val changeToBusiness: String                           = config.get[String]("external-url.change-to-business")
   val changeOfDetails: String                            = config.get[String]("external-url.change-of-details")
-  val userResearchBannerUrl: String                      = config.get[String]("external-url.user-research-bannerUrl")
   def callCharges()(implicit messages: Messages): String = config.get[String](s"external-url.call-charges-$languageKey")
+
+  lazy val userResearchBannerEnabled: Boolean =
+    config.getOptional[Boolean]("features.user-research-banner").getOrElse(false)
+
+  def userResearchBannerUrl()(implicit messages: Messages): String =
+    config.get[String](s"external-url.user-research-banner-$languageKey")
 
   // get help link feedback for Subscribe journey
   def reportAProblemPartialUrlSubscribe(service: Service): String =

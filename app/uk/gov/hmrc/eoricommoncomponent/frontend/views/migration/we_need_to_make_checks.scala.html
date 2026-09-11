@@ -31,7 +31,7 @@
 
 @(email: String, service: Service)(implicit request: Request[_], messages: Messages)
 
-@layout_di(messages("ecc.subscription.we-need-to-make-checks.heading"), service = service) {
+@layout_di(messages("ecc.subscription.we-need-to-make-checks.heading"), displayUserResearchBanner = true, service = service) {
     <div class="govuk-body">
 
         @h1(messages("ecc.subscription.we-need-to-make-checks.heading"), Some("heading"))
