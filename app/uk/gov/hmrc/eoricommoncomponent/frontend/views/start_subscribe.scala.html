@@ -23,10 +23,14 @@
 
 @this(layout_di: layout, appConfig: AppConfig, govukButton: GovukButton)
 
-@(service: Service, headingAndTitleMessage: String, isEuEoriEnabled: Boolean)(implicit messages: Messages, request: Request[_])
+@(service: Service, headingAndTitleMessage: String, isEuEoriEnabled: Boolean, isEsc: Boolean)(implicit messages: Messages, request: Request[_])
 
 @getEoriLink = {
 <a class="govuk-link" href=@appConfig.eoriCommonComponentRegistrationFrontend(service.code)>@messages("ecc.subscription.information.para2.link")</a>
+}
+
+@getEscLink = {
+<a class="govuk-link" href=@appConfig.eoriCommonComponentRegistrationFrontend(service.code)>@messages("ecc.subscription.information.para2.esc.link")</a>
 }
 
 @dynamicContent = {
@@ -37,6 +41,12 @@
 <p id="gb-eori-text" class="govuk-body">
     @Html(messages("ecc.subscription.information.para2", getEoriLink))
 </p>
+}
+
+@escDetailsContent = {
+    <p id="gb-xi-text" class="govuk-body">
+        @Html(messages("ecc.subscription.information.para1.esc", getEscLink))
+    </p>
 }
 
 @layout_di(messages(headingAndTitleMessage), displayBackLink = false, service = service) {
@@ -74,6 +84,26 @@
                 <li>@messages("ecc.subscription.information.section.approval.list.first")</li>
                 <li>@messages("ecc.subscription.information.section.approval.list.second.CDS")</li>
             </ul>
+        } else if(isEsc) {
+            <p class="govuk-body">@messages("ecc.subscription.information.only.once.para1.ESC")</p>
+            <p class="govuk-body">@messages("ecc.subscription.information.only.once.para1.esc")</p>
+
+            <h2 class="govuk-heading-m" id="what-you-will-need-esc">@messages("ecc.subscription.information.para1.heading")</h2>
+            @escDetailsContent
+            <p class="govuk-body">@messages("ecc.subscription.information.section.main.ESC")</p>
+            <ul class="govuk-list govuk-list--bullet ">
+                <li>@messages("ecc.subscription.information.section.list.first.ESC")</li>
+                <li>@messages("ecc.subscription.information.section.list.second.ESC")</li>
+                <li>@messages("ecc.subscription.information.section.list.third.ESC")</li>
+            </ul>
+            <p id="find-utr-link-esc" class="govuk-body">@Html(messages("ecc.subscription.information.section.organisation.utr.link"))</p>
+            <p id="sole-trader" class=" govuk-body">@messages("ecc.subscription.information.section.sole.trader.ESC")</p>
+            <h2 class="govuk-heading-m govuk-!-margin-top-2" id="when-use-subscription">@messages("ecc.subscription.information.section.use-your-subscription")</h2>
+            <p id="approve-application" class=" govuk-body">@messages("ecc.subscription.information.section.approval-application")</p>
+            <ul class="govuk-list govuk-list--bullet ">
+                <li>@messages("ecc.subscription.information.section.approval.list.hours")</li>
+                <li>@messages("ecc.subscription.information.section.approval.list.days")</li>
+            </ul>
         } else {
             <p class="govuk-body">@messages("ecc.subscription.information.only.once.para1")</p>
             <p class="govuk-body"> @dynamicContent </p>
@@ -95,6 +125,7 @@
                 <li>@messages("ecc.subscription.information.section.individual.utr")</li>
             </ul>
             <p id="find-utr-link-individual" class="govuk-body">@Html(messages("ecc.subscription.information.section.organisation.utr.link"))</p>
+
             <h2 class="govuk-heading-m govuk-!-margin-top-2" id="how-long">@messages("ecc.subscription.information.section.how-long")</h2>
             <p id="average-time" class=" govuk-body">@messages("ecc.subscription.information.section.average-time")</p>
             <p id="approval-message" class=" govuk-body">@messages("ecc.subscription.information.section.approval-message")</p>
@@ -102,7 +133,7 @@
                 <li>@messages("ecc.subscription.information.section.approval.list.first")</li>
                 <li>@messages("ecc.subscription.information.section.approval.list.second")</li>
             </ul>
-        }
+            }
 
         @govukButton(Button(
             href = Some(EmailController.form(service, subscribeJourney = SubscribeJourney(LongJourney)).url),
