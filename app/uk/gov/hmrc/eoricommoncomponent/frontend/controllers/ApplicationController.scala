@@ -49,9 +49,7 @@ class ApplicationController @Inject() (
             Redirect(routes.HasExistingEoriController.displayPage(service))
           case Right(LongJourney) =>
             val headingAndTitleMessage = s"ecc.subscription.information.titleAndHeading.${service.code}"
-            val isEuEoriEnabled        = service.code == Service.cds.code
-            val isEsc                  = service.code == Service.escCode
-            Ok(viewStartSubscribe(service, headingAndTitleMessage, isEuEoriEnabled, isEsc))
+            Ok(viewStartSubscribe(service, headingAndTitleMessage, service.code))
           case Left(EnrolmentExistsUser) =>
             Redirect(routes.YouCannotUseServiceController.unableToUseIdPage(service))
           case Left(EnrolmentExistsGroup) =>
