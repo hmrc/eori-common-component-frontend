@@ -52,18 +52,54 @@ class StartSubscriptionViewSpec extends ViewSpec {
         false,
         "what-you-will-need-non-uk"
       ) mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, true, false, "approval-message-cds") mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        true,
+        false,
+        "approval-message-cds"
+      ) mustBe defined
     }
     "display the correct page when EuEori is not enabled" in {
       elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, false, "gb-eori") mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, false, "what-you-will-need") mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        false,
+        false,
+        "what-you-will-need"
+      ) mustBe defined
       elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, false, "organisation") mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, false, "organisation-text") mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        false,
+        false,
+        "organisation-text"
+      ) mustBe defined
       elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, false, "individual") mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, false, "individual-text") mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, false, "approval-message") mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        false,
+        false,
+        "individual-text"
+      ) mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        false,
+        false,
+        "approval-message"
+      ) mustBe defined
       elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, false, "average-time") mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, false, "find-utr-link") mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        false,
+        false,
+        "find-utr-link"
+      ) mustBe defined
       elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, true, "sole-trader") mustBe defined
       elementOfStartSubscriptionView(
         Service.cds,
