@@ -36,6 +36,8 @@ object Service {
 
   val cdsCode = "cds"
 
+  val escCode = "esc"
+
   val cds: Service = Service(cdsCode, "HMRC-CUS-ORG", "", None, "", "", None)
 
   val supportedServicesMap: Map[String, Service] = new ServiceConfig(
