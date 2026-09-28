@@ -34,37 +34,68 @@ class StartSubscriptionViewSpec extends ViewSpec {
       elementOfStartSubscriptionView(
         Service.cds,
         Service.cds.friendlyName,
-        true,
+        "cds",
         "what-you-will-need-cds"
       ) mustBe defined
       elementOfStartSubscriptionView(
         Service.cds,
         Service.cds.friendlyName,
-        true,
+        "cds",
         "what-you-will-need-uk"
       ) mustBe defined
       elementOfStartSubscriptionView(
         Service.cds,
         Service.cds.friendlyName,
-        true,
+        "cds",
         "what-you-will-need-non-uk"
       ) mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, true, "approval-message-cds") mustBe defined
-    }
-    "display the correct page when EuEori is not enabled" in {
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "gb-eori") mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "what-you-will-need") mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "organisation") mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "organisation-text") mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "individual") mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "individual-text") mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "approval-message") mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "average-time") mustBe defined
-      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, false, "find-utr-link") mustBe defined
       elementOfStartSubscriptionView(
         Service.cds,
         Service.cds.friendlyName,
-        false,
+        "cds",
+        "approval-message-cds"
+      ) mustBe defined
+    }
+    "display the correct page when EuEori is not enabled" in {
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, "ars", "gb-eori") mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        "ars",
+        "what-you-will-need"
+      ) mustBe defined
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, "ctc", "organisation") mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        "ivd",
+        "organisation-text"
+      ) mustBe defined
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, "tgp", "individual") mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        "ctc",
+        "individual-text"
+      ) mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        "ars",
+        "approval-message"
+      ) mustBe defined
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, "ctc", "average-time") mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        "tgp",
+        "find-utr-link"
+      ) mustBe defined
+      elementOfStartSubscriptionView(Service.cds, Service.cds.friendlyName, "esc", "sole-trader") mustBe defined
+      elementOfStartSubscriptionView(
+        Service.cds,
+        Service.cds.friendlyName,
+        "tgp",
         "find-utr-link-individual"
       ) mustBe defined
     }
@@ -73,9 +104,9 @@ class StartSubscriptionViewSpec extends ViewSpec {
   private def elementOfStartSubscriptionView(
     service: Service,
     heading: String,
-    isEuEoriEnabled: Boolean,
+    serviceCode: String,
     element: String
   ): Option[Element] =
-    Option(Jsoup.parse(contentAsString(view(service, heading, isEuEoriEnabled))).getElementById(element))
+    Option(Jsoup.parse(contentAsString(view(service, heading, serviceCode))).getElementById(element))
 
 }
