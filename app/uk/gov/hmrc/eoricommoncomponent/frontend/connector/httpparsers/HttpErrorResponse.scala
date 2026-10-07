@@ -21,10 +21,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.email.{UpdateVerifiedEmai
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServiceParam
 
 sealed trait HttpErrorResponse
-case object BadRequest         extends HttpErrorResponse
-case object ServiceUnavailable extends HttpErrorResponse
-case object Forbidden          extends HttpErrorResponse
-case object UnhandledException extends HttpErrorResponse
+case object UnhandledError extends HttpErrorResponse
 
 sealed trait HttpSuccessResponse
 

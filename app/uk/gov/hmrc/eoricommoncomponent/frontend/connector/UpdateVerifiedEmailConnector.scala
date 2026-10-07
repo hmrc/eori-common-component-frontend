@@ -16,50 +16,41 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
-import play.api.Logger
+import play.api.{Logger, Logging}
 import play.api.http.HeaderNames.AUTHORIZATION
 import play.api.libs.json.Json
 import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
-import play.mvc.Http.Status._
+import play.mvc.Http.Status.*
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers._
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.*
 import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.control.NonFatal
 
 class UpdateVerifiedEmailConnector @Inject() (appConfig: AppConfig, httpClient: HttpClientV2)(implicit
   ec: ExecutionContext
-) {
+) extends Logging {
 
-  private val url    = url"${appConfig.getServiceUrl("update-verified-email")}"
-  private val logger = Logger(this.getClass)
+  private val url = url"${appConfig.getServiceUrl("update-verified-email")}"
 
-  def updateVerifiedEmail(
-    request: VerifiedEmailRequest
-  )(implicit hc: HeaderCarrier): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] = {
-
-    val httpRequest = httpClient
+  def updateVerifiedEmail(request: VerifiedEmailRequest)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[HttpErrorResponse, VerifiedEmailResponse]] =
+    httpClient
       .put(url)
       .withBody(Json.toJson(request))
       .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
-
-    httpRequest.execute[VerifiedEmailResponse] map { resp =>
-      Right(resp)
-    } recover {
-      case _: BadRequestException | UpstreamErrorResponse(_, BAD_REQUEST, _, _) => Left(BadRequest)
-      case _: ForbiddenException | UpstreamErrorResponse(_, FORBIDDEN, _, _)    => Left(Forbidden)
-      case _: InternalServerException | UpstreamErrorResponse(_, INTERNAL_SERVER_ERROR, _, _) =>
-        Left(ServiceUnavailable)
-      case NonFatal(e) =>
-        logger.error(
-          s"[UpdateVerifiedEmailConnector][updateVerifiedEmail] update-verified-email. url: $url, error: ${e.getMessage}"
-        )
-        Left(UnhandledException)
-    }
-  }
+      .execute[VerifiedEmailResponse]
+      .map(resp => Right(resp))
+      .recover {
+        case UpstreamErrorResponse(msg, statusCoe, _, _) =>
+          logger.error(
+            s"[UpdateVerifiedEmailConnector][updateVerifiedEmail] update-verified-email. url: $url, code: $statusCoe, error: $msg"
+          )
+          Left(UnhandledError)
+      }
 
 }
