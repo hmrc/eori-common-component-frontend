@@ -34,11 +34,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   RequestSessionData,
   SessionCache
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.UpdateError.UpdateEmailError
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   HandleSubscriptionService,
   SubscriptionDetailsService,
   TaxEnrolmentsService,
-  UpdateEmailError,
   UpdateVerifiedEmailService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{email_error_template, error_template}

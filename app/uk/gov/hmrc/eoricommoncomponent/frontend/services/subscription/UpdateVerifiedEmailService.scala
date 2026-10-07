@@ -32,17 +32,16 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServic
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInfoRequest.EORI
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.CustomsDataStoreRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.UpdateError.{Error, UpdateEmailError}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-sealed trait UpdateError {
-  def message: String
+enum UpdateError(val message: String) {
+  case UpdateEmailError(override val message: String) extends UpdateError(message)
+  case Error(override val message: String)            extends UpdateError(message)
 }
-
-case class UpdateEmailError(message: String) extends UpdateError
-case class Error(message: String)            extends UpdateError
 
 class UpdateVerifiedEmailService @Inject() (
   reqCommonGenerator: RequestCommonGenerator,
@@ -68,6 +67,7 @@ class UpdateVerifiedEmailService @Inject() (
     val request = VerifiedEmailRequest(UpdateVerifiedEmailRequest(reqCommonGenerator.generate(), requestDetail))
     val customsDataStoreRequest =
       CustomsDataStoreRequest(eori, newEmail, requestDetail.emailVerificationTimestamp.atZone(ZoneOffset.UTC).toString)
+
     updateVerifiedEmailConnector.updateVerifiedEmail(request).flatMap {
       case Right(res)
           if res.getParameters.exists(params =>
@@ -82,8 +82,10 @@ class UpdateVerifiedEmailService @Inject() (
 
       case Right(res) =>
         val status = res.getStatus.getOrElse("Unknown error status")
-        logger.warn(
-          s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful with status: $status"
+        logger.error(
+          s"""[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful with status: $status,
+             | message params are: ${res.getParameters.map(params => params)}
+             |""".stripMargin
         )
         Future.successful(Left(Error(status)))
 

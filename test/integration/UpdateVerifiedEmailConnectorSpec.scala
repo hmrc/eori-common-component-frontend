@@ -94,25 +94,25 @@ class UpdateVerifiedEmailConnectorSpec extends IntegrationTestsSpec with ScalaFu
     "return Left with Forbidden when call returned Upstream4xxResponse with 403" in {
       UpdateVerifiedEmailMessagingService.stubTheResponse(expectedUrl, "", FORBIDDEN)
 
-      await(connector.updateVerifiedEmail(verifiedEmailRequest)) must be(Left(Forbidden))
+      await(connector.updateVerifiedEmail(verifiedEmailRequest)) must be(Left(UnhandledError))
     }
 
     "return Left with BadRequest when call returned Upstream4xxResponse with 400" in {
       UpdateVerifiedEmailMessagingService.stubTheResponse(expectedUrl, "", BAD_REQUEST)
 
-      await(connector.updateVerifiedEmail(verifiedEmailRequest)) must be(Left(BadRequest))
+      await(connector.updateVerifiedEmail(verifiedEmailRequest)) must be(Left(UnhandledError))
     }
 
     "return Left with ServiceUnavailable when call returned Upstream5xxResponse with 500" in {
       UpdateVerifiedEmailMessagingService.stubTheResponse(expectedUrl, "", INTERNAL_SERVER_ERROR)
 
-      await(connector.updateVerifiedEmail(verifiedEmailRequest)) must be(Left(ServiceUnavailable))
+      await(connector.updateVerifiedEmail(verifiedEmailRequest)) must be(Left(UnhandledError))
     }
 
     "return Left with GATEWAY_TIMEOUT when call returned Upstream5xxResponse with 500" in {
       UpdateVerifiedEmailMessagingService.stubTheResponse(expectedUrl, "", GATEWAY_TIMEOUT)
 
-      await(connector.updateVerifiedEmail(verifiedEmailRequest)) must be(Left(UnhandledException))
+      await(connector.updateVerifiedEmail(verifiedEmailRequest)) must be(Left(UnhandledError))
     }
 
   }

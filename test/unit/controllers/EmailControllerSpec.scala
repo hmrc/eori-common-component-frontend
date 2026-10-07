@@ -35,11 +35,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{EmailVerificationS
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.{EmailJourneyService, EmailVerificationService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.UpdateError.{Error, UpdateEmailError}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  Error,
   SubscriptionProcessing,
   SubscriptionStatusService,
-  UpdateEmailError,
   UpdateVerifiedEmailService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{

@@ -25,7 +25,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.{
-  UnhandledException,
+  UnhandledError,
   VerifiedEmailRequest,
   VerifiedEmailResponse
 }
@@ -38,11 +38,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.email.UpdateVerifiedEmail
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.CustomsDataStoreRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{MessagingServiceParam, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  Error,
-  UpdateEmailError,
-  UpdateVerifiedEmailService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.UpdateError.{Error, UpdateEmailError}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.UpdateVerifiedEmailService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDateTime
@@ -191,7 +188,7 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
       when(
         mockUpdateVerifiedEmailConnector
           .updateVerifiedEmail(any[VerifiedEmailRequest])(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Left(UnhandledException)))
+      ).thenReturn(Future.successful(Left(UnhandledError)))
 
       when(
         mockUpdateCustomsDataStoreConnector
